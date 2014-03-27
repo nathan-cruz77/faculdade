@@ -43,8 +43,8 @@ public class Triangulo{
     
     /* Mostra os valores dos atributos do objeto */
     public void Mostra(){
-        System.out.println("Base: " + this.getBase());
-        System.out.println("Altura: " + this.getAltura());
-        System.out.println("Area: " + this.Area());
+        System.out.println("\tBase: " + this.getBase());
+        System.out.println("\tAltura: " + this.getAltura());
+        System.out.println("\tArea: " + this.Area());
     }
 }
