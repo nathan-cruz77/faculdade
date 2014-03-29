@@ -66,8 +66,4 @@ class Triangulo:
         a = self.__lado1
         b = self.__lado2
         c = self.__lado3
-        try:
-            return math.sqrt(p*(p-a)*(p-b)*(p-c))
-        except ValueError:
-            print('Valores')
-            
+        return math.sqrt(p*(p-a)*(p-b)*(p-c))
