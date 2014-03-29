@@ -16,8 +16,8 @@ public class Entrada{
         float n1, n2, n3;
 
         System.out.println("O que deseja criar?[R/T]");
-        s = entrada.next();
-        if(s.toUpperCase() == "R"){
+        s = entrada.nextLine();
+        if(s.toUpperCase().equals("R")){
             System.out.println("Entre com a base: ");
             n1 = (float) entrada.nextDouble();
             System.out.println("Entre com a altura: ");
@@ -27,7 +27,7 @@ public class Entrada{
             System.out.println("Area: " + ret.Area());
             System.out.println("Perimetro: " + ret.Perimetro());
         }
-        else if(s.toUpperCase() == "T"){
+        else if(s.toUpperCase().equals("T")){
             System.out.println("Entre com o primeiro lado: ");
             n1 = (float) entrada.nextDouble();
             System.out.println("Entre com o segundo lado: ");
@@ -38,9 +38,10 @@ public class Entrada{
             tri = new Triangulo(n1, n2, n3);
             System.out.println("Area: " + tri.Area());
             System.out.println("Perimetro: " + tri.Perimetro());
-            tri.tipo();
+            tri.Tipo();
         }
         else{
+            System.out.println("Valor inválido! Favor entrar com R ou Q");
         }
     }
 }

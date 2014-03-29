@@ -23,28 +23,22 @@ public class Triangulo{
 
     /* Verifica se eh equilatero */
     private boolean isEquilatero(){
-        if(this.lado1 == this.lado2 && this.lado1 == this.lado3){
+        if(this.lado1 == this.lado2 && this.lado1 == this.lado3)
             return true;
-        }
-        else{
-            return false;
-        }
+        return false;
     }
 
     /* Verifica se eh isoceles */
     private boolean isIsoceles(){
         if(this.lado1 == this.lado2 ||
            this.lado1 == this.lado3 ||
-           this.lado2 == this.lado3){
+           this.lado2 == this.lado3)
             return true;
-        }
-        else{ 
-            return false;
-        }
+        return false;
     }
 
     /* Verifica o tipo do triangulo */
-    public void tipo(){
+    public void Tipo(){
         if(this.isEquilatero()){
             System.out.println("Triangulo equilatero");
         }
