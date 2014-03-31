@@ -62,7 +62,7 @@ class Triangulo:
 
     # Calcula a area #
     def Area(self):
-        p = self.Perimetro()/2.0;
+        p = self.Perimetro()/2.0
         a = self.__lado1
         b = self.__lado2
         c = self.__lado3

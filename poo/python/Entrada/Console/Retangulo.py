@@ -16,8 +16,11 @@ class Retangulo:
 
     # Construtor #
     def __init__(self, base=10, altura=10):
-        self.__base = float(base)
-        self.__altura = float(altura)
+        if base >= 0 and altura >= 0:   
+            self.__base = float(base)
+            self.__altura = float(altura)
+        else:
+            raise ValueError
 
     # Getters #
     def getBase(self):
