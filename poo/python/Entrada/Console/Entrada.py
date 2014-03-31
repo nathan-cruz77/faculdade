@@ -16,9 +16,12 @@ if opcao.upper() == 'R':
     base = float(raw_input('Entre com a base: '))
     altura = float(raw_input('Entre com a altura: '))
     
-    ret = Retangulo(base, altura)
-    print('Area: %.2f' % (ret.Area()))
-    print('Perimetro: %.2f' % (ret.Perimetro()))
+    try:
+        ret = Retangulo(base, altura)
+        print('Area: %.2f' % (ret.Area()))
+        print('Perimetro: %.2f' % (ret.Perimetro()))
+    except ValueError:
+        print('Os valores inseridos não compõe um retângulo')
 
 elif opcao.upper() == 'T':
     lado1 = float(raw_input('Entre com o primeiro lado: '))

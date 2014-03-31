@@ -20,6 +20,9 @@ class Triangulo:
     # Construtor #
     def __init__(self, lado1, lado2, lado3):
         if (
+            lado1 > 0 and 
+            lado2 > 0 and
+            lado3 > 0 and
             lado1 <= (lado2 + lado3) and
             lado2 <= (lado1 + lado3) and
             lado3 <= (lado1 + lado2)
