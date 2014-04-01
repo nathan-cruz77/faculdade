@@ -18,6 +18,7 @@ app = QtGui.QApplication([])
 opcao, ok = QtGui.QInputDialog.getText(None, 'Janela1',
                                    'O que deseja criar? [R/T] ')
 opcao = str(opcao)
+
 if opcao.upper() == 'R':
     base, ok = QtGui.QInputDialog.getText(None,
                                           'Base',
