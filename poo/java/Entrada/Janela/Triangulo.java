@@ -6,6 +6,7 @@
  */
 
 import java.lang.*;
+import javax.swing.*;
 
 public class Triangulo{
 
@@ -40,13 +41,13 @@ public class Triangulo{
     /* Verifica o tipo do triangulo */
     public void Tipo(){
         if(this.isEquilatero()){
-            System.out.println("Triangulo equilatero");
+            JOptionPane.showMessageDialog(null, "Triangulo equilatero");
         }
         else if(this.isIsoceles()){
-            System.out.println("Triangulo isoceles");
+            JOptionPane.showMessageDialog(null, "Triangulo isoceles");
         }
         else{
-            System.out.println("Triangulo escaleno");
+            JOptionPane.showMessageDialog(null, "Triangulo escaleno");
         }
     }
 
