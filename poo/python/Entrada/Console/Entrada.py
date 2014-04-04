@@ -36,4 +36,4 @@ elif opcao.upper() == 'T':
     except ValueError:
         print('Os valores inseridos não compõe um triângulo')
 else:
-    print('Valor invalido! Favor entrar com R ou Q')
+    print('Valor invalido! Favor entrar com R ou T')

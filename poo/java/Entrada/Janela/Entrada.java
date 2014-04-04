@@ -26,8 +26,8 @@ public class Entrada{
             n2 = Float.valueOf(s.trim()).floatValue();
 
             ret = new Retangulo(n1, n2);
-            System.out.println("Area: " + ret.Area());
-            System.out.println("Perimetro: " + ret.Perimetro());
+            JOptionPane.showMessageDialog(null, " Area: " + ret.Area() + 
+                                          "\n Perimetro: " + ret.Perimetro());
         }
         else if(s.toUpperCase().equals("T")){
             s = JOptionPane.showInputDialog(null,
@@ -43,8 +43,8 @@ public class Entrada{
             n3 = Float.valueOf(s.trim()).floatValue();
 
             tri = new Triangulo(n1, n2, n3);
-            System.out.println("Area: " + tri.Area());
-            System.out.println("Perimetro: " + tri.Perimetro());
+            JOptionPane.showMessageDialog(null, " Area: " + tri.Area() +
+                                          "\n Perimetro: " + tri.Perimetro());
             tri.Tipo();
         }
         else{
