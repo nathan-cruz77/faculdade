@@ -11,7 +11,15 @@ public class Professor{
     protected String nome;
     protected int idade;
     protected int matricula;
-    protected float salario;
+    protected int horas;
+    protected double valor;
+
+    /* Construtor */
+    public Professor(String nome, int idade, int matricula){
+        this.nome = nome;
+        this.idade = idade;
+        this.matricula = matricula;
+    }
 
     /* Getters */
     public String getNome(){
@@ -23,8 +31,11 @@ public class Professor{
     public int getMatricula(){
         return this.matricula;
     }
-    public float getSalario(){
-        return this.salario;
+    public int getHoras(){
+        return this.horas;
+    }
+    public double getValor(){
+        return this.valor;
     }
 
     /* Setters */
@@ -37,9 +48,17 @@ public class Professor{
     public void setMatricula(int matricula){
         this.matricula = matricula;
     }
-    public void setSalario(float salario){
-        this.salario = salario;
+    public void setHoras(int horas){
+        this.horas = horas;
+    }
+    public void setValor(double valor){
+        this.valor = valor;
     }
 
-
+    /* Imprime os atributos */
+    public void Imprime(){
+        System.out.println("\tNome:\t" + this.nome +
+                           "\n\tIdade:\t" + this.idade +
+                           "\n\tMatricula:\t" + this.matricula);
+    }
 }
