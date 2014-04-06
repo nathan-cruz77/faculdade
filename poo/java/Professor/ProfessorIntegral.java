@@ -7,4 +7,31 @@
 
 public class ProfessorIntegral extends Professor{
     
+    /* Atributos */
+    private float salario;
+
+    /* Construtor */
+    public ProfessorIntegral(String nome, int idade, 
+                             int matricula, float salario){
+        super(nome, idade, matricula);
+        this.salario = salario;
+    }
+
+    /* Getters */
+    public float getSalario(){
+        return this.salario;
+    }
+
+    /* Setters */
+    public void setSalario(float salario){
+        this.salario = salario;
+    }
+
+    @Override
+    /* Imprime os atributos */
+    public void Imprime(){
+        super.Imprime();
+        System.out.println("\tSalário:\t" + this.getSalario());
+    }
+
 }
