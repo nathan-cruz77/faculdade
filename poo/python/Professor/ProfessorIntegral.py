@@ -31,5 +31,5 @@ class ProfessorIntegral(Professor):
     # Redefinido #
     # imprime os atributos #
     def imprime(self):
-        super.imprime()
+        super(ProfessorIntegral, self).imprime()
         print('\tSalário:\t%.2f' % (self.getSalario()))

@@ -1,5 +1,6 @@
 # Arquivos swap do vim
 *.swp
+*.swo
 # Bytecode do java
 *.class
 # Arquivos precompilados do python
