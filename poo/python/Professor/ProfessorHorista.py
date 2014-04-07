@@ -25,7 +25,7 @@ class ProfessorHorista(Professor):
     # Redefinida # 
     # Imprime os atributos #
     def imprime(self):
-       super.imprime()
+       super(ProfessorHorista, self).imprime()
        print('\tHoras Trabalhadas:\t%d' % (self._horas))
        print('\tValor da Hora:\t%.2f' % (self._valor))
        print('\tSalário:\t%.2f' % (self.getSalario()))
