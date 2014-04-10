@@ -11,12 +11,6 @@ public abstract class Conta {
     protected double saldo;
     protected int numero;
 
-    /* Construtor
-    public Conta(int numero) {
-      this.saldo = 0.0;
-      this.numero = numero; 
-    }*/
-
     public void credita(double quantia) {
         if (quantia > 0){
             this.saldo += quantia;
@@ -33,10 +27,6 @@ public abstract class Conta {
         else{
             System.err.println("Não se pode sacar uma quantia negativa");
         }
-    }
-
-    public void atualiza(double taxa) {
-        this.saldo += this.saldo * taxa; 
     }
 
     /* Getters */

@@ -12,7 +12,6 @@ public class ContaPoupanca extends Conta{
         this.numero = numero;
     }
 
-    @Override
     public void atualiza(double taxa){
         this.saldo += 3*(this.saldo * taxa);
     }
