@@ -38,7 +38,7 @@ public class EstacionamentoApp{
             }
         }
 
-        System.out.println("\n### PRECOS INCREMENTADOS ###");
+        System.out.println("\n### PRECOS INCREMENTADOS ###\n");
 
         /* Lista os dados dos objetos */
         for(i=0;i<7;i++){
