@@ -52,9 +52,13 @@ class Employee(object):
 
     # Representação textual do objeto #
     def __str__(self):
-        return '{0} {1}\nSocial Security Number: {2}\nDepartment Code: {3}'.format(
-                self.getFirstName(), self.getLastName(),
-                self.getSocialSecurityNumber(), self.getDepartmentCode())
+        return '''{0} {1}
+                  Social Security Number: {2}
+                  Department Code: {3}'''.format(
+                          self.getFirstName(),
+                          self.getLastName(),
+                          self.getSocialSecurityNumber(),
+                          self.getDepartmentCode())
 
     # Faz repr() se comportar da mesma forma que str() #
     def __repr__(self):

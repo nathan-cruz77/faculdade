@@ -20,7 +20,7 @@ class CommissionEmployee(Employee):
     # Construtor #
     def __init__(self, first, last, ssn, birthDate, departmentCode,
                  sales, rate):
-        pai = super(CommissionEmployee, self)
+        pai = super(type(self), self)
         pai.__init__(first, last, ssn, birthDate, departmentCode)
         self.setGrossSales(sales)
         self.setCommissionRate(rate)
@@ -38,7 +38,7 @@ class CommissionEmployee(Employee):
         else:
             raise ValueError('Cannot set grossSales to negative value')
     def setCommissionRate(self, commissionRate):
-        if 0 < commissionRate > 1:
+        if 0 < commissionRate < 1:
             self.__commissionRate = commissionRate
         else:
             raise ValueError('CommissionRate must be in range 0.0-1.0')
@@ -46,17 +46,17 @@ class CommissionEmployee(Employee):
     # Calcula os ganhos do funcionario #
     def earnings(self):
         hj = date.today()
-        pai = super(CommissionEmployee, self)
+        pai = super(type(self), self)
         if pai.getPrivateBirthDate().month == hj.month:
             return self.getCommissionRate()*self.getGrossSales() + 150
         return self.getCommissionRate() * self.getGrossSales()
 
     # Representacao textual do objeto #
     def __str__(self):
-        pai = super(CommissionEmployee, self)
+        pai = super(type(self), self)
         return '''{0}: {1}
-                  {2}: {3; {4}: {5}'''.format('commission employee',
-                                              str(pai), 'gross sales',
+                  {2}: {3}; {4}: {5}'''.format('commission employee',
+                                              pai.__str__(), 'gross sales',
                                               self.getGrossSales(),
                                               'commission rate', 
                                               self.getCommissionRate())

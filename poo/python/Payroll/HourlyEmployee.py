@@ -49,10 +49,10 @@ class HourlyEmployee(Employee):
         if hj.month == pai.getPrivateBirthDate().month:
             bonus = 150
         if self.getHours() <= 40:
-            return self.getWage() * self.getHours + bonus
+            return self.getWage() * self.getHours() + bonus
         else:
             return (40* self.getWage() + 
-                    (self.getHours - 40) * self.getWage() * 1.5) + bonus
+                    (self.getHours() - 40) * self.getWage() * 1.5) + bonus
 
     def __repr__(self):
         return self.__str__()
@@ -60,6 +60,6 @@ class HourlyEmployee(Employee):
     def __str__(self):
         pai = super(HourlyEmployee, self)
         return '''hourly employee: {0}
-                  {1}: ${2}; {3}: {4}'''.format(str(pai), 'hourly wage',
+                  {1}: ${2}; {3}: {4}'''.format(pai.__str__(), 'hourly wage',
                                                 self.getWage(), 'hours worked'
                                                 , self.getHours())
