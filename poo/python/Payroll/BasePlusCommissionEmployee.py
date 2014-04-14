@@ -18,7 +18,7 @@ class BasePlusCommissionEmployee(CommissionEmployee):
     # Construtor #
     def __init__(self, first, last, ssn, birthDate, departmentCode,
                  sales, rate, salary):
-        pai = super(BasePlusCommissionEmployee, self)
+        pai = super(type(self), self)
         pai.__init__(first, last, ssn, birthDate, departmentCode,
                      sales, rate)
         self.setBaseSalary(salary)
@@ -36,13 +36,13 @@ class BasePlusCommissionEmployee(CommissionEmployee):
 
     # Calcula os ganhos mensais do funcionario #
     def earnings(self):
-        pai = super(BasePlusCommissionEmployee, self)
+        pai = super(type(self), self)
         return self.getBaseSalary() + pai.earnings()
 
     # Representacao textual do objeto #
     def __str__(self):
-        pai = super(BasePlusCommissionEmployee, self)
-        return '''{0} {1}; {2}: {3}'''.format('base-salaried', str(pai),
+        pai = super(type(self), self)
+        return '{0} {1}; {2}: {3}'.format('base-salaried', pai.__str__(),
                                               'base salary',
                                               self.getBaseSalary())
     def __repr__(self):

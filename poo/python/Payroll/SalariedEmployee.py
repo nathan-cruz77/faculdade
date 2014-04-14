@@ -14,11 +14,11 @@ from Employee import Employee
 class SalariedEmployee(Employee):
 
     # Atributos #
-    __weeklySalary = None
+    __weeklySalary = 0
 
     # Construtor #
     def __init__(self, first, last, ssn, birthDate, departmentCode, salary):
-        super(SalariedEmployee, self).__init__(first, last, ssn,
+        super(type(self), self).__init__(first, last, ssn,
                                                birthDate, departmentCode)
         self.setWeeklySalary(salary)
 
@@ -27,22 +27,22 @@ class SalariedEmployee(Employee):
         return self.__weeklySalary
 
     # Setters #
-    def setWeekSalary(self, weekSalary):
-        self.__weekSalary = weekSalary
+    def setWeeklySalary(self, weeklySalary):
+        self.__weeklySalary = weeklySalary
 
     # Calcula os ganhos do funcionario #
     def earnings(self):
         hj = date.today()
-        pai = super(SalariedEmployee, self)
+        pai = super(type(self), self)
         if hj.month == pai.getPrivateBirthDate().month:
             return self.getWeeklySalary() + 150
         return self.getWeeklySalary()
 
     # Representação textual dos objetos #
     def __str__(self):
-        pai = super(SalariedEmployee, self)
+        pai = super(type(self), self)
         return '''salaried employee: {0}
-                  weekly salary: {1}'''.format(str(pai), 
+                  weekly salary: {1}'''.format(pai.__str__(), 
                                                self.getWeeklySalary())
 
     def __repr__(self):
