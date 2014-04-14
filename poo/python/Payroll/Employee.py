@@ -52,7 +52,7 @@ class Employee(object):
 
     # Representação textual do objeto #
     def __str__(self):
-        return '%s %s\nSocial Security Number: %s\nDepartment Code: %s'.format(
+        return '{0} {1}\nSocial Security Number: {2}\nDepartment Code: {3}'.format(
                 self.getFirstName(), self.getLastName(),
                 self.getSocialSecurityNumber(), self.getDepartmentCode())
 
