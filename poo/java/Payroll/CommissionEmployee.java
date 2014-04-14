@@ -2,75 +2,52 @@ import java.util.Date;
 
 
 public class CommissionEmployee extends Employee{
+    
+    /* Atributos */
+    private double grossSales;
+    private double commissionRate;
 
-    private double grossSales; // vendas brutas semanais       
-    private double commissionRate; // porcentagem da comissão
-
-    // construtor de cinco argumentos
+    /* Construtor */
     public CommissionEmployee(String first, String last, String ssn,
                               Date birthDate, int departmentCode,
                               double sales, double rate){
-       super(first, last, ssn, birthDate, departmentCode);
-       setGrossSales( sales );
-       setCommissionRate( rate );
-    } // fim do construtor CommissionEmployee de cinco argumentos              
+        super(first, last, ssn, birthDate, departmentCode);
+        this.setGrossSales(sales);
+        this.setCommissionRate(rate);
+    }
 
-    // configura a taxa de comissão
-    public void setCommissionRate( double rate )
-    {
-       commissionRate = ( rate > 0.0 && rate < 1.0 ) ? rate : 0.0;
-    } // fim do método setCommissionRate 
+    /* Getters */
+    public double getGrossSales(){
+        return this.grossSales;
+    }
+    public double getCommissionRate(){
+        return this.commissionRate;
+    }
+
+    /* Setters */
+    public void setGrossSales(double sales){
+        this.grossSales = ( sales < 0.0 ) ? 0.0 : sales;
+    }
  
-    // retorna a taxa de comissão 
-    public double getCommissionRate()
-    {
-       return commissionRate;
-    } // fim do método getCommissionRate 
+    public void setCommissionRate(double rate){
+        this.commissionRate = ( rate > 0.0 && rate < 1.0 ) ? rate : 0.0;
+    } 
  
-    // configura a quantidade de vendas brutas
-    public void setGrossSales( double sales )
-    {
-       grossSales = ( sales < 0.0 ) ? 0.0 : sales;
-    } // fim do método setGrossSales 
- 
-    // retorna a quantidade de vendas brutas 
-    public double getGrossSales()
-    {
-       return grossSales;
-    } // fim do método getGrossSales 
- 
-    // calcula os rendimentos; sobrescreve o método earnings em Employee
-    public double earnings()                                            
-    {               
+    /* Calcula os ganhos do funcionario */
+    public double earnings(){
         Date today = new Date();
 
         if(today.getMonth() == super.getPrivateBirthDate().getMonth())
             return (this.getCommissionRate()*this.getGrossSales()) + 150;
         return getCommissionRate() * getGrossSales();                    
-    } // fim do método earnings              
+    }              
  
-    // retorna a representação String do objeto CommissionEmployee     
+    /* Metodo invocado quando tentamos imprimir objetos desta classe */
     public String toString()                                    
     {                                                           
        return String.format( "%s: %s\n%s: $%,.2f; %s: %.2f",    
           "commission employee", super.toString(),              
           "gross sales", getGrossSales(),                       
           "commission rate", getCommissionRate() );             
-    } // fim do método toString
- } // fim da classe CommissionEmployee 
- 
- 
- /**************************************************************************
-  * (C) Copyright 1992-2005 by Deitel & Associates, Inc. and               *
-  * Pearson Education, Inc. All Rights Reserved.                           *
-  *                                                                        *
-  * DISCLAIMER: The authors and publisher of this book have used their     *
-  * best efforts in preparing the book. These efforts include the          *
-  * development, research, and testing of the theories and programs        *
-  * to determine their effectiveness. The authors and publisher make       *
-  * no warranty of any kind, expressed or implied, with regard to these    *
-  * programs or to the documentation contained in these books. The authors *
-  * and publisher shall not be liable in any event for incidental or       *
-  * consequential damages in connection with, or arising out of, the       *
-  * furnishing, performance, or use of these programs.                     *
-  *************************************************************************/
+    }
+ }
