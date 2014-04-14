@@ -37,7 +37,7 @@ if __name__ == '__main__':
     print('earned: R${0:=2}'.format(horista.earnings()))
 
     print(comissionado)
-    print('earned R${0:=2}'.format(comissionado.earnings()))
+    print('earned: R${0:=2}'.format(comissionado.earnings()))
 
     print(comissionado2)
     print('earned: R${0:=2}'.format(comissionado2.earnings()))

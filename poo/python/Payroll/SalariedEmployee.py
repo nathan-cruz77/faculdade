@@ -18,7 +18,7 @@ class SalariedEmployee(Employee):
 
     # Construtor #
     def __init__(self, first, last, ssn, birthDate, departmentCode, salary):
-        super(type(self), self).__init__(first, last, ssn,
+        super(SalariedEmployee, self).__init__(first, last, ssn,
                                                birthDate, departmentCode)
         self.setWeeklySalary(salary)
 
@@ -33,14 +33,14 @@ class SalariedEmployee(Employee):
     # Calcula os ganhos do funcionario #
     def earnings(self):
         hj = date.today()
-        pai = super(type(self), self)
+        pai = super(SalariedEmployee, self)
         if hj.month == pai.getPrivateBirthDate().month:
             return self.getWeeklySalary() + 150
         return self.getWeeklySalary()
 
     # Representação textual dos objetos #
     def __str__(self):
-        pai = super(type(self), self)
+        pai = super(SalariedEmployee, self)
         return '''salaried employee: {0}
                   weekly salary: {1}'''.format(pai.__str__(), 
                                                self.getWeeklySalary())
