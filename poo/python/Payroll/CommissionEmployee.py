@@ -20,7 +20,7 @@ class CommissionEmployee(Employee):
     # Construtor #
     def __init__(self, first, last, ssn, birthDate, departmentCode,
                  sales, rate):
-        pai = super(type(self), self)
+        pai = super(CommissionEmployee, self)
         pai.__init__(first, last, ssn, birthDate, departmentCode)
         self.setGrossSales(sales)
         self.setCommissionRate(rate)
@@ -46,14 +46,14 @@ class CommissionEmployee(Employee):
     # Calcula os ganhos do funcionario #
     def earnings(self):
         hj = date.today()
-        pai = super(type(self), self)
+        pai = super(CommissionEmployee, self)
         if pai.getPrivateBirthDate().month == hj.month:
             return self.getCommissionRate()*self.getGrossSales() + 150
         return self.getCommissionRate() * self.getGrossSales()
 
     # Representacao textual do objeto #
     def __str__(self):
-        pai = super(type(self), self)
+        pai = super(CommissionEmployee, self)
         return '''{0}: {1}
                   {2}: {3}; {4}: {5}'''.format('commission employee',
                                               pai.__str__(), 'gross sales',

@@ -29,14 +29,14 @@ class Employee(object):
     # Getters #
     def getFirstName(self):
         return self.__firstName
-    def getLastname(self):
+    def getLastName(self):
         return self.__lastName
     def getSocialSecurityNumber(self):
         return self.__socialSecurityNumber
     def getPrivateBirthDate(self):
         return self.__privateBirthDate
     def getDepartmentCode(self):
-        return self.__departMentCode
+        return self.__departmentCode
 
     # Setters #
     def setFirstName(self, firstName):
