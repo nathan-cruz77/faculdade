@@ -23,13 +23,13 @@ if __name__ == '__main__':
                              date(1983,12,22), 2, 16.75, 40)
     comissionado = CommissionEmployee('Sue', 'Jones', '333-33-3333',
                                       date(1989,10,12), 3, 10000, 0.06)
-    comissionado2 = BasePlusCommissionEmployee('Bob', 'Lewis', 
+    comissionado2 = BasePlusCommissionEmployee('Bob', 'Lewis',
                                                '444-44-4444',date(86,4,6),
                                                4, 5000, 0.04, 300)
 
     # Calcula o ganho de cada funcionario #
     print('Employees processed individually:\n')
-    
+
     print(assalariado)
     print('earned: R${0:=2}'.format(assalariado.earnings()))
 
@@ -56,7 +56,7 @@ if __name__ == '__main__':
                    increase is: R${0:=2}'.format(i.getBaseSalary()))
 
         print('earned R${0:=2}'.format(i.earnings()))
-    
+
     # Imprime o tipo do objeto no vetor funcionarios #
     for x,a in enumerate(funcionarios):
         print('Employee {0} is a {1}'.format(x, type(a).__name__))
