@@ -5,7 +5,7 @@
  *  R.A.: 86492
  */
 
-public class Car{
+public class Car implements CarbonFootprint{
 
 	/* Atributos */
 	private String modelo;
@@ -28,5 +28,15 @@ public class Car{
 		this.passageiros = 4;
 	}
 
+	/* Implementacao da interface */
+	public double getCarbonFootprint(){
+		return this.cilindrada*0.7 + this.passageiros*0.1;
+	}
+
+	public String toString(){
+		return "\nTipo: Car\nQuantidade de passageiros: " + this.passageiros + "\nCombustivel: " +
+				this.combustivel + "\nModelo: " + this.modelo + "\nCilindradas: "+
+				this.cilindrada + "\nPegada de Carbono: " + this.getCarbonFootprint();
+	}
 
 }
