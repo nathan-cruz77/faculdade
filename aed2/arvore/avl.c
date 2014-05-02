@@ -1,22 +1,31 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/* Definicao do tipo da chave (poderia ser outra coisa) */
 typedef int TChave;
 
+
+/* Definicao do tipo TItem (item de dados de cada no)
+ * neste caso, apenas o tipo chave */
 typedef struct{
 	TChave Chave;
-	/* outros compomentes */
 } TItem;
 
-typedef struct SNo *PArv;
 
+/* Definicao do tipo TNo (guarda o no da arvore) */
 typedef struct SNo{
 	TItem Item;
-	PArv Esq, Dir;
+	PArv Esq;
+    PArv Dir;
 	int fb; // fator de balanceamento: -1, 0, +1
 } TNo;
 
 
+/* Definicao do tipo ponteiro para no */
+typedef struct SNo* PArv;
+
+
+/* Funcao para verificar o fator de balanceamento do no */
 int FB(PArv No){
 	if(No == NULL)
 		return 0;
@@ -24,51 +33,52 @@ int FB(PArv No){
 }
 
 
-/* Left Rotation */
-void LL(PArv pa){
-    Parv aux;
+/* Rotacao esquerda-esquerda */
+void LL(PArv raiz){
+    PArv aux;
 
-    aux = a->Esq;
-    pa->Esq = aux->Dir;
-    aux->Dir = pa;
-    pa = aux;
+    aux = raiz->Esq;
+    raiz->Esq = aux->Dir;
+    aux->Dir = raiz;
+    raiz = aux;
 }
 
 
-/* Right Rotation */
-void RR(PArv pa){
-    Parv aux;
+/* Rotacao direita-direita */
+void RR(PArv raiz){
+    PArv aux;
 
-    aux = pa->Dir;
-    pa->Dir = aux->Esq;
-    aux->Esq = pa;
-    pa = aux;
+    aux = raiz->Dir;
+    raiz->Dir = aux->Esq;
+    aux->Esq = raiz;
 }
 
 
-void LR(PArv pa){
-    Parv aux, aux2;
+/* Rotacao esquerda-direita */
+void LR(PArv raiz){
+    PArv aux, aux2;
 
-    aux = pa->Esq;
+    aux = raiz->Esq;
     aux2 = aux->Dir;
     aux->Dir = aux2->Esq;
     aux2->Esq = aux;
-    pa->Esq = aux2->Dir;
-    aux2->Dir = pa;
-    pa = aux2;
+    raiz->Esq = aux2->Dir;
+    aux2->Dir = raiz;
+    raiz = aux2;
 }
 
 
-void RL(PArv pa){
-    Parv aux, aux2;
+/* Rotacao direita-esquerda */
+void RL(PArv raiz){
+    PArv aux, aux2;
 
-    aux = pa->Dir;
+    aux = raiz->Dir;
     aux2 = aux->Esq;
+    raiz->Dir = aux2->Esq;
+    aux2->Esq = raiz;
     aux->Esq = aux2->Dir;
     aux2->Dir = aux;
-    pa->Dir = aux2->Esq;
-    aux2->Esq = pa;
-    pa = aux2;
+    raiz = aux2;
 }
 
 
@@ -86,25 +96,76 @@ PArv Inicializa(){
 	return NULL;
 }
 
-PArv Pesquisa(PArv No, TChave x){
-	if(No == NULL)
-		return NULL; // retorna NULL caso a chave nao seja encontrada
-	else if(x < No->Item.Chave)
-		return Pesquisa(No->Esq, x);
-	else if(x > No->Item.Chave)
-		return Pesquisa(No->Dir, x);
+/* Funcao para criar um novo no */
+PArv novo(TItem x){
+    PArv novo;
+
+    novo = (PArv) malloc(sizeof (TNo));
+    novo->Esq = NULL;
+    novo->Dir = NULL;
+    novo->Item = x;
+    novo->fb = 0;
+
+    return novo;
+}
+
+/* Funcao para encontrar o pai de um novo */
+PArv PesquisaPai(PArv raiz, PArv escolhido){
+    if(raiz == NULL){
+        return NULL;
+    }
+    else if(raiz->Esq == escolhido || raiz->Dir == escolhido){
+        return raiz;
+    }
+    else if(PesquisaPai(raiz->Dir, escolhido) != NULL){
+        return PesquisaPai(raiz->Dir, escolhido);
+    }
+    return PesquisaPai(raiz->Esq, escolhido);
+}
+
+/* Funcao para encontrar um no */
+PArv Pesquisa(PArv raiz, TChave x){
+	if(raiz == NULL)
+		return NULL;
+	else if(x < raiz->Item.Chave)
+		return Pesquisa(raiz->Esq, x);
+	else if(x > raiz->Item.Chave)
+		return Pesquisa(raiz->Dir, x);
 	else
-		return No;
+		return raiz;
 }
 
+/* Funcao para inserir no */
+int Insere(PArv raiz, TItem x){
+    PArv new;
 
-int Insere(PArv pNo, TItem x){
-	// Implemente o seu metodo aqui!
+    if(raiz == NULL){
+
+        return 1;
+    }
+    else if(x.Chave > raiz->Item.Chave){
+        raiz->fb += Insere(raiz->Dir, x);
+    }
+    else if(x.Chave < raiz->Item->Chave){
+        raiz->fb -= Insere(raiz->Esq, x);
+    }
+
+
 }
 
-
-int Remove(PArv *p, TChave x){
-	// Implemente o seu metodo aqui!
+int Remove(PArv* raiz, TChave x){
+    if(x > (*raiz)->Item.Chave){
+        (*raiz)->fb -= Remove(&(*raiz->Dir), x);
+    }
+    else if(x < (*raiz)->Item.Chave){
+        (*raiz)->fb += Remove(&(*raiz->Esq), x);
+    }
+    else if((*raiz) == NULL){
+        return 0;
+    }
+    else{
+        (*raiz) =
+    }
 }
 
 
