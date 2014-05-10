@@ -1,0 +1,4 @@
+Resposta: Caso a classe ContaPoupanca nao implementasse
+Comparable<ContaPoupanca>, reeberiamos um erro ao invocar o metodo sort().
+Portanto, devemos assinar a interface se quisermos utilizar o metodo sort(),
+nao basta implementarmo o metodo comparteTo().

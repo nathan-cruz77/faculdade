@@ -1,0 +1,17 @@
+Resposta:
+Os tempo obtidos foram os seguintes:
+
+	ArrayList:
+		insercao = 9ms
+		pesquisa = 644ms
+
+	LinkedList:
+		insercao = 4ms
+		pesquisa = 1639ms
+
+	HashSet:
+		insercao = 13ms
+		pesquisa = 6ms
+
+Portanto podemos afirmar que a pesquisa e muito mais custosa em ArrayList e
+LinkedList, mas leva cerca de metade do tempo da insercao na estrutura HashSet.
