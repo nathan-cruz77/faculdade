@@ -1,0 +1,4 @@
+Resposta:
+	a - Atraves da funcao java.util.Collections.reverse().
+	b - Atraves da funcao java.util.Collections.shuffle().
+	c - Atraves da funcao java.util.Collections.rotate().
