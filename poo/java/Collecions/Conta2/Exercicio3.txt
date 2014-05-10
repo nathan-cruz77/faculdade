@@ -1,0 +1,6 @@
+Resposta: Nao eh necessario alterar mais nenhum codigo para que a substituicao
+funcione como se estivessemos utilizando ArrayList. Contudo, caso queiramos
+instanciar uma LinkedList com um tipo especifico, devemos coloca-los da
+sequinte forma: new LinkedList<Tipo>();. Nao eh possivel instanciar uma
+LinkedList como descrito no exercicio (new LinkedList<>()). Embora possamos
+usar new LinkedList() recebendo um warning.
