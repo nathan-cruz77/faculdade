@@ -11,15 +11,15 @@
 /* Define os tipos que usaremos */
 typedef int TChave;
 
-typedef struct{
+typedef struct Item{
     TChave chave;
-    TItem* prox;
+    struct Item* prox;
 } TItem;
 
-typedef struct{
+typedef struct Tabela{
     int indice;
-    TItem* elemento;
-    TTabela* prox;
+    struct Item* elemento;
+    struct Tabela* prox;
 } TTabela;
 
 typedef TItem* PItem;
@@ -53,7 +53,7 @@ PTabela nova_tabela(int indice){
 void insere_tabela(PTabela tabela, TChave chave){
     PTabela aux, aux2, ante;
     PItem item = novo_item(chave);
-    hash_chave = hash(chave);
+    int hash_chave = hash(chave);
 
     /* Se a tabela estiver vazia, criamos a posicao com
      * indice = hash(chave) */
@@ -74,7 +74,7 @@ void insere_tabela(PTabela tabela, TChave chave){
     /* Estamos inserindo no fim da lista */
     if(aux == NULL){
         ante->prox = nova_tabela(hash_chave);
-        ante->prox->elemento = item;
+        (ante->prox)->elemento = item;
         return;
     }
 
