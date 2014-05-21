@@ -50,22 +50,42 @@ PTabela nova_tabela(int indice){
 
 
 /* Funcao para inserir elementos na tabela */
-PTabela insere_tabela(PTabela tabela, TChave chave){
-    PTabela aux, ante;
-    PItem aux2 = novo_item(chave);
+void insere_tabela(PTabela tabela, TChave chave){
+    PTabela aux, aux2, ante;
+    PItem item = novo_item(chave);
+    hash_chave = hash(chave);
 
     /* Se a tabela estiver vazia, criamos a posicao com
      * indice = hash(chave) */
     if(tabela == NULL){
-        aux = nova_tabela(hash(chave));
-        aux->elemento = aux2;
-        return aux;
+        aux = nova_tabela(hash_chave);
+        aux->elemento = item;
+        tabela = aux;
+        return;
     }
 
     /* Se a tabela nao estiver vazia procuramos a posicao a inserir,
      * para mante-la ordenada. Se houver colisao, inserimos na lista
      * de colisoes */
-    for(ante=tabela; ante->indice < hash(chave))
+    for(ante=NULL, aux=tabela;
+        aux->indice < hash_chave && aux != NULL;
+        ante = aux, aux = aux->prox);
 
+    /* Estamos inserindo no fim da lista */
+    if(aux == NULL){
+        ante->prox = nova_tabela(hash_chave);
+        ante->prox->elemento = item;
+        return;
+    }
 
+    /* Estamos inserindo no começo da lista */
+    if(aux == tabela){
+        aux = nova_tabela(hash_chave);
+        aux->prox = tabela;
+        aux->elemento = item;
+        tabela = aux;
+        return;
+    }
+
+    /* Estamos inserindo no meio da tabela */
 }
