@@ -1,0 +1,30 @@
+ - Numero da Conta: 0
+ - Nome do Cliente: Nathan
+ - Saldo: R$8.9
+ - Tipo de Conta: Conta Corrente
+
+ - Numero da Conta: 2
+ - Nome do Cliente: Eduardo
+ - Saldo: R$9.0
+ - Tipo de Conta: Poupanca
+
+ - Numero da Conta: 3
+ - Nome do Cliente: Alexandre
+ - Saldo: R$9.0
+ - Tipo de Conta: Poupanca
+
+ - Numero da Conta: 2
+ - Nome do Cliente: Felipe
+ - Saldo: R$9.0
+ - Tipo de Conta: CDB
+
+ - Numero da Conta: 3
+ - Nome do Cliente: Matheus
+ - Saldo: R$9.0
+ - Tipo de Conta: CDB
+
+ - Numero da Conta: 1
+ - Nome do Cliente: Mariane
+ - Saldo: R$8.9
+ - Tipo de Conta: Conta Corrente
+
