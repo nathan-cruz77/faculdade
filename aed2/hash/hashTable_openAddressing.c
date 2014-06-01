@@ -59,9 +59,15 @@ int Insere(THash *T, TItem x)
     int i;
     TIndice aux = H(T, x.Chave, 0);
 
-    for(i=1; i<(T->m) && T->Item[aux].Chave != NIL; i++){
+    for(i=1;
+		i<(T->m) && (T->Item[aux].Chave != NIL &&
+					 T->Item[aux].Chave != x.Chave);
+	   	i++){
         aux = H(T, x.Chave, i);
     }
+
+	if(T->Item[aux].Chave == x.Chave)
+		return 0;
 
     if(T->Item[aux].Chave == NIL){
         T->Item[aux] = x;
@@ -107,6 +113,7 @@ void Imprime(THash *T)
 
 int main()
 {
+    /* int i, j; */
 	TIndice m;
 	THash *T;
 	TItem x;
@@ -118,6 +125,13 @@ int main()
 	if (Pesquisa(T, x.Chave) == NIL)
 		Insere(T, x);
 	Imprime(T);
+
+	/* Utilizado para debugar o programa
+    for(i=0; i<3; i++){
+        scanf("%d", &j);
+        printf("%d encontrado em T->Lista[%d]\n", j, Pesquisa(T, j));
+    }*/
+
 	Libera(&T);
 
 	return 0;
