@@ -137,6 +137,7 @@ void threader(TItem* A, int n){
 
     /* Variaveis auxiliares */
     int i, j, p, r;
+    int contador;
     void* params;
     TArgs *args1, *args2;
 
@@ -153,10 +154,11 @@ void threader(TItem* A, int n){
     /* Caso possamos usar uma thread a cada 20 elementos */
     if(n <= 160){
         printf("Detected small vector, using up to 8 threads and simple ordering method\n");
+
         j = 0; p = 0; r = 0;
         for(i=0; i<n; i++){
-            if(i%20 == 0){
-                r = i;
+            if(i%20 == 0 && i != 0){
+                r = i-1;
                 /* Determina o que sera passado para a thread */
                 argumentos->p = p;
                 argumentos->r = r;
@@ -172,50 +174,29 @@ void threader(TItem* A, int n){
         /* Esperamos de duas em duas as threads terminarem para concatenar
          * os resultados */
         printf("Waiting for threads to terminate...\n");
-        for(i=0, j=0; i<8; i+=2){
-            pthread_join(threads[i], &params);
-            args1 = (TArgs*) params;
-            pthread_join(threads[i+1], &params);
-            args2 = (TArgs*) params;
 
-            /* Argumentos a serem passados para o concatenador */
-            argumentos->p = args1->p;
-            argumentos->r = args2->r;
+        for(contador=8; contador > 0; contador/=2){
+            for(i=0, j=0; i<contador; i+=2){
+                pthread_join(threads[i], &params);
+                args1 = (TArgs*) params;
+                pthread_join(threads[i+1], &params);
+                args2 = (TArgs*) params;
 
-            /* Cria uma nova thread para concatenar */
-            pthread_create(&threads[j], NULL, &mergeSort_ordena,
-                           (void*) argumentos);
-            j++;
+                /* Argumentos a serem passados para o concatenador */
+                argumentos->p = args1->p;
+                argumentos->r = args2->r;
+
+                /* Verifica se estamos ordenando os elementos certos */
+                printf("Concatenando A[%d]-A[%d]\n", argumentos->p,
+                       argumentos->r);
+
+                /* Cria uma nova thread para concatenar */
+                //printf("Utilizando thread[%d]\n", j);
+                pthread_create(&threads[j], NULL, &mergeSort_intercala,
+                               (void*) argumentos);
+                j++;
+            }
         }
-
-        /* Esperamos os resultados das concatenacoes anteriores
-         *  para continuar */
-        for(i=0, j=0; i<4; i+=2){
-            pthread_join(threads[i], &params);
-            args1 = (TArgs*) params;
-            pthread_join(threads[i+1], &params);
-            args2 = (TArgs*) params;
-
-            /* Argumentos a serem passados para o nivel acima da arvore */
-            argumentos->p = args1->p;
-            argumentos->r = args2->r;
-
-            /* Cria uma nova thread para concatenar */
-            pthread_create(&threads[j], NULL, &mergeSort_ordena,
-                           (void*) argumentos);
-            j++;
-        }
-
-        /* Esperamos os resultados do laco anterior para fazer a ultima
-         * concatenacao de resultados */
-        pthread_join(threads[i], &params);
-        args1 = (TArgs*) params;
-        pthread_join(threads[i+1], &params);
-        args2 = (TArgs*) params;
-
-        /* Argumentos a serem passados para a raiz da arvore */
-        argumentos->p = 0;
-        argumentos->r = n-1;
     }
 }
 
