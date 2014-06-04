@@ -7,12 +7,18 @@
 
 public class ConversaoDeUnidadesDeArea{
 
+	/* Square meter to something else (also square) */
 	public static double MeterToFeet(double m){
 		return m*10.76;
 	}
 	public static double MeterToCentimeter(double m){
-		return m*10.76*10.76;
+		return m*10000;
 	}
+	public static double MeterToAcre(double m){
+		return m*0.00024711;
+	}
+
+	/* Funcoes que o professor pediu para implementar */
 	public static double FeetToCentimeter(double f){
 		return f*929;
 	}
