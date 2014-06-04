@@ -6,11 +6,16 @@
  */
 
 public class ConversaoDeUnidadesDeAreaApp{
-	public static void main(String args[]){
-		int campo = 8250;
+    public static void main(String args[]){
+        double campo = 8250;
 
-		System.out.println("Campo de futebol em pes quadrados: " + ConversaoDeUnidadesDeArea.MeetToFeet(campo));
-		System.out.println("Campo de futebol em pes quadrados: " + ConversaoDeUnidadesDeArea.MeetToFeetoFeet(campo));
-		System.out.println("Campo de futebol em pes quadrados: " + ConversaoDeUnidadesDeArea.MeetToFeet(campo));
-	}
+        System.out.println("Campo de futebol em pes quadrados: " +
+                           ConversaoDeUnidadesDeArea.MeterToFeet(campo));
+
+        System.out.println("Campo de futebol em centimetros quadrados: " +
+                           ConversaoDeUnidadesDeArea.MeterToCentimeter(campo));
+
+        System.out.println("Campo de futebol em acres: " +
+                           ConversaoDeUnidadesDeArea.MeterToAcre(campo));
+    }
 }
