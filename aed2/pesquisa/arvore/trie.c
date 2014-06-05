@@ -42,7 +42,7 @@ TArvBin PesquisaRecursiva(TArvBin raiz, TChave x, int digito){
         return NULL;
 
     /* Se for externo */
-    if(EhExterno(raiz)){
+    else if(EhExterno(raiz)){
         if(raiz->Item.Chave == x)
             return raiz;
         else
@@ -50,7 +50,7 @@ TArvBin PesquisaRecursiva(TArvBin raiz, TChave x, int digito){
     }
 
     /* Se for interno */
-    if(EhInterno(raiz)){
+    else{
         if(retornaDigito(x, digito) == 0)
             return PesquisaRecursiva(raiz->Esq, x, digito+1);
         else
@@ -85,8 +85,12 @@ int Igual(TItem a, TItem b, int digito){
 void InsereRecursivo(TArvBin* raiz, TItem x, int digito){
     TArvBin aux, aux2;
 
+    /* Se for vazio */
+    if(*raiz == NULL)
+        *raiz = Empacotador2(x);
+
     /* Se for interno */
-    if(EhInterno(*raiz)){
+    else if(EhInterno(*raiz)){
         if(retornaDigito(x.Chave, digito) == 0)
             InsereRecursivo(&(*raiz)->Esq, x, digito+1);
         else
@@ -97,6 +101,7 @@ void InsereRecursivo(TArvBin* raiz, TItem x, int digito){
 
         aux2=NULL;
         aux=(*raiz);
+
         while(Igual(aux->Item, x, digito)){
             *raiz = Empacotador();
             aux2 = *raiz;
@@ -107,6 +112,9 @@ void InsereRecursivo(TArvBin* raiz, TItem x, int digito){
             digito++;
         }
 
+        if(aux2 == NULL)
+            aux2 = Empacotador();
+
         if(retornaDigito(aux->Item.Chave, digito) == 0){
             aux2->Esq = aux;
             aux2->Dir = Empacotador2(x);
@@ -115,6 +123,7 @@ void InsereRecursivo(TArvBin* raiz, TItem x, int digito){
             aux2->Dir = aux;
             aux2->Esq = Empacotador2(x);
         }
+
     }
 }
 
