@@ -60,8 +60,7 @@ int Insere(THash *T, TItem x)
     TIndice aux = H(T, x.Chave, 0);
 
     for(i=1;
-		i<(T->m) && (T->Item[aux].Chave != NIL &&
-					 T->Item[aux].Chave != x.Chave);
+		i<(T->m) && (T->Item[aux].Chave != NIL && T->Item[aux].Chave != x.Chave);
 	   	i++){
         aux = H(T, x.Chave, i);
     }

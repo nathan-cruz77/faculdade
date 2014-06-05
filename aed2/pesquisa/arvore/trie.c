@@ -68,40 +68,66 @@ TArvBin Empacotador(){
     pacote->Esq = NULL;
 }
 
+TArvBin Empacotador2(TItem item){
+    TArvBin pacote = (TArvBin) malloc(sizeof(TNo));
+    pacote->Item = item;
+    pacote->Dir = NULL;
+    pacote->Esq = NULL;
+}
+
+
 int Igual(TItem a, TItem b, int digito){
     if(retornaDigito(a.Chave, digito) == retornaDigito(b.Chave, digito))
         return 1;
     return 0;
 }
 
-void InsereRecursivo(TArvBin raiz, TItem x, int digito){
-    int i, j;
+void InsereRecursivo(TArvBin* raiz, TItem x, int digito){
+    TArvBin aux, aux2;
 
     /* Se for interno */
-    if(EhInterno(raiz)){
+    if(EhInterno(*raiz)){
         if(retornaDigito(x.Chave, digito) == 0)
-            InsereRecursivo(raiz->Esq, x, digito+1);
+            InsereRecursivo(&(*raiz)->Esq, x, digito+1);
         else
-            InsereRecursivo(raiz->Dir, x, digito+1);
+            InsereRecursivo(&(*raiz)->Dir, x, digito+1);
     }
-    /* Se for externo
-    else if(EhExterno(raiz))
-    }*/
+    /* Se for externo */
+    else if(EhExterno(*raiz) && (*raiz)->Item.Chave != x.Chave){
+
+        aux2=NULL;
+        aux=(*raiz);
+        while(Igual(aux->Item, x, digito)){
+            *raiz = Empacotador();
+            aux2 = *raiz;
+            if(retornaDigito(aux->Item.Chave, digito) == 0)
+                raiz = &(*raiz)->Esq;
+            else
+                raiz = &(*raiz)->Dir;
+            digito++;
+        }
+
+        if(retornaDigito(aux->Item.Chave, digito) == 0){
+            aux2->Esq = aux;
+            aux2->Dir = Empacotador2(x);
+        }
+        else{
+            aux2->Dir = aux;
+            aux2->Esq = Empacotador2(x);
+        }
+    }
 }
 
-int Insere(TArvBin *pRaiz, TItem x){
+int Insere(TArvBin* pRaiz, TItem x){
 
     /* Se a arvore for vazia */
     if(*pRaiz == NULL){
-        *pRaiz = Empacotador();
-        (*pRaiz)->Item = x;
+        *pRaiz = Empacotador2(x);
         return 1;
     }
 
-    if(Pesquisa(*pRaiz, x.Chave) != NULL)
-        return 0;
-
-    InsereRecursivo(*pRaiz, x, 0);
+    InsereRecursivo(pRaiz, x, 0);
+    return 1;
 }
 
 void Carrega(TArvBin *pNo){
