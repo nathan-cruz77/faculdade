@@ -64,15 +64,21 @@ TArvBin Pesquisa(TArvBin Raiz, TChave x){
 
 TArvBin Empacotador(){
     TArvBin pacote = (TArvBin) malloc(sizeof(TNo));
+
     pacote->Dir = NULL;
     pacote->Esq = NULL;
+
+    return pacote;
 }
 
 TArvBin Empacotador2(TItem item){
     TArvBin pacote = (TArvBin) malloc(sizeof(TNo));
+
     pacote->Item = item;
     pacote->Dir = NULL;
     pacote->Esq = NULL;
+
+    return pacote;
 }
 
 
@@ -112,16 +118,20 @@ void InsereRecursivo(TArvBin* raiz, TItem x, int digito){
             digito++;
         }
 
-        if(aux2 == NULL)
+        if(aux2 == NULL){
             aux2 = Empacotador();
+            *raiz = aux2;
+        }
 
         if(retornaDigito(aux->Item.Chave, digito) == 0){
             aux2->Esq = aux;
             aux2->Dir = Empacotador2(x);
+            *raiz = aux2;
         }
-        else{
+        else if(retornaDigito(aux->Item.Chave, digito) == 1){
             aux2->Dir = aux;
             aux2->Esq = Empacotador2(x);
+            *raiz = aux2;
         }
 
     }
