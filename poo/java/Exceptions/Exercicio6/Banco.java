@@ -21,20 +21,20 @@ public class Banco{
     /* Registra nova conta */
     public void Registra(Conta conta) throws ExcecaoElementoJaExistente{
         if(this.contas.add(conta)){
-			this.dinheiro += conta.getSaldo();
-		}
-		else{
-			throw new ExcecaoElementoJaExistente("Conta ja cadastrada");
-		}
+            this.dinheiro += conta.getSaldo();
+        }
+        else{
+            throw new ExcecaoElementoJaExistente("Conta ja cadastrada");
+        }
     }
 
     /* Imprime o total do banco */
     public void Imprime(){
 
-		/* Atualiza o valor de this.dinheiro antes de imprimir */
-		for(Conta conta: this.contas){
-			this.dinheiro += conta.getSaldo();
-		}
+        /* Atualiza o valor de this.dinheiro antes de imprimir */
+        for(Conta conta: this.contas){
+            this.dinheiro += conta.getSaldo();
+        }
         System.out.println("Saldo do banco: " + this.dinheiro);
     }
 
@@ -50,23 +50,23 @@ public class Banco{
         }
 
         for(i=0;i<5;i++){
-			try{
-				banco.Registra(cc[2]);
-				banco.Registra(cp[i]);
-			}
-			catch(ExcecaoElementoJaExistente e){
-				System.out.println(e.getMessage());
-			}
+            try{
+                banco.Registra(cc[2]);
+                banco.Registra(cp[i]);
+            }
+            catch(ExcecaoElementoJaExistente e){
+                System.out.println(e.getMessage());
+            }
         }
 
         for(Conta conta: banco.contas){
-			try{
-            	conta.credita(12);
-    	        conta.debita(13);
-			}
-			catch(ValorInvalidoException e){
-				System.out.println(e.getMessage());
-			}
+            try{
+                conta.credita(12);
+                conta.debita(13);
+            }
+            catch(ValorInvalidoException e){
+                System.out.println(e.getMessage());
+            }
         }
 
         banco.Imprime();

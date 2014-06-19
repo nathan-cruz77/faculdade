@@ -54,9 +54,9 @@ public class Banco{
 
     /* Salva contas num arquivo */
     public void Salva(PrintWriter pw){
-		for(Conta conta: this.contas.values()){
-			pw.println(conta.toString() + "\n");
-		}
+        for(Conta conta: this.contas.values()){
+            pw.println(conta.toString() + "\n");
+        }
     }
 
     public static void main(String args[]){
@@ -65,8 +65,8 @@ public class Banco{
         ContaPoupanca[] cp = new ContaPoupanca[2];
         CDB[] cdb = new CDB[2];
         int i, j;
-		PrintWriter pw;
-		String[] nomes = {"Nathan", "Mariane", "Eduardo", "Alexandre", "Felipe", "Matheus"};
+        PrintWriter pw;
+        String[] nomes = {"Nathan", "Mariane", "Eduardo", "Alexandre", "Felipe", "Matheus"};
 
         /* Inicializa as contas */
         cc[0] = new ContaCorrente(0, nomes[0]);
@@ -102,16 +102,16 @@ public class Banco{
             banco.buscaPorNome(nomes[i]).imprime();
         }
 
-		/* Imprime contas para arquivo
-		try{
-			pw = new PrintWriter(new FileWriter("Teste.txt"));
-			banco.Salva(pw);
-			pw.close();
-		}
-		catch(IOException e){
-			System.out.println(e.getMessage());
-		}
-		*/
+        /* Imprime contas para arquivo
+        try{
+            pw = new PrintWriter(new FileWriter("Teste.txt"));
+            banco.Salva(pw);
+            pw.close();
+        }
+        catch(IOException e){
+            System.out.println(e.getMessage());
+        }
+        */
 
     }
 }
