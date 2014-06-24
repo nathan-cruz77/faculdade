@@ -8,21 +8,24 @@ typedef struct {
     TChave Chave;
 } TItem;
 
-int Carrega(TItem **A)
-{
-    int i, n;
+typedef TItem* PItem;
 
-    scanf("%d", &n);
+PItem Gerador(int n){
+    PItem A;
+    int i;
 
-    if (n > 0) {
-        (*A) = (TItem *) malloc(n * sizeof(TItem));
+    if(n > 0){
+        A = (PItem) malloc(n * sizeof(TItem));
+
+        srand(time(NULL));
         for (i = 0; i < n ; i++)
-            scanf("%d", &(*A)[i].Chave);
+            A[i].Chave = rand() % 1000 +1;
+
+        return A;
     }
     else
-        (*A) = NULL;
+        return NULL;
 
-    return n;
 }
 
 void insertionSort(TItem *A, int p, int r) {
@@ -116,13 +119,19 @@ int main(){
     double tempo_usado;
     clock_t tempo;
 
+    printf("Entre com o tamanho do vetor: ");
+    scanf("%d", &n);
+
     tempo = clock();
-    n = Carrega(&A);
+    A = Gerador(n);
     tempo = clock() - tempo;
     tempo_usado = (double) tempo/CLOCKS_PER_SEC;
     printf("\nTempo de preenchimento do vetor: %.14lfs\n", tempo_usado);
 
-
+    if(A == NULL){
+        printf("Tamanho negativon\n");
+        return 0;
+    }
 
     tempo = clock();
     mergeSort(A, n);
