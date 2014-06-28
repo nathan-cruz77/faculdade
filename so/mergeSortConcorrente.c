@@ -20,6 +20,7 @@ typedef struct {
 
 typedef TDados* PDados;
 
+PItem B, C;
 
 PItem Gerador(int n){
     PItem A;
@@ -76,13 +77,35 @@ void Imprime(TItem *A, int n){
     }
 }
 
-
-void mergeSort_intercala(TItem *A, int p, int q, int r){
+void mergeSort_intercala_C(TItem *A, int p, int q, int r){
     int i, j, k;
-    TItem *B;
 
     if(A[q].Chave > A[q+1].Chave && q < r){
-        B=(TItem *)malloc(sizeof(TItem)* r - p + 1);
+        for(i = p; i<=q; i++)
+            C[i-p] = A[i];
+
+        for(j = q + 1; j <= r; j++)
+            C[r+q+1-j-p] = A[j];
+
+        i=p;
+        j=r;
+
+        for(k=p; k<=r; k++)
+            if(C[i-p].Chave <= C[j-p].Chave){
+                A[k] = C[i-p];
+                i++;
+            }
+            else{
+                A[k] = C[j-p];
+                j--;
+            }
+    }
+}
+
+void mergeSort_intercala_B(TItem *A, int p, int q, int r){
+    int i, j, k;
+
+    if(A[q].Chave > A[q+1].Chave && q < r){
         for(i = p; i<=q; i++)
             B[i-p] = A[i];
 
@@ -101,23 +124,10 @@ void mergeSort_intercala(TItem *A, int p, int q, int r){
                 A[k] = B[j-p];
                 j--;
             }
-        free(B);
     }
 }
 
-void merge(PItem A, int inicio, int fim){
-    int q;
-
-    if(fim > inicio){
-        q = (fim + inicio)/2;
-
-        merge(A, inicio, q);
-        merge(A, q+1, fim);
-        mergeSort_intercala(A, inicio, q, fim);
-    }
-}
-
-void* mergeSort_ordena(void* args){
+void* mergeSort_ordena_C(void* args){
     PDados aux, aux1, aux2;
     PItem A;
     int p, q, r;
@@ -129,43 +139,81 @@ void* mergeSort_ordena(void* args){
     A = aux->A;
 
     q = (r + p)/2;
-    //printf("Ordenando: A[%d] - A[%d]\n", aux->inicio, aux->fim);
-    //if((r - p) <= 20)
-        //insertionSort(aux->A, aux->inicio, aux->fim);
 
-    //if(aux->fim > aux->inicio){
-    //else{
-        //aux1 = (PDados) malloc(sizeof(TDados));
-        //aux2 = (PDados) malloc(sizeof(TDados));
+    /* Se o vetor tiver menos de 20 elementos aplica insertionSort */
+    if((r - p) <= 20)
+        insertionSort(aux->A, aux->inicio, aux->fim);
 
-        //aux1->A = aux->A;
-        //aux2->A = aux->A;
+    else{
+        aux1 = (PDados) malloc(sizeof(TDados));
+        aux2 = (PDados) malloc(sizeof(TDados));
 
-        //aux1->inicio = p;
-        //aux1->fim = (r + p)/2;
+        aux1->A = aux->A;
+        aux2->A = aux->A;
 
-        //aux2->inicio = (r + p)/2 + 1;
-        //aux2->fim = r;
+        aux1->inicio = p;
+        aux1->fim = q;
+
+        aux2->inicio = q + 1;
+        aux2->fim = r;
 
         /* Primeira metade */
-        //mergeSort_ordena((void*) aux1);
-        merge(A, p, q);
+        mergeSort_ordena_C((void*) aux1);
 
         /* Segunda metade */
-        //mergeSort_ordena((void*) aux2);
-        merge(A, q+1, r);
-
+        mergeSort_ordena_C((void*) aux2);
 
         /* Concatena os resultados */
-        mergeSort_intercala(A, p, q, r);
+        mergeSort_intercala_C(A, p, q, r);
 
         free(aux1);
         free(aux2);
-        pthread_exit(NULL);
-    //}
-    //}
+    }
 }
 
+void* mergeSort_ordena_B(void* args){
+    PDados aux, aux1, aux2;
+    PItem A;
+    int p, q, r;
+
+    aux = (PDados) args;
+
+    p = aux->inicio;
+    r = aux->fim;
+    A = aux->A;
+
+    q = (r + p)/2;
+
+    /* Se o vetor tiver menos de 20 elementos aplica insertionSort */
+    if((r - p) <= 20)
+        insertionSort(aux->A, aux->inicio, aux->fim);
+
+    else{
+        aux1 = (PDados) malloc(sizeof(TDados));
+        aux2 = (PDados) malloc(sizeof(TDados));
+
+        aux1->A = aux->A;
+        aux2->A = aux->A;
+
+        aux1->inicio = p;
+        aux1->fim = q;
+
+        aux2->inicio = q + 1;
+        aux2->fim = r;
+
+        /* Primeira metade */
+        mergeSort_ordena_B((void*) aux1);
+
+        /* Segunda metade */
+        mergeSort_ordena_B((void*) aux2);
+
+        /* Concatena os resultados */
+        mergeSort_intercala_B(A, p, q, r);
+
+        free(aux1);
+        free(aux2);
+    }
+}
 
 void mergeSort(PItem A, int n){
     PDados aux = (PDados) malloc(sizeof(TDados));
@@ -173,28 +221,21 @@ void mergeSort(PItem A, int n){
     aux->inicio = 0;
     aux->fim = n-1;
     aux->A = A;
-    mergeSort_ordena((void*) aux);
+    mergeSort_ordena_B((void*) aux);
     free(aux);
 }
 
 void threader(PItem A, int n){
     PDados aux1, aux2;
     pthread_t t1;
-    clock_t tempo;
-    double tempo_usado;
 
-    /* Se o vetor for pequeno use apenas uma thread
-     * tirei esta parte para este codigo ficar mais
-     * parecido com o codigo usando fork() e dar mais
-     * credibilidade ao benchmark */
-    //if(n <= 20){
-        //printf("Usando ateh 1 thread\n");
-        //mergeSort(A, n);
-        //return;
-    //}
+    if(n <= 20){
+        mergeSort(A, n);
+        return;
+    }
 
     /* Se for grande separe em duas threads */
-    //else{
+    else{
         aux1 = (PDados) malloc(sizeof(TDados));
         aux2 = (PDados) malloc(sizeof(TDados));
 
@@ -208,28 +249,23 @@ void threader(PItem A, int n){
         aux2->fim = n-1;
 
         /* Abre as threads, 1 para cada metade do vetor*/
+
         /* Primeira metade */
-        tempo = clock();
-        pthread_create(&t1, NULL, mergeSort_ordena, (void*) aux1);
-        tempo = clock() - tempo;
-        tempo_usado = (double) tempo/CLOCKS_PER_SEC;
-        printf("Tempo gasto na primeira metade: %.14lf\n", tempo_usado);
+        pthread_create(&t1, NULL, mergeSort_ordena_B, (void*) aux1);
 
         /* Segunda metade */
-        mergeSort_ordena((void*) aux2);
+        mergeSort_ordena_C((void*) aux2);
 
         /* Aguarda as threads finalizarem */
         pthread_join(t1, NULL);
 
         /* Fazemos a intercalacao das metades ordenadas */
-        mergeSort_intercala(A, 0, n/2, n-1);
+        mergeSort_intercala_B(A, 0, n/2, n-1);
 
 
         free(aux1);
         free(aux2);
-    //}
-
-
+    }
 }
 
 int main(){
@@ -237,10 +273,14 @@ int main(){
     int n;
     double tempo_usado;
     clock_t tempo;
-
-
+/*
     printf("Entre com o tamanho do vetor: ");
     scanf("%d", &n);
+*/
+    n=10000000;
+    /* Aloca os dois vetores que serao usados para intercalar */
+    B = (PItem) malloc(sizeof(TItem) * n/2);
+    C = (PItem) malloc(sizeof(TItem) * n/2);
 
     tempo = clock();
     A = Gerador(n);
@@ -261,6 +301,8 @@ int main(){
 
     //Imprime(A, n);
     Libera(&A);
+    Libera(&B);
+    Libera(&C);
 
     return 0;
 }
