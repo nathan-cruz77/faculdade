@@ -20,6 +20,7 @@ typedef struct {
 
 typedef TDados* PDados;
 
+/* Vetores auxiliares */
 PItem B, C;
 
 PItem Gerador(int n){
@@ -30,14 +31,14 @@ PItem Gerador(int n){
         A = (PItem) malloc(n * sizeof(TItem));
 
         srand(time(NULL));
-        for (i = 0; i < n ; i++)
-            A[i].Chave = rand() % 1000 +1;
+        for (i = 0; i < n ; i++){
+            A[i].Chave = rand() % n+1;
+        }
 
         return A;
     }
     else
         return NULL;
-
 }
 
 
@@ -231,7 +232,6 @@ void threader(PItem A, int n){
 
     if(n <= 20){
         mergeSort(A, n);
-        return;
     }
 
     /* Se for grande separe em duas threads */
@@ -248,15 +248,13 @@ void threader(PItem A, int n){
         aux2->inicio = n/2+1;
         aux2->fim = n-1;
 
-        /* Abre as threads, 1 para cada metade do vetor*/
-
         /* Primeira metade */
         pthread_create(&t1, NULL, mergeSort_ordena_B, (void*) aux1);
 
         /* Segunda metade */
         mergeSort_ordena_C((void*) aux2);
 
-        /* Aguarda as threads finalizarem */
+        /* Aguarda a primeira metade finalizar */
         pthread_join(t1, NULL);
 
         /* Fazemos a intercalacao das metades ordenadas */
@@ -271,35 +269,30 @@ void threader(PItem A, int n){
 int main(){
     PItem A;
     int n;
-    double tempo_usado;
-    clock_t tempo;
 /*
     printf("Entre com o tamanho do vetor: ");
     scanf("%d", &n);
 */
-    n=10000000;
+
+    n=100000000;
+    printf("Tamanho: %d\n", n);
+
     /* Aloca os dois vetores que serao usados para intercalar */
-    B = (PItem) malloc(sizeof(TItem) * n/2);
+    B = (PItem) malloc(sizeof(TItem) * n);
     C = (PItem) malloc(sizeof(TItem) * n/2);
 
-    tempo = clock();
+    /* Gera o vetor todo */
     A = Gerador(n);
-    tempo = clock() - tempo;
-    tempo_usado = (double) tempo/CLOCKS_PER_SEC;
-    printf("\nTempo de preenchimento do vetor: %.14lfs\n", tempo_usado);
 
     if(A == NULL){
-        printf("Tamanho negativo\n");
+        printf("Tamanho negativo. Abortando\n");
         return 0;
     }
 
-    tempo = clock();
+    /* Ordena o vetor */
     threader(A, n);
-    tempo = clock() - tempo;
-    tempo_usado = (double) tempo/CLOCKS_PER_SEC;
-    printf("\nTempo de ordenacao: %.14lfs\n", tempo_usado);
 
-    //Imprime(A, n);
+    /* Desaloca os vetores */
     Libera(&A);
     Libera(&B);
     Libera(&C);

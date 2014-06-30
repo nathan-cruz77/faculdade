@@ -18,8 +18,9 @@ PItem Gerador(int n){
         A = (PItem) malloc(n * sizeof(TItem));
 
         srand(time(NULL));
-        for (i = 0; i < n ; i++)
-            A[i].Chave = rand() % 1000 +1;
+        for (i = 0; i < n ; i++){
+            A[i].Chave = rand();
+        }
 
         return A;
     }
@@ -116,30 +117,26 @@ void mergeSort(TItem *A, int n){
 int main(){
     TItem *A;
     int n;
-    double tempo_usado;
-    clock_t tempo;
 
+/*
     printf("Entre com o tamanho do vetor: ");
     scanf("%d", &n);
+*/
+    n = 100000000;
+	printf("Tamanho: %d\n", n);
 
-    tempo = clock();
     A = Gerador(n);
-    tempo = clock() - tempo;
-    tempo_usado = (double) tempo/CLOCKS_PER_SEC;
-    printf("\nTempo de preenchimento do vetor: %.14lfs\n", tempo_usado);
 
     if(A == NULL){
         printf("Tamanho negativon\n");
         return 0;
     }
 
-    tempo = clock();
     mergeSort(A, n);
-    tempo = clock() - tempo;
-    tempo_usado = (double) tempo/CLOCKS_PER_SEC;
 
     //Imprime(A, n);
-    printf("\nTempo de ordenacao: %.14lfs\n", tempo_usado);
+
+    /* Desaloca */
     Libera(&A);
 
     return 0;
