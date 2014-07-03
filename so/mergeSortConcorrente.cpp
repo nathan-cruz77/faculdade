@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <iostream>
 #include <stdlib.h>
 #include <time.h>
 #include <pthread.h>
@@ -58,23 +58,23 @@ void insertionSort(TItem *A, int p, int r) {
 }
 
 
-void Libera(TItem **A)
+void Libera(PItem &A)
 {
-    if ((*A) != NULL) {
-        free(*A);
-        (*A) = NULL;
+    if ((A) != NULL) {
+        free(A);
+        (A) = NULL;
     }
 }
 
 
-void Imprime(TItem *A, int n){
+void Imprime(PItem A, int n){
     int i;
 
     if (n > 0) {
-        printf("\n");
+        std::cout << "\n";
         for (i = 0; i < n; i++)
-            printf("%d ", A[i].Chave);
-        printf("\n");
+            std::cout << A[i].Chave << " ";
+        std::cout << "\n";
     }
 }
 
@@ -270,12 +270,12 @@ int main(){
     PItem A;
     int n;
 /*
-    printf("Entre com o tamanho do vetor: ");
-    scanf("%d", &n);
+    std::cout << "Entre com o tamanho do vetor: ";
+    std::cin >> n;
 */
 
     n=100000000;
-    printf("Tamanho: %d\n", n);
+    std::cout << "Tamanho: " << n << "\n";
 
     /* Aloca os dois vetores que serao usados para intercalar */
     B = (PItem) malloc(sizeof(TItem) * n);
@@ -285,7 +285,7 @@ int main(){
     A = Gerador(n);
 
     if(A == NULL){
-        printf("Tamanho negativo. Abortando\n");
+        std::cout << "Tamanho negativo. Abortando\n";
         return 0;
     }
 
@@ -293,9 +293,9 @@ int main(){
     threader(A, n);
 
     /* Desaloca os vetores */
-    Libera(&A);
-    Libera(&B);
-    Libera(&C);
+    Libera(A);
+    Libera(B);
+    Libera(C);
 
     return 0;
 }
