@@ -21,7 +21,6 @@ void* FuncaoThread(void* arg){
     tamanho_parcial = TAMANHO/MAX_THREADS;
 
     printf("(Thread[%d]) Thread iniciada\n", id);
-    printf("(Thread[%d]) Tamanho parcial = %.0lf\n", id, tamanho_parcial);
 
     /* Preenche o vetor de forma aleatoria e acumula o valor em soma*/
     for(i=0, pos=(tamanho_parcial*id);
@@ -31,10 +30,11 @@ void* FuncaoThread(void* arg){
     }
 
     id = (int) arg;
-    printf("(Thread[%d]) Vetor preenchido com sucesso\n", id);
 
     /* Salva o resultado parcial */
     results[id] = soma;
+
+    printf("(Thread[%d]) finalizada com sucesso\n", id);
 }
 
 int main(){
