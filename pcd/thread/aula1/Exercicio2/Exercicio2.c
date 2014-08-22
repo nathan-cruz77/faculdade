@@ -4,8 +4,8 @@
 #include <time.h>
 #include <math.h>
 
-#define MAX_THREADS 8
-#define TAMANHO 100000000.0 //10**8
+#define MAX_THREADS 4
+#define TAMANHO 100000.0 //10**5
 
 typedef struct{
     int id;
@@ -81,7 +81,8 @@ int main(){
     /* Alocacao dos dados globais */
     tempo = clock();
     dados = (double*) malloc(sizeof(double)*TAMANHO);
-    printf("Tempo de alocacao: %.2lf\n", tempo - clock());
+    tempo = clock() - tempo;
+    printf("Tempo de alocacao: %.2lf\n", (double) tempo/CLOCKS_PER_SEC);
 
     /* Alocacao dos resultados parciais */
     results = (double*) malloc(sizeof(double)*MAX_THREADS);
@@ -94,7 +95,8 @@ int main(){
     for(id=0; id<TAMANHO; id++){
         dados[id] = rand();
     }
-    printf("Tempo de preenchimendo: %.2lf\n", tempo - clock());
+    tempo = clock() - tempo;
+    printf("Tempo de preenchimendo: %.2lfs\n", (double) tempo/CLOCKS_PER_SEC);
 
     /* Dispara as threads para calculo da media */
     for(id=0; id<MAX_THREADS; id++){
