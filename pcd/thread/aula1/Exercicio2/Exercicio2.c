@@ -4,8 +4,8 @@
 #include <time.h>
 #include <math.h>
 
-#define MAX_THREADS 6
-#define TAMANHO 100000000 //10**8
+#define MAX_THREADS 8
+#define TAMANHO 100000000.0 //10**8
 
 typedef struct{
     int id;
@@ -92,7 +92,7 @@ int main(){
     /* Preenche o vetor de dados aleatoriamente */
     tempo = clock();
     for(id=0; id<TAMANHO; id++){
-        dados[id] = rand() % TAMANHO;
+        dados[id] = rand();
     }
     printf("Tempo de preenchimendo: %.2lf\n", tempo - clock());
 
