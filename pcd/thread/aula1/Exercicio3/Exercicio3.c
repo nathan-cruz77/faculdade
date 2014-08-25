@@ -3,7 +3,7 @@
 #include <pthread.h>
 #include <time.h>
 
-#define MAX_THREADS 4
+#define MAX_THREADS 8
 #define TAMANHO 10000.0
 
 /* Matrizes de dados a serem somadas */
@@ -16,15 +16,16 @@ double** mat3;
 void* Trabalhadora(void* arg){
     int id = (int) arg;
     int i, coluna, j, linha;
-    double linha_inicial;
+    int tamanho_parcial, linha_inicial, linha_final;
 
-    linha_inicial = TAMANHO/MAX_THREADS;
+    tamanho_parcial = TAMANHO/MAX_THREADS;
+    linha_inicial = tamanho_parcial * id;
+    linha_final = (linha_inicial + tamanho_parcial)-1;
 
-    printf("(Thread[%d]) Linha inicial = %.0lf\n", id, linha_inicial*id);
-    printf("\tLinha final = %.0lf\n", (linha_inicial*id + linha_inicial));
+    printf("(Thread[%d])\n\tLinha inicial = %d\n\tLinha Final = %d\n", id, linha_inicial, linha_final);
 
     /* Soma e joga na matriz resultante */
-    for(i=0, linha=(linha_inicial*id); i<linha_inicial; i++, linha++){
+    for(linha=linha_inicial; linha<=linha_final; linha++){
         for(coluna=0; coluna<TAMANHO; coluna++){
             mat3[linha][coluna] = mat1[linha][coluna] + mat2[linha][coluna];
         }
@@ -61,6 +62,7 @@ int main(){
     clock_t tempo;
 
     /* Aloca as matrizes */
+    tempo = clock();
     mat1 = (double**) malloc(sizeof(double*)*TAMANHO);
     mat2 = (double**) malloc(sizeof(double*)*TAMANHO);
     mat3 = (double**) malloc(sizeof(double*)*TAMANHO);
@@ -70,8 +72,9 @@ int main(){
         mat2[i] = (double*) malloc(sizeof(double)*TAMANHO);
         mat3[i] = (double*) malloc(sizeof(double)*TAMANHO);
     }
+    tempo = clock() - tempo;
 
-    printf("Alocacao finalizada\n");
+    printf("Tempo de alocacao: %.3lf\n", (double) (tempo/CLOCKS_PER_SEC));
 
     /* Preenche aleatoriamente as matrizes */
     tempo = clock();
@@ -80,7 +83,7 @@ int main(){
     srand(time(NULL)+32154);
     PreencheMat(mat2);
     tempo = clock() - tempo;
-    printf("Tempo de preenchimento: %.3lfs\n", tempo);
+    printf("Tempo de preenchimento: %.3lfs\n", (double) (tempo/CLOCKS_PER_SEC));
 
     /* Dispara as threads */
     for(id=0; id<MAX_THREADS; id++){
