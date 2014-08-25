@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <pthread.h>
 
-#define MAX_THREADS 8
-#define TAMANHO 100000000 //10**8
+#define MAX_THREADS 2
+#define TAMANHO 6.0 //10**8
 
 /* Array global de dados */
 double* dados;
@@ -33,8 +33,6 @@ void* FuncaoThread(void* arg){
 
     /* Salva o resultado parcial */
     results[id] = soma;
-
-    printf("(Thread[%d]) finalizada com sucesso\n", id);
 }
 
 int main(){
@@ -55,20 +53,23 @@ int main(){
         pthread_create(&threads[id], NULL, FuncaoThread, (void*) id);
     }
 
-    printf("Threads disparadas\n");
-
     /* Aguarda as threads finalizarem */
     for(id=0; id<MAX_THREADS; id++){
         pthread_join(threads[id], NULL);
     }
-
-    printf("Threads finalizadas\n");
 
     /* Faz a conta da media final e apresenta */
     for(id=0; id<MAX_THREADS; id++){
         soma += results[id];
     }
     media = soma/TAMANHO;
+
+    /*
+    for(id=0; id<TAMANHO; id++)
+        printf("%.2lf ", dados[id]);
+    printf("\n");
+    */
+
     printf("Media do vetor: %.3lf\n", media);
 
     /* Libera as variaveis globais */

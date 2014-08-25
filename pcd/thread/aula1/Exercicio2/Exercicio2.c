@@ -4,8 +4,8 @@
 #include <time.h>
 #include <math.h>
 
-#define MAX_THREADS 4
-#define TAMANHO 100000.0 //10**5
+#define MAX_THREADS 2
+#define TAMANHO 6.0 //10**5
 
 typedef struct{
     int id;
@@ -42,8 +42,6 @@ void* FuncaoThreadMedia(void* arg){
 
     /* Salva o resultado parcial */
     results[id] = soma;
-
-    printf("(Thread[%d]) finalizada com sucesso\n", id);
 }
 
 /* Funcao principal das threads para fazer a soma do desvio */
@@ -64,9 +62,6 @@ void* FuncaoThreadDesvio(void* arg){
 
     /* Salva o resultado parcial */
     results[info->id] = soma;
-
-    printf("(Thread[%d]) finalizada com sucesso\n", info->id);
-
 }
 
 int main(){
@@ -103,14 +98,10 @@ int main(){
         pthread_create(&threads[id], NULL, FuncaoThreadMedia, (void*) id);
     }
 
-    printf("Threads disparadas[1]\n");
-
     /* Aguarda as threads finalizarem */
     for(id=0; id<MAX_THREADS; id++){
         pthread_join(threads[id], NULL);
     }
-
-    printf("Threads finalizadas[1]\n");
 
     /* Calcula a media */
     for(id=0; id<MAX_THREADS; id++){
@@ -127,14 +118,10 @@ int main(){
                        FuncaoThreadDesvio, (void*) &info[id]);
     }
 
-    printf("Threads disparadas[2]\n");
-
     /* Aguarda as threads finalizarem */
     for(id=0; id<MAX_THREADS; id++){
         pthread_join(threads[id], NULL);
     }
-
-    printf("Threads finalizadas[2]\n");
 
     /* Calcula a somatoria do desvio */
     for(id=0, soma=0; id<MAX_THREADS; id++){
@@ -144,6 +131,11 @@ int main(){
     final_result = sqrt(1/(TAMANHO-1) * soma);
 
     /* Imprime o desvio padrao */
+    /*
+    for(id=0; id<TAMANHO; id++)
+        printf("%.2lf ", dados[id]);
+    printf("\n");
+    */
     printf("Desvio padrao = %lf\n", final_result);
 
     /* Libera as variaveis globais */

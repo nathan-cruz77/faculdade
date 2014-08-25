@@ -3,8 +3,8 @@
 #include <pthread.h>
 #include <time.h>
 
-#define MAX_THREADS 8
-#define TAMANHO 10000.0
+#define MAX_THREADS 2
+#define TAMANHO 6.0
 
 /* Matrizes de dados a serem somadas */
 double** mat1;
@@ -96,8 +96,13 @@ int main(){
     }
 
     /*
+    printf("Matriz[1]:\n");
     ImprimeMat(mat1);
+
+    printf("Matriz[2]:\n");
     ImprimeMat(mat2);
+
+    printf("Resultado:\n");
     ImprimeMat(mat3);
     */
 
