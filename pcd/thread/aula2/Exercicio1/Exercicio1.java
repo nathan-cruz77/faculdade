@@ -4,8 +4,8 @@ import java.lang.*;
 public class Exercicio1{
 	public static void main(String[] args){
 		/* Constantes */
-		int MAX_THREADS = 4;
-		double TAMANHO = 10000000;
+		int MAX_THREADS = 8;
+		double TAMANHO = 100000000;
 
 		/* Auxiliares */
 		double soma, media, final_result;
