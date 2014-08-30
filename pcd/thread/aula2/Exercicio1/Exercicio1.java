@@ -4,15 +4,15 @@ import java.lang.*;
 public class Exercicio1{
 	public static void main(String[] args){
 		/* Constantes */
-		int MAX_THREADS = 2;
-		double TAMANHO = 6;//100000;
+		int MAX_THREADS = 4;
+		double TAMANHO = 10000000;
 
 		/* Auxiliares */
 		double soma, media, final_result;
 		Random rand = new Random();
 
 		/* Vetor de dados */
-		double[] dados = {1, 2, 3, 4, 5, 6};//new double[(int) TAMANHO];
+		double[] dados = new double[(int) TAMANHO];
 
 		/* Vetores de trabalhadores */
 		Thread[] threads_1 = new Thread[MAX_THREADS];
@@ -21,10 +21,10 @@ public class Exercicio1{
 		TrabalhadorMedia[] trabalhadores_1 = new TrabalhadorMedia[MAX_THREADS];
 		TrabalhadorDesvio[] trabalhadores_2 = new TrabalhadorDesvio[MAX_THREADS];
 
-		/* Preenche o vetor aleatoriamente
+		/* Preenche o vetor aleatoriamente */
 		for(int id=0; id<TAMANHO; id++){
 			dados[id] = rand.nextLong();
-		}*/
+		}
 
 		/* Dispara as threads para calculo da media*/
 		for(int id=0; id<MAX_THREADS; id++){
@@ -75,10 +75,10 @@ public class Exercicio1{
 		/* Calcula o resultado final */
 		final_result = Math.sqrt(1/(TAMANHO-1)*soma);
 
-		System.out.printf("Vetor de dados utilizado:\n[");
+		/*System.out.printf("Vetor de dados utilizado:\n[");
 		for(int id=0; id<TAMANHO; id++)
 			System.out.printf("%.2f ", dados[id]);
-		System.out.printf("]\n");
+		System.out.printf("]\n");*/
 
 		/* Exibe o desvio padrao calculado */
 		System.out.println("Desvio padrao calculado: " + final_result);
