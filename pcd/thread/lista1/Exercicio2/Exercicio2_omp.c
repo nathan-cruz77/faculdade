@@ -36,7 +36,7 @@ int main(){
     #pragma omp parallel shared(dados) private(i) reduction(+:somatorio)
     {
         #pragma omp for
-        for(i=0, i<TAMANHO; i++)
+        for(i=0; i<TAMANHO; i++)
             somatorio += dados[i];
     }
 
@@ -47,7 +47,7 @@ int main(){
     #pragma omp parallel shared(dados) private(i) reduction(+:somatorio)
     {
         #pragma omp for
-        for(i=0, i<TAMANHO; i++)
+        for(i=0; i<TAMANHO; i++)
             somatorio += pow(dados[i] - media, 2);
     }
 
