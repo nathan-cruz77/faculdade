@@ -5,7 +5,7 @@
 #include <omp.h>
 #include <stdbool.h>
 
-#define TAMANHO 10000000; //10**7
+#define TAMANHO 10; //10**7
 
 /* Vetor de dados */
 double* dados;
@@ -14,7 +14,6 @@ int main(){
     int i;
     double media, result, aux;
     double somatorio, size;
-    bool controle=true;
 
     /* Semente para o random */
     srand(time(NULL));
@@ -25,37 +24,31 @@ int main(){
 
 
     /* Preenchimento dos vetor de dados */
-    #pragma omp parallel firstprivate(controle)
+    #pragma omp parallel shared(dados) private(i)
     {
         #pragma omp for
-        for(i=0; (i<TAMANHO); i++){
-            controle = i<TAMANHO;
-            dados[i] = rand();
-        }
+        for(i=0; i<TAMANHO; i++)
+            dados[i] = i+1;//rand();
     }
 
     /* Calcula a media */
     somatorio = 0;
-    #pragma omp parallel firstprivate(controle) reduction(+:somatorio)
+    #pragma omp parallel shared(dados) private(i) reduction(+:somatorio)
     {
         #pragma omp for
-        for(i=0, controle=true; controle; i++){
-            controle = i<TAMANHO;
+        for(i=0, i<TAMANHO; i++)
             somatorio += dados[i];
-        }
     }
 
     media = somatorio/TAMANHO;
 
     /* Calcula o somatorio mais externo */
     somatorio = 0;
-    #pragma omp parallel firstprivate(controle) reduction(+:somatorio)
+    #pragma omp parallel shared(dados) private(i) reduction(+:somatorio)
     {
         #pragma omp for
-        for(i=0, controle=true; controle; i++){
-            controle = i<TAMANHO;
+        for(i=0, i<TAMANHO; i++)
             somatorio += pow(dados[i] - media, 2);
-        }
     }
 
     aux = TAMANHO-1;

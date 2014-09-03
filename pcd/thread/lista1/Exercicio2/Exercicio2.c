@@ -88,7 +88,7 @@ int main(){
     /* Preenche o vetor de dados aleatoriamente */
     tempo = clock();
     for(id=0; id<TAMANHO; id++){
-        dados[id] = rand();
+        dados[id] = id+1;//rand();
     }
     tempo = clock() - tempo;
     printf("Tempo de preenchimendo: %.2lfs\n", (double) tempo/CLOCKS_PER_SEC);
