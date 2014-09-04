@@ -3,7 +3,7 @@
 #include <pthread.h>
 
 #define MAX_THREADS 2
-#define TAMANHO 6.0 //10**8
+#define TAMANHO 100000000.0 //10**8
 
 /* Array global de dados */
 double* dados;
