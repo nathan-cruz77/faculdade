@@ -5,7 +5,7 @@
 #include <omp.h>
 #include <stdbool.h>
 
-#define TAMANHO 10; //10**7
+#define TAMANHO 100000000 //10**7
 
 /* Vetor de dados */
 double* dados;
@@ -19,16 +19,15 @@ int main(){
     srand(time(NULL));
 
     /* Aloca o vetor de dados */
-    size = sizeof(double)*TAMANHO;
-    dados = (double*) malloc(size);
 
+    dados = (double*) malloc(sizeof(double)*TAMANHO);
 
     /* Preenchimento dos vetor de dados */
     #pragma omp parallel shared(dados) private(i)
     {
         #pragma omp for
         for(i=0; i<TAMANHO; i++)
-            dados[i] = i+1;//rand();
+            dados[i] = rand_r(&i);
     }
 
     /* Calcula a media */
@@ -38,6 +37,7 @@ int main(){
         #pragma omp for
         for(i=0; i<TAMANHO; i++)
             somatorio += dados[i];
+        printf("Quantidade de threads: %d\n", omp_get_num_threads());
     }
 
     media = somatorio/TAMANHO;
