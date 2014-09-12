@@ -4,6 +4,7 @@
 #include <time.h>
 
 #define TAMANHO 10000
+#define MAX_THREADS 8
 
 /* Matriz A */
 double** A;
@@ -38,7 +39,7 @@ void print_vector(double* vet){
 }
 
 int main(){
-    int i, j, aux;
+    int i, j, aux = 33216;
 
     /* Aloca as estruturas de dados a serem usadas */
     N = (double*) malloc(sizeof(double)*TAMANHO);
@@ -51,33 +52,24 @@ int main(){
 
     result = (double*) malloc(sizeof(double)*TAMANHO);
 
-    /* Popula concorrentemente todas as estruturas de dados */
-    #pragma omp parallel private(i, j, aux) shared(A)
+    /* Unica regiao paralela do codigo que trabalha de fato */
+    omp_set_num_threads(MAX_THREADS);
+    #pragma omp parallel private(i, j, aux) shared(A, N, result)
     {
+        printf("%d threads\n", omp_get_num_threads());
+        /* Preenchimento das estruturas de dados */
         #pragma omp for
         for(i=0; i<TAMANHO; i++){
+
             for(j=0; j<TAMANHO; j++){
-                aux = omp_get_thread_num();
                 A[i][j] = rand_r(&aux);
-                aux++;
             }
-        }
 
-        #pragma omp for
-        for(i=0; i<TAMANHO; i++){
-            aux = omp_get_thread_num();
             N[i] = rand_r(&aux);
+            result[i] = 0;
         }
 
-        #pragma omp for
-        for(i=0; i<TAMANHO; i++){
-                result[i] = 0;
-        }
-    }
-
-    /* Fazendo trabalho propriamente dito */
-    #pragma omp parallel shared(A, N, result) private(i, j)
-    {
+        /* Regiao de trabalho. Calcula o vetor resultante */
         #pragma omp for
         for(i=0; i<TAMANHO; i++){
             for(j=0; j<TAMANHO; j++){

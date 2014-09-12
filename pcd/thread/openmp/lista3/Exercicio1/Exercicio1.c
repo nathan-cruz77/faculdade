@@ -3,9 +3,9 @@
 #include <time.h>
 #include <math.h>
 #include <omp.h>
-#include <stdbool.h>
 
-#define TAMANHO 100000000 //10**7
+#define TAMANHO 1000000 //10**6
+#define MAX_THREADS 8
 
 /* Vetor de dados */
 double* dados;
@@ -23,15 +23,12 @@ int main(){
     dados = (double*) malloc(sizeof(double)*TAMANHO);
 
     /* Preenchimento dos vetor de dados */
-    #pragma omp parallel shared(dados) private(i)
-    {
-        #pragma omp for
-        for(i=0; i<TAMANHO; i++)
-            dados[i] = rand_r(&i);
-    }
+    for(i=0; i<TAMANHO; i++)
+        dados[i] = rand();
 
     /* Calcula a media */
     somatorio = 0;
+    omp_set_num_threads(MAX_THREADS);
     #pragma omp parallel shared(dados) private(i) reduction(+:somatorio)
     {
         #pragma omp for
@@ -43,6 +40,7 @@ int main(){
 
     /* Calcula o somatorio mais externo */
     somatorio = 0;
+    omp_set_num_threads(MAX_THREADS);
     #pragma omp parallel shared(dados) private(i) reduction(+:somatorio)
     {
         #pragma omp for
