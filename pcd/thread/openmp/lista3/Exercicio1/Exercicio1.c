@@ -4,8 +4,8 @@
 #include <math.h>
 #include <omp.h>
 
-#define TAMANHO 1000000 //10**6
-#define MAX_THREADS 8
+#define TAMANHO 100000 //10**7
+#define MAX_THREADS 4
 
 /* Vetor de dados */
 double* dados;
@@ -13,7 +13,7 @@ double* dados;
 int main(){
     int i;
     double media, result, aux;
-    double somatorio, size;
+    double somatorio, size, tempo;
 
     /* Semente para o random */
     srand(time(NULL));
@@ -23,8 +23,12 @@ int main(){
     dados = (double*) malloc(sizeof(double)*TAMANHO);
 
     /* Preenchimento dos vetor de dados */
+    tempo = omp_get_wtime();
     for(i=0; i<TAMANHO; i++)
         dados[i] = rand();
+    tempo = omp_get_wtime() - tempo;
+
+    printf("Tempo de preenchimento: %.3lfs\n", tempo);
 
     /* Calcula a media */
     somatorio = 0;

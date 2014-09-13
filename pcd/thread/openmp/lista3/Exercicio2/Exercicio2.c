@@ -3,7 +3,8 @@
 
 /* Constantes */
 #define N 100000000
-#define u 987.0
+#define u 2.0
+#define MAX_THREADS 8
 
 int main(void) {
     double passo, soma,x;
@@ -11,6 +12,7 @@ int main(void) {
 
     passo = (u-1) / N;
 
+    omp_set_num_threads(MAX_THREADS);
     soma = 0;
     #pragma omp parallel shared(passo) private(x, i) reduction(+:soma)
     {
