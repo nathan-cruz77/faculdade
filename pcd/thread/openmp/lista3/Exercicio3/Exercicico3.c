@@ -3,7 +3,7 @@
 #include <omp.h>
 #include <time.h>
 
-#define TAMANHO 10000
+#define TAMANHO 1000
 #define MAX_THREADS 8
 
 /* Matriz A */
@@ -56,7 +56,6 @@ int main(){
     omp_set_num_threads(MAX_THREADS);
     #pragma omp parallel private(i, j, aux) shared(A, N, result)
     {
-        printf("%d threads\n", omp_get_num_threads());
         /* Preenchimento das estruturas de dados */
         #pragma omp for
         for(i=0; i<TAMANHO; i++){
@@ -86,6 +85,7 @@ int main(){
 
 
     /* Liberando a memoria, concorrentemente */
+    omp_set_num_threads(MAX_THREADS);
     #pragma omp parallel private(i, j) shared(A)
     {
         #pragma omp for
