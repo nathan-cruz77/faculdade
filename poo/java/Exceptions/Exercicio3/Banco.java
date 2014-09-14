@@ -44,14 +44,14 @@ public class Banco{
         }
 
         for(i=0;i<10;i++){
-			try{
-            	banco.contas[i].credita(-12);
-    	        banco.contas[i].debita(3);
-	            banco.Registra(banco.contas[i]);
-			}
-			catch(ValorInvalidoException e){
-				System.out.println(e.getMessage());
-			}
+            try{
+                banco.contas[i].credita(-12);
+                banco.contas[i].debita(3);
+                banco.Registra(banco.contas[i]);
+            }
+            catch(ValorInvalidoException e){
+                System.out.println(e.getMessage());
+            }
         }
 
         banco.Imprime();

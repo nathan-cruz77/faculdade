@@ -16,24 +16,24 @@ public abstract class Conta {
             this.saldo += quantia;
         }
         else{
-			throw new ValorInvalidoException("Não se pode depositar uma quantia negativa");
+            throw new ValorInvalidoException("Não se pode depositar uma quantia negativa");
         }
     }
 
     public void debita(double quantia) throws ValorInvalidoException{
-		String mensagem;
+        String mensagem;
 
-		/* Verifica se a quantia a ser sacada esta disponivel */
-		if (quantia <= this.saldo && quantia > 0){
+        /* Verifica se a quantia a ser sacada esta disponivel */
+        if (quantia <= this.saldo && quantia > 0){
             this.saldo -= quantia;
         }
         else{
-			if(quantia < 0){
-				mensagem = "Não se pode realizar um saque com valor negativo";
-			}
-			else{
-				mensagem = "Não se pode realizar um saque com valor maior que o disponivel";
-			}
+            if(quantia < 0){
+                mensagem = "Não se pode realizar um saque com valor negativo";
+            }
+            else{
+                mensagem = "Não se pode realizar um saque com valor maior que o disponivel";
+            }
             throw new ValorInvalidoException(mensagem);
         }
     }

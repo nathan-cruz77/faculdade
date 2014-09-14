@@ -16,7 +16,7 @@ public abstract class Conta {
             this.saldo += quantia;
         }
         else{
-			throw new IllegalArgumentException("Não se pode depositar uma quantia negativa");
+            throw new IllegalArgumentException("Não se pode depositar uma quantia negativa");
         }
     }
 

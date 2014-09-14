@@ -7,19 +7,19 @@
 
 public class CDB extends Conta implements Tributavel{
 
-	/* Construtor */
-	public CDB(int numero, String nome){
-		this.numero = numero;
-		this.nome = nome;
-	}
+    /* Construtor */
+    public CDB(int numero, String nome){
+        this.numero = numero;
+        this.nome = nome;
+    }
 
-	@Override
+    @Override
     public void atualiza(double taxa){
         this.saldo += 2.5*(this.saldo * taxa);
     }
 
-	/* Implementacao da interface */
-	public double calculaTributos(){
-		return 42;
-	}
+    /* Implementacao da interface */
+    public double calculaTributos(){
+        return 42;
+    }
 }

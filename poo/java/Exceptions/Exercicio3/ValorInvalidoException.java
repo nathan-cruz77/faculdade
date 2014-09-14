@@ -9,8 +9,8 @@
 
 public class ValorInvalidoException extends Exception{
 
-	/* Construtor */
-	public ValorInvalidoException(String mensagem){
-		super(mensagem);
-	}
+    /* Construtor */
+    public ValorInvalidoException(String mensagem){
+        super(mensagem);
+    }
 }

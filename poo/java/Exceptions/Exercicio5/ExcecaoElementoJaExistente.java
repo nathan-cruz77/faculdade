@@ -7,8 +7,8 @@
 
 public class ExcecaoElementoJaExistente extends Exception{
 
-	/* Construtor */
-	public ExcecaoElementoJaExistente(String mensagem){
-		super(mensagem);
-	}
+    /* Construtor */
+    public ExcecaoElementoJaExistente(String mensagem){
+        super(mensagem);
+    }
 }

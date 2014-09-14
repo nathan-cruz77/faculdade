@@ -14,14 +14,14 @@ public class ContaPoupanca extends Conta implements Comparable<ContaPoupanca>{
         this.numero = numero;
     }
 
-	/* Implementacao da interface */
-	public int compareTo(ContaPoupanca aux){
-		if(this.saldo > aux.saldo) return 1;
-		else if(this.saldo < aux.saldo) return -1;
-		else return 0;
-	}
+    /* Implementacao da interface */
+    public int compareTo(ContaPoupanca aux){
+        if(this.saldo > aux.saldo) return 1;
+        else if(this.saldo < aux.saldo) return -1;
+        else return 0;
+    }
 
-	@Override
+    @Override
     public void atualiza(double taxa){
         this.saldo += 3*(this.saldo * taxa);
     }

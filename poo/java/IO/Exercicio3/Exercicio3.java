@@ -10,26 +10,26 @@ import java.io.*;
 import java.lang.*;
 
 public class Exercicio3{
-	public static void main(String args[]){
-		BufferedReader arq;
-		String arquivo = "teste.txt";
-		Map<String, Integer> mapa = new HashMap<String, Integer>();
+    public static void main(String args[]){
+        BufferedReader arq;
+        String arquivo = "teste.txt";
+        Map<String, Integer> mapa = new HashMap<String, Integer>();
 
-		try{
-			arq = new BufferedReader(new FileReader(arquivo));
-			while( (arquivo = arq.readLine()) != null){
-				mapa.put(Arrays.asList(arquivo.split(" ")).get(0), Integer.valueOf(Arrays.asList(arquivo.split(" ")).get(1)));
-			}
-			arq.close();
+        try{
+            arq = new BufferedReader(new FileReader(arquivo));
+            while( (arquivo = arq.readLine()) != null){
+                mapa.put(Arrays.asList(arquivo.split(" ")).get(0), Integer.valueOf(Arrays.asList(arquivo.split(" ")).get(1)));
+            }
+            arq.close();
 
-		}
-		catch(IOException e){
-			System.out.println(e);
-		}
+        }
+        catch(IOException e){
+            System.out.println(e);
+        }
 
-		/* Imprime o hash */
-		for(String s: mapa.keySet()){
-			System.out.println(s + " "  + mapa.get(s));
-		}
-	}
+        /* Imprime o hash */
+        for(String s: mapa.keySet()){
+            System.out.println(s + " "  + mapa.get(s));
+        }
+    }
 }

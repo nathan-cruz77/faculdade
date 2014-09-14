@@ -12,7 +12,7 @@ public class ContaCorrente extends Conta implements Tributavel{
         this.numero = numero;
     }
 
-	@Override
+    @Override
     public void atualiza(double taxa){
         this.saldo += 2*(this.saldo * taxa);
     }
@@ -28,11 +28,11 @@ public class ContaCorrente extends Conta implements Tributavel{
         }
     }
 
-	/* Implementacao da interface */
-	public double calculaTributos(){
-		if(this.saldo > 0)
-			return (this.saldo/100);
-		System.out.println("Valor do saldo invalido");
-		return 0;
-	}
+    /* Implementacao da interface */
+    public double calculaTributos(){
+        if(this.saldo > 0)
+            return (this.saldo/100);
+        System.out.println("Valor do saldo invalido");
+        return 0;
+    }
 }

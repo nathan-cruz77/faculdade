@@ -12,7 +12,7 @@ public abstract class Conta {
     /* Atributos */
     protected double saldo;
     protected int numero;
-	protected String nome;
+    protected String nome;
 
     public void credita(double quantia) {
         if (quantia > 0){
@@ -32,7 +32,7 @@ public abstract class Conta {
         }
     }
 
-	public abstract void atualiza(double taxa);
+    public abstract void atualiza(double taxa);
 
     /* Getters */
     public double getSaldo(){
@@ -41,14 +41,14 @@ public abstract class Conta {
     public double getNumero(){
         return this.numero;
     }
-	public String getNome(){
-		return this.nome;
-	}
+    public String getNome(){
+        return this.nome;
+    }
 
     public void imprime(){
-		DecimalFormat casas = new DecimalFormat("#.00");
+        DecimalFormat casas = new DecimalFormat("#.00");
         System.out.println("Conta " + numero + ":\n" +
-						   "\tTitular: " + nome +
+                           "\tTitular: " + nome +
                            "\n\tSaldo: R$" + casas.format(saldo) );
     }
 }

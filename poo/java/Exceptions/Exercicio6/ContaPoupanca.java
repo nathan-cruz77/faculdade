@@ -10,7 +10,7 @@ public class ContaPoupanca extends Conta{
     /* Construtor */
     public ContaPoupanca(int numero){
         this.numero = numero;
-		this.saldo = 0;
+        this.saldo = 0;
     }
 
     public void atualiza(double taxa){

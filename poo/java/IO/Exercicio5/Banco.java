@@ -55,66 +55,66 @@ public class Banco{
 
     /* Salva contas num arquivo */
     public void Salva(PrintWriter pw){
-		for(Conta conta: this.contas.values()){
-			pw.println(conta.toString() + "\n");
-		}
+        for(Conta conta: this.contas.values()){
+            pw.println(conta.toString() + "\n");
+        }
     }
 
-	/* Recupera contas do arquivo */
-	public void Recupera(BufferedReader br) throws IOException{
-		String input, nome, tipo;
-		int numero;
-		float saldo;
+    /* Recupera contas do arquivo */
+    public void Recupera(BufferedReader br) throws IOException{
+        String input, nome, tipo;
+        int numero;
+        float saldo;
 
-		input = br.readLine();
-		while(input != null){
+        input = br.readLine();
+        while(input != null){
 
-			numero = Integer.valueOf(Arrays.asList(input.split(":")).get(1).trim());
-			input = br.readLine();
+            numero = Integer.valueOf(Arrays.asList(input.split(":")).get(1).trim());
+            input = br.readLine();
 
-			nome = Arrays.asList(input.split(":")).get(1).trim();
-			input = br.readLine();
+            nome = Arrays.asList(input.split(":")).get(1).trim();
+            input = br.readLine();
 
-			saldo = Float.valueOf(Arrays.asList(input.split("\\$")).get(1).trim());
-			input = br.readLine();
+            saldo = Float.valueOf(Arrays.asList(input.split("\\$")).get(1).trim());
+            input = br.readLine();
 
-			tipo = Arrays.asList(input.split(":")).get(1).trim();
-			input = br.readLine();
-			input = br.readLine();
+            tipo = Arrays.asList(input.split(":")).get(1).trim();
+            input = br.readLine();
+            input = br.readLine();
 
-			if(tipo.equals("Conta Corrente")){
-				this.contas.put(nome, new ContaCorrente(numero, nome));
-				this.contas.get(nome).credita(saldo + 0.1);
-			}
-			else if(tipo.equals("Poupanca")){
-				this.contas.put(nome, new ContaPoupanca(numero, nome));
-				this.contas.get(nome).credita(saldo);
-			}
-			else if(tipo.equals("CDB")){
-				this.contas.put(nome, new CDB(numero, nome));
-				this.contas.get(nome).credita(saldo);
-			}
-		}
-	}
+            if(tipo.equals("Conta Corrente")){
+                this.contas.put(nome, new ContaCorrente(numero, nome));
+                this.contas.get(nome).credita(saldo + 0.1);
+            }
+            else if(tipo.equals("Poupanca")){
+                this.contas.put(nome, new ContaPoupanca(numero, nome));
+                this.contas.get(nome).credita(saldo);
+            }
+            else if(tipo.equals("CDB")){
+                this.contas.put(nome, new CDB(numero, nome));
+                this.contas.get(nome).credita(saldo);
+            }
+        }
+    }
 
     public static void main(String args[]){
         Banco banco = new Banco();
         BufferedReader br;
 
-		/* Tenta recuperar dados a inserir no mapa */
-		try{
-			br = new BufferedReader(new FileReader("Teste.txt"));
-			banco.Recupera(br);
-			br.close();
-		}
-		catch(IOException e){
-			System.out.println(e.getMessage());
-		}
+        /* Tenta recuperar dados a inserir no mapa */
+        try{
+            br = new BufferedReader(new FileReader("Teste.txt"));
+            banco.Recupera(br);
+            br.close();
+        }
+        catch(IOException e){
+            System.out.println(e.getMessage());
+        }
 
-		/* Imprime o mapa */
-		for(String a: banco.contas.keySet()){
-			System.out.println(banco.contas.get(a));
-			System.out.println();
-		}
+        /* Imprime o mapa */
+        for(String a: banco.contas.keySet()){
+            System.out.println(banco.contas.get(a));
+            System.out.println();
+        }
     }
 }

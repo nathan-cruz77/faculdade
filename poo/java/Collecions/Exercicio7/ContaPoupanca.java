@@ -10,10 +10,10 @@ public class ContaPoupanca extends Conta{
     /* Construtor */
     public ContaPoupanca(int numero, String nome){
         this.numero = numero;
-		this.nome = nome;
+        this.nome = nome;
     }
 
-	@Override
+    @Override
     public void atualiza(double taxa){
         this.saldo += 3*(this.saldo * taxa);
     }
