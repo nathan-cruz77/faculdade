@@ -1,9 +1,8 @@
 #include <iostream>
 #include <unistd.h>
 
-using namespace std;
-
 int main(){
-    cout << "Threads suportadas: " << sysconf(_SC_NPROCESSORS_ONLN) << "\n";
+    std::cout << "Threads suportadas: " << sysconf(_SC_NPROCESSORS_ONLN);
+    std::cout << "\n";
     return 0;
 }
