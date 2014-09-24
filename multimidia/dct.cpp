@@ -113,6 +113,14 @@ int main(){
     T = aloca_matriz(8);
     Tt = aloca_matriz(8);
 
+    double q10[8][8] = {{ 80,  60,  50,  80, 120, 200, 255, 255},
+                        { 55,  60,  70,  95, 130, 255, 255, 255},
+                        { 70,  65,  80, 120, 200, 255, 255, 255},
+                        { 70,  85, 110, 145, 255, 255, 255, 255},
+                        { 90, 110, 185, 255, 255, 255, 255, 255},
+                        {120, 175, 255, 255, 255, 255, 255, 255},
+                        {245, 255, 255, 255, 255, 255, 255, 255},
+                        {255, 255, 255, 255, 255, 255, 255, 255} };
 
     /* Pega o "pixel-depth" da imagem */
     std::getline(std::cin, linha);
@@ -139,8 +147,38 @@ int main(){
         }
     }
 
+    for(int i=0; i<ordem; i++){
+        for(int j=0; j<ordem; j++){
+            mat[i][j] = round(mat[i][j]/q10[i%8][j%8]);
+        }
+    }
+
+    zeros_finais = conta_zeros(mat, ordem);
+
+    /* Desfaz a etapa de quantizacao */
+    for(int i=0; i<ordem; i++){
+        for(int j=0; j<ordem; j++){
+            mat[i][j] = mat[i][j]*q10[i%8][j%8];
+        }
+    }
+
+    /* Desfaz o DCT */
+    for(int i=0; i<ordem; i+=8){
+        for(int j=0; j<ordem; j+=8){
+            dct(i, j, Tt, mat, T);
+        }
+    }
+
+    /* Desfaz o shift e o round */
+    for(int i=0; i<ordem; i++){
+        for(int j=0; j<ordem; j++){
+            mat[i][j] = round(mat[i][j]) + 128;
+        }
+    }
+
     std::cout << "P2\n";
     std::cout << "# Imagem produto do DCT\n";
+    std::cout << "# Zeros descartados " << zeros_finais - zeros_iniciais << "\n";
     std::cout << ordem << " " << ordem << "\n";
     std::cout << "255\n";
 
