@@ -209,7 +209,8 @@ int main(){
 
     std::cout << "P2\n";
     std::cout << "# Imagem produto do DCT\n";
-    std::cout << "# Zeros descartados " << zeros_finais - zeros_iniciais << "\n";
+    std::cout << "# Zeros descartados " << zeros_finais - zeros_iniciais;
+    std::cout << "/" << ordem*ordem <<  "\n";
     std::cout << ordem << " " << ordem << "\n";
     std::cout << "255\n";
 
