@@ -3,8 +3,8 @@
 #include <omp.h>
 #include <time.h>
 
-#define TAMANHO 6
-#define MAX_THREADS 2
+#define TAMANHO 100000000
+#define MAX_THREADS 4
 
 /* Vetores a serem usados */
 double* A;
@@ -22,7 +22,8 @@ void imprime_vet(double* A, int n){
 
 int main(){
     int i;
-    double produto_escalar = 0;
+    double produto_escalar;
+    double tempo = omp_get_wtime();
 
     srand(time(NULL));
 
@@ -36,18 +37,27 @@ int main(){
         B[i] = rand() % 10;
     }
 
-    #pragma omp parallel private(i) reduction(+:produto_escalar)
+    printf("%.3lfs\n", omp_get_wtime() - tempo);
+
+    tempo = omp_get_wtime();
+    produto_escalar = 0;
+    omp_set_num_threads(MAX_THREADS);
+    #pragma omp parallel private(i) shared(A, B) reduction(+: produto_escalar)
     {
         #pragma omp for
             for(i=0; i<TAMANHO; i++)
                 produto_escalar += A[i] * B[i];
     }
 
+    printf("%.3lfs\n", omp_get_wtime() - tempo);
+
+/*
     printf("A:\n\t");
     imprime_vet(A, TAMANHO);
     printf("B:\n\t");
     imprime_vet(B, TAMANHO);
     printf("Produto Escalar: %.2lf\n", produto_escalar);
+*/
 
     return 0;
 }

@@ -44,19 +44,50 @@ void inicializa(double** A, int n){
     }
 }
 
-int conta_zeros(double** A, int n){
-    int aux=0;
+int contar_zeros_zig_zag(double** M, int ordem){
+    int contador = 0, i = 7, j = 7, sentido;
 
-    for(int i=0; i<n; i++){
-        for(int j=0; j<n; j++){
-            if(A[i][j] == 0)
-                aux++;
-        }
+    while (M[i][j] == 0 && i != 0 && j != 0){
+        contador++;
+
+    if (( i == 7 && j%2 != 0 ) || ( i == 0 && j%2 != 0 )){
+        j--;
     }
-
-    return aux;
+    else if (i == 7 && j%2 == 0){
+        j++;
+        i--;
+        sentido = 0;
+    }
+    else if ((j == 7 && i%2 == 0) || (j == 0 && i%2 == 0)){
+        i--;
+    }
+    else if (j == 7 && i%2 != 0){ //sentido 1 descida
+        i++;
+        j--;
+        sentido = 1;
+    }
+    else if (j == 0 && i%2 != 0){ //sentido 0 subida
+        i--;
+        j++;
+        sentido = 0;
+    }
+    else if ( i == 0 && j%2 == 0){
+        i++;
+        j--;
+        sentido = 1;
+    }
+    else if (sentido == 1){
+        i++;
+        j--;
+    }
+    else if (sentido == 0){
+        i--;
+        j++;
+    }
 }
 
+return contador;
+}
 double** multiplica(double** A, double** B, int ordem){
     double** matrizResultado = aloca_matriz(ordem);
     inicializa(matrizResultado, ordem);

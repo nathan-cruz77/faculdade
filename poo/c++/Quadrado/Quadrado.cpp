@@ -39,16 +39,18 @@ class Quadrado{
 };
 
 int main(){
-    Quadrado* obj = (Quadrado*) malloc(sizeof(Quadrado)*10);
+    Quadrado* obj = new Quadrado[10];
     float soma=0;
 
-    for(int i; i<10; i++){
-        obj[i] = new Quadrado (i);
-        std::cout << obj[i].getLado();
+    srand(time(NULL));
+
+    for(int i=1; i<11; i++){
+        ::new(&obj[i]) Quadrado((float) (rand()%10));
         soma += obj[i].area();
     }
 
-    std::cout << soma << "\n";
+    std::cout << "A soma eh: " << soma << "\n";
 
+    delete[] obj;
     return 0;
 }
