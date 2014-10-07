@@ -21,7 +21,7 @@ void imprime_vet(double* A, int n){
 }
 
 int main(){
-    int i;
+    int i, aux;
     double produto_escalar;
     double tempo = omp_get_wtime();
 
@@ -33,8 +33,8 @@ int main(){
 
     /* Popula os vetores aleatoria e sequencialmente */
     for(i=0; i<TAMANHO; i++){
-        A[i] = rand() % 10;
-        B[i] = rand() % 10;
+        A[i] = rand();
+        B[i] = rand();
     }
 
     printf("%.3lfs\n", omp_get_wtime() - tempo);
