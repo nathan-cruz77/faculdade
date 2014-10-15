@@ -131,7 +131,6 @@ class TestaTriangulo(unittest.TestCase):
         self.p3 = Ponto(0, 0)
         self.p4 = Ponto(1, 1)
 
-
     def test_triangulo1(self):
         self.assertRaises(ValueError, Triangulo, p1=self.p1,
                           p2=self.p2, p3=self.p3)
