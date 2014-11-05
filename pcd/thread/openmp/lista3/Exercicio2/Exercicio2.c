@@ -4,7 +4,7 @@
 /* Constantes */
 #define N 100000000
 #define u 2.0
-#define MAX_THREADS 8
+#define MAX_THREADS 1
 
 int main(void) {
     double passo, soma,x;
