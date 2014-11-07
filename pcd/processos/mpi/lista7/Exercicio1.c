@@ -42,6 +42,8 @@ int main(int argc, char* argv[]) {
         for(i=0; i<size-1; i++){
             MPI_Recv(&soma_escravo, 1, MPI_DOUBLE, MPI_ANY_SOURCE,
                      MPI_ANY_TAG, MPI_COMM_WORLD, &aux);
+
+            /* Verificar a possibilidade de fazer reducao */
             soma += soma_escravo;
         }
         tempo = MPI_Wtime() - tempo;
