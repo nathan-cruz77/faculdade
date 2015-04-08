@@ -25,7 +25,7 @@ void main(int argc, char* argv[]) {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-    /* Claculando quantidade de pontos */
+    /* Calculando quantidade de pontos */
     n = (tam/dx)/size;
 
     /* Alocando vetores */
@@ -136,7 +136,7 @@ void main(int argc, char* argv[]) {
         indices[0] = maxloc;
 
         for(i=1; i<size; i++){
-            MPI_Recv(&valores[0], 1, MPI_DOUBLE, i, 0, MPI_COMM_WORLD,
+            MPI_Recv(&valores[i], 1, MPI_DOUBLE, i, 0, MPI_COMM_WORLD,
                      &status);
             MPI_Recv(&indices[i], 1, MPI_DOUBLE, i, 1, MPI_COMM_WORLD,
                      &status);

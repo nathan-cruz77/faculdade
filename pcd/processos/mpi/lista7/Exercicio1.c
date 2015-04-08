@@ -33,10 +33,14 @@ int main(int argc, char* argv[]) {
 	soma = 0;
 	soma_escravo = 0;
 
-    for (i=ini; i<fim; i++) {
-        x=1+i*passo;
-        soma_escravo += 0.5*(1/x+1/(x+passo));
-    }
+	#pragma omp parallel private(i, x) reduction(+:soma_escravo)
+	{
+		#pragma omp for
+    	for (i=ini; i<fim; i++) {
+        	x=1+i*passo;
+	        soma_escravo += 0.5*(1/x+1/(x+passo));
+    	}
+	}
 
 	MPI_Reduce(&soma_escravo, &soma, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
