@@ -1,0 +1,15 @@
+Aluno: Nathan de Melo Cruz
+ R.A.: 86492
+
+Cada posto tera seu banco. O banco do posto matriz, como fara mais acessos aos
+dados dos empregados (medicos e funcionarios), tera as tabelas inteiras de Funcionario
+e Medico.
+
+Em cada posto devem ficar os dados relativos a ele, ou seja, os dados das tabelas
+Postos, Pacientes, Atendimento, Escalas e Consultas. Assim temos que essas tabelas
+deverao ser fragmentadas horizontalmente. Cada posto tera os dados relativos ao seu
+proprio registro na tabela de Postos, aos pacientes no mesmo bairro que ele,
+a Consultas, Escalas e Atendimento que ocorrem nele.
+
+Os dados dos Medicos serao fragmentados de forma mista. Cada um dos postos deve
+ter o codM, CRM, nome e especialidade de cada medico que atende nele.
