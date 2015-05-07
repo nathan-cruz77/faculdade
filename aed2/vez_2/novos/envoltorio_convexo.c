@@ -199,9 +199,10 @@ void escreveCoordenadas (ponto2D **pontos, int nPontos)
 {
     int i;
 
-	for (i = 0; i < nPontos; i++)
-     printf ("%d %d ", (*pontos)[i].x, (*pontos)[i].y);
+	for (i = 0; i < nPontos; i++){
+		printf ("%d %d \n", (*pontos)[i].x, (*pontos)[i].y);
+	}
 	
-	printf("\n");
+	//printf("\n");
 }
 
