@@ -2,8 +2,13 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-bool hash(int* pontos, bool* tabela, int i, int distancia, int perimetro){
-	int indice = ((distancia + pontos[i]) % perimetro) - 1;
+int abs(int num){
+	if(num >= 0) return num;
+	return num * -1;
+}
+
+bool hash(bool* tabela, int posicao, int perimetro){
+	int indice = ((posicao) % perimetro) -1;
 
 	if(tabela[indice]){
 		return true;
@@ -27,31 +32,39 @@ void inicializa_tabela(bool** tabela, int n, int* pontos, int np){
 	}
 }
 
-void carrega(int** pontos, int* n, int* p){
-	int i;
+int descobre_maior_lado(int* vet, int n, int p){
+	int i, maior;
 
-	scanf("%d", p);
-	scanf("%d", n);
-
-	*pontos = malloc(sizeof(int) * (*p));
-
-	for(i=0; i<(*n); i++){
-		scanf("%d", &(*pontos[i]));
+	maior = abs(vet[0] - vet[1]);
+	for(i=1; i<n; i++){
+		if(i == n-1){
+			if(abs(vet[n-1] - (vet[0] + p)) > maior){
+				maior = abs(vet[n-1] - (vet[0] + p));
+			}
+		}
+		else if(abs(vet[i] - vet[i+1]) > maior){
+			maior = abs(vet[i] - vet[i+1]);
+		}
 	}
+
+	return maior;
 }
 
 void descobre_razao(int* vet, int p, int n, bool* tabela, int* ini_pt, int* razao){
 	int r, i, j;
-	
+	int maior_lado = descobre_maior_lado(vet, n, p);
+	//printf("%d\n", maior_lado);
+
 	*razao = -1;
 	*ini_pt = -1;
 
-	for(i=0; i<p; i++){
-		for(r=1; r<= p/3; r++){
-			for(j=1; j<=n && hash(vet, tabela, i, r*j, p); j++);
-			if(j < n){
+	for(i=0; i<n; i++){
+		for(r=maior_lado; r<= p/3 && p%r == 0; r++){
+			for(j=1; r*j < p && hash(tabela, vet[i] + r*j, p); j++);
+			if(r*(j) >= p){
+				// Completou a volta
 				*razao = r;
-				*ini_pt = i;
+				*ini_pt = vet[i];
 				return;
 			}
 		}
@@ -60,16 +73,29 @@ void descobre_razao(int* vet, int p, int n, bool* tabela, int* ini_pt, int* raza
 
 int main(){
 	int* pontos;
-	int n, p, r;
+	int n, p, r, i;
 	bool* tabela;
 	int ini_pt, razao;
 
-	carrega(&pontos, &n, &p);
+	scanf("%d", &p);
+	scanf("%d", &n);
+
+	pontos = (int*) malloc((p)*sizeof(int));
+
+	for(i=0; i<(n); i++){
+		scanf("%d", &(pontos[i]));;
+	}
+
 	inicializa_tabela(&tabela, p, pontos, n);
 
 	descobre_razao(pontos, p, n, tabela, &ini_pt, &razao);
 
-	printf("%d %d\n", ini_pt, razao);
+	if(razao <= 0 || ini_pt < 0){
+		printf("-1 -1");
+	}
+	else{
+		printf("%d %d", razao, ini_pt);
+	}
 
 	return 0;
 }
