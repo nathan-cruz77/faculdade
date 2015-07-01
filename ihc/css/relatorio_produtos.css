@@ -1,15 +1,6 @@
 .centraliza{
     margin-top: 10%;
     margin-left: 35%;
-    margin-right: auto;
-}
-
-.centralizaQuantidade{
-    margin-left: 5%;
-}
-
-.flutuaParaAEsquerda{
-    float: left;
 }
 
 .centralizaTitulo{
@@ -20,18 +11,22 @@
 }
 
 .btn-xlarge{
-  padding: 0% 12.75%;
+  padding: 0% 13.5%;
   font-size: 28px;
   line-height: normal;
   margin-top: 5%;
   margin-left: 35%;
 }
 
+.span2{
+  width: 300%
+}
+
 .btn-xlargeOK{
   font-size: 20px;
   line-height: normal;
   margin-top: 10%;
-  margin-left: 50%;
+  margin-left: 70%;
   background-color: #99FF99;
 }
 
@@ -41,11 +36,4 @@
   margin-top: 10%;
   margin-left: 10%;
   background-color: #FF6666;
-}
-
-.btn-xlargeFe{
-  font-size: 20px;
-  line-height: normal;
-  margin-top: 10%;
-  margin-left: 5%;
 }

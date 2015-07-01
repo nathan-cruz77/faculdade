@@ -1,0 +1,33 @@
+.navbar .btn{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.user-logo{
+    margin-top: -9px;
+    width: 32px;
+    height: 32px;
+}
+
+table.table-margin{
+    margin-top: 10%;
+}
+
+img.img-circle{
+    border-radius: 10px;
+}
+
+
+.centralizaTitulo{
+    margin-top: 15%;
+    margin-left: 35%;
+    font-size: 28px;
+}
+
+.btn-xlargeOK{
+  font-size: 20px;
+  line-height: normal;
+  margin-top: 15%;
+  margin-left: 50%;
+  background-color: 99FF99;
+}

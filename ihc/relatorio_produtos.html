@@ -3,8 +3,8 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
         <link href="css/bootstrap.min.css" rel="stylesheet"/>
+        <link href="css/relatorio_produtos.css" rel="stylesheet"/>
         <link href="css/home.css" rel="stylesheet"/>
         <link href="img/favicon.ico" rel="icon"/>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -21,6 +21,7 @@
                         <img class="user-logo img-circle" alt="Stop Coffee" src="img/logo.jpg"></a>
                     <p class="navbar-text navbar-left">Stop Coffee</p>
                 </div>
+
                 <div class="btn-group navbar-left" role="group">
                   <button type="button" class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       Relatorios</button>
@@ -38,44 +39,21 @@
                 <p class="navbar-text navbar-right"><a href="#" class="navbar-link">
                     <img src="img/usuario.png" class="user-logo"></a>
                 </p>
+
             </div>
         </nav>
 
-        <!-- Corpo da pagina -->
-        <div class="container">
-            <div class="table-responsive">
-                <table class="table table-striped table-margin">
-                    <caption><strong>Últimas vendas</strong></caption>
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Hora</th>
-                            <th>Produtos (Nome: Quantidade)</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>18/12/01</td>
-                            <td>22:39</td>
-                            <td>Coxinha: 3, Pao de Queijo: 2, Coca-Cola: 5</td>
-                            <td>R$ 50,89</td>
-                        </tr>
-                        <tr>
-                            <td>18/12/03</td>
-                            <td>21:54</td>
-                            <td>Coca-Cola: 9, Hamburger: 10</td>
-                            <td>R$ 20,90</td>
-                        </tr>
-                        <tr>
-                            <td>18/12/04</td>
-                            <td>12:45</td>
-                            <td>Caramelo: 10, Jujuba: 3, Suco: 5</td>
-                            <td>R$ 150,25</td>
-                        </tr>
-                    </tbody>
-                </table>
+        <!-- Body -->
+        <h2 class="centralizaTitulo">Relatorio</h2>
+        <form class="form-inline">
+            <div>
+                <div class="form-group right-top centraliza">
+                    <input type="text" class="form-contro span2" placeholder="Produto">
+                </div>
+                <br><button href="#" class="btn btn-default btn-xlarge">+</button>
+                <a href="relatorio.html" class="btn btn-default btn-xlargeOK" role="button">OK</a>
+                <a href="home.html" class="btn btn-default btn-xlargeCancel">Cancel</a>
             </div>
-        </div>
+        </form>
     </body>
 </html>

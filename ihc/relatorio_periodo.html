@@ -3,21 +3,21 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="js/jquery-1.11.3.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
+        <script type="text/javascript"
+         src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js">
+        </script>
+        <link rel="stylesheet" type="text/css" media="screen"
+          href="http://tarruda.github.com/bootstrap-datetimepicker/assets/css/bootstrap-datetimepicker.min.css">
+        <script type="text/javascript"
+         src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.pt-BR.js">
+        </script>
         <link href="css/bootstrap.min.css" rel="stylesheet"/>
-        <link href="css/venda.css" rel="stylesheet"/>
         <link href="css/home.css" rel="stylesheet"/>
         <link href="img/favicon.ico" rel="icon"/>
         <title>Aroma</title>
-
-        <script>
-        function Alert(){
-            if(window.confirm("Deseja mesmo fechar o caixa?")){
-                document.location.replace("relatorio.html");
-            }
-        };
-        </script>
+        <link href="css/relatorio_periodo.css" rel="stylesheet"/>
     </head>
 
     <body>
@@ -49,23 +49,47 @@
                 </p>
 
             </div>
+
         </nav>
 
         <!-- Body -->
-        <h2 class="centralizaTitulo">Realizar Venda</h2>
+        <h2 class="centralizaTitulo">Relatorio</h2>
         <form class="form-inline">
-            <div>
-                <div class="form-group right-top centraliza">
-                    <input type="text" class="form-control" placeholder="Produto">
-                </div>
-                <div class="form-group centraliza centralizaQuantidade">
-                    <input type="number" class="form-control" placeholder="Quantidade">
-                </div>
+              <div id="datetimepicker1" class="input-append date centraliza">
+                <input data-format="dd/MM/yyyy" type="text" placeholder="Data de inicio"></input>
+                  <i data-date-icon="icon-calendar" class="add-on">
+                    <img src="img/icon-calendar.png">
+                  </i>
+              </div>
+             <div id="datetimepicker2" class="input-append date centraliza2">
+                <input data-format="dd/MM/yyyy" type="text" placeholder="Data de fim"></input>
+                  <i data-date-icon="icon-calendar" class="add-on">
+                    <img src="img/icon-calendar.png">
+                  </i>
+             </div>
+              <div>
                 <br><button href="#" class="btn btn-default btn-xlarge">+</button>
-                <br><button href="#" class="btn btn-default btn-xlargeFe" onclick="return Alert();">Fechar Caixa</button>
                 <a href="relatorio.html" class="btn btn-default btn-xlargeOK" role="button">OK</a>
                 <a href="home.html" class="btn btn-default btn-xlargeCancel">Cancel</a>
             </div>
+
+
+            <!-- Imports -->
+
+          <script type="text/javascript">
+            $(function() {
+              $('#datetimepicker1').datetimepicker({
+                language: 'pt-BR'
+              });
+            });
+          </script>
+          <script type="text/javascript">
+            $(function() {
+              $('#datetimepicker2').datetimepicker({
+                language: 'pt-BR'
+              });
+            });
+          </script>
         </form>
     </body>
 </html>
