@@ -6,15 +6,15 @@ public class ProdutoEscalar implements Runnable {
     static double[] vet1, vet2;
     static double resultado;
 
-	synchronized void incrementa(double a){
-		this.resultado += a;
-	}
+    synchronized void incrementa(double a){
+        this.resultado += a;
+    }
 
     public static void main(String[] args) throws InterruptedException {
         nT = Integer.parseInt(args[0]);
-		n = Integer.parseInt(args[1]);
+        n = Integer.parseInt(args[1]);
         System.out.println("Threads: " + nT);
-		System.out.println("Entrada: " + n);
+        System.out.println("Entrada: " + n);
 
         intervalo = n / nT;
         resultado = 0;
@@ -45,7 +45,7 @@ public class ProdutoEscalar implements Runnable {
         {
             th[i].join();
             //System.out.println("thread " + i + " acabou");
-	}
+    }
 
         long tempoFinal = System.currentTimeMillis() - tempoInicial;
 

@@ -43,11 +43,11 @@ int main()
     // Ordenando a lista de coordenatas
     // sem esse passo, a funcao calculaEnvoltoria
     // nao retornara o resultado esperado
-	//print_vet(pontos, nPontos);
+    //print_vet(pontos, nPontos);
     ordenadaPorX(pontos, nPontos);
 
     /* Verifica se o metodo de ordenacao esta funcionando corretamente */
-	//print_vet(pontos, nPontos);
+    //print_vet(pontos, nPontos);
 
     // Calculando a envoltoria convexa
     calculaEnvoltoria(&pontos, nPontos, &envoltoria, &nEnvoltoria);
@@ -63,12 +63,12 @@ int main()
 
 
 void print_vet(ponto2D* vet, int n){
-	int i;
+    int i;
 
-	for(i=0; i<n; i++){
-		printf("%d ", vet[i].x);
-	}
-	printf("\n");
+    for(i=0; i<n; i++){
+        printf("%d ", vet[i].x);
+    }
+    printf("\n");
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -76,36 +76,36 @@ void print_vet(ponto2D* vet, int n){
 ///////////////////////////////////////////////////////////////////////////
 
 void ordenadaPorX (ponto2D *pontos, int nPontos){
-	/* InsertionSort */
+    /* InsertionSort */
 
-	int i, j;
-	ponto2D aux;
-	
-	for(j=1; j<nPontos; j++){
-		aux = pontos[j];
-		for(i=j-1; i>=0; i--){
-			if(pontos[i].x > aux.x){
-				pontos[i+1] = pontos[i];
-				if(i == 0){
-					pontos[i] = aux;
-					i=-1;
-				}
-			}
-			else{
-				pontos[i+1] = aux;
-				i=-1;
-			}
-		}
-	}
+    int i, j;
+    ponto2D aux;
+    
+    for(j=1; j<nPontos; j++){
+        aux = pontos[j];
+        for(i=j-1; i>=0; i--){
+            if(pontos[i].x > aux.x){
+                pontos[i+1] = pontos[i];
+                if(i == 0){
+                    pontos[i] = aux;
+                    i=-1;
+                }
+            }
+            else{
+                pontos[i+1] = aux;
+                i=-1;
+            }
+        }
+    }
 }
 
 void adicionaPonto(ponto2D* vet, ponto2D x, int* i){
-	(*i)++;
-	vet[(*i)] = x;
+    (*i)++;
+    vet[(*i)] = x;
 }
 
 void removePonto(ponto2D* vet, int* i){
-	(*i)--;
+    (*i)--;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -116,43 +116,43 @@ void calculaEnvoltoria (ponto2D **pontos, int nPontos, ponto2D **envoltoria, int
 {
     int i, t, x, j, k = -1;
     ponto2D *auxenvoltoria = malloc(sizeof(ponto2D) * nPontos);
-	*envoltoria = malloc(sizeof(ponto2D) * nPontos);
+    *envoltoria = malloc(sizeof(ponto2D) * nPontos);
 
 
-	adicionaPonto(auxenvoltoria, (*pontos)[0], &k);
+    adicionaPonto(auxenvoltoria, (*pontos)[0], &k);
 
-	for(i=1; i<nPontos; i++){
+    for(i=1; i<nPontos; i++){
 
-		while(k >= 1 && areaComSinal(&((*pontos)[i]), &(auxenvoltoria[k]), &(auxenvoltoria[k-1])) < 0){
-			removePonto(auxenvoltoria, &k);
-		}
+        while(k >= 1 && areaComSinal(&((*pontos)[i]), &(auxenvoltoria[k]), &(auxenvoltoria[k-1])) < 0){
+            removePonto(auxenvoltoria, &k);
+        }
 
-		adicionaPonto(auxenvoltoria, (*pontos)[i], &k);
-	}
+        adicionaPonto(auxenvoltoria, (*pontos)[i], &k);
+    }
 
-	t = k+1;
-	for(i=0; i<t; i++){
-		(*envoltoria)[i] = auxenvoltoria[i];
-	}
-	
-	k = -1;
-	adicionaPonto(auxenvoltoria, (*pontos)[nPontos-1], &k);
-	for(i=nPontos-2; i>=0; i--){
+    t = k+1;
+    for(i=0; i<t; i++){
+        (*envoltoria)[i] = auxenvoltoria[i];
+    }
+    
+    k = -1;
+    adicionaPonto(auxenvoltoria, (*pontos)[nPontos-1], &k);
+    for(i=nPontos-2; i>=0; i--){
 
-		while(k >= 1 && areaComSinal(&(auxenvoltoria[k-1]), &(auxenvoltoria[k]), (&(*pontos)[i])) > 0){
-			removePonto(auxenvoltoria, &k);
-		}
+        while(k >= 1 && areaComSinal(&(auxenvoltoria[k-1]), &(auxenvoltoria[k]), (&(*pontos)[i])) > 0){
+            removePonto(auxenvoltoria, &k);
+        }
 
-		adicionaPonto(auxenvoltoria, (*pontos)[i], &k);
-	}
-	
-	x = t;
-	for(i=x,j=1; j<=k; j++,i++){
-		(*envoltoria)[i] = auxenvoltoria[j];
-	}
+        adicionaPonto(auxenvoltoria, (*pontos)[i], &k);
+    }
+    
+    x = t;
+    for(i=x,j=1; j<=k; j++,i++){
+        (*envoltoria)[i] = auxenvoltoria[j];
+    }
 
-	t += k+1;
-	*nEnvoltoria = t;
+    t += k+1;
+    *nEnvoltoria = t;
 }
 
 
@@ -184,9 +184,9 @@ void leCoordenadas (ponto2D **pontos, int *nPontos)
 
     scanf ("%d", nPontos);
 
-	if((*nPontos) <= 0){
-		exit(EXIT_FAILURE);
-	}
+    if((*nPontos) <= 0){
+        exit(EXIT_FAILURE);
+    }
 
     (*pontos) = (ponto2D*) mallocX ((*nPontos) * sizeof (ponto2D));
 
@@ -199,10 +199,10 @@ void escreveCoordenadas (ponto2D **pontos, int nPontos)
 {
     int i;
 
-	for (i = 0; i < nPontos; i++){
-		printf ("%d %d \n", (*pontos)[i].x, (*pontos)[i].y);
-	}
-	
-	//printf("\n");
+    for (i = 0; i < nPontos; i++){
+        printf ("%d %d \n", (*pontos)[i].x, (*pontos)[i].y);
+    }
+    
+    //printf("\n");
 }
 

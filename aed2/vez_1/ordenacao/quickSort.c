@@ -11,44 +11,44 @@
 typedef int TChave;
 
 typedef struct {
-	TChave Chave;
-	/* outros compomentes */
+    TChave Chave;
+    /* outros compomentes */
 } TItem; 
 
 int Carrega(TItem **A)
 {
-	int i, n;
-	
-	scanf("%d", &n);
-	
-	if (n > 0) {
-		(*A) = (TItem *) malloc(n * sizeof(TItem));
-		for (i = 0; i < n ; i++)
-			scanf("%d", &(*A)[i].Chave);
-	}
-	else
-		(*A) = NULL;
+    int i, n;
+    
+    scanf("%d", &n);
+    
+    if (n > 0) {
+        (*A) = (TItem *) malloc(n * sizeof(TItem));
+        for (i = 0; i < n ; i++)
+            scanf("%d", &(*A)[i].Chave);
+    }
+    else
+        (*A) = NULL;
 
-	return n;
+    return n;
 }
 
 void Libera(TItem **A)
 {
-	if ((*A) != NULL) {
-		free(*A);
-		(*A) = NULL;
-	}
+    if ((*A) != NULL) {
+        free(*A);
+        (*A) = NULL;
+    }
 }
 
 void Imprime(TItem *A, int n)
 {
-	int i;
-	if (n > 0) {
-		printf("%d", A[0].Chave);
-		for (i = 1; i < n; i++)
-			printf(" %d", A[i].Chave);
-		printf("\n");
-	}
+    int i;
+    if (n > 0) {
+        printf("%d", A[0].Chave);
+        for (i = 1; i < n; i++)
+            printf(" %d", A[i].Chave);
+        printf("\n");
+    }
 }
 
 int quickSort_particao(TItem *A, int p, int r){
@@ -89,16 +89,16 @@ void quickSort(TItem *A, int n){
 
 int main()
 {
-	TItem *A;
-	int n;
+    TItem *A;
+    int n;
 
-	n = Carrega(&A);
-	quickSort_particao(A, 0, n-1);
-	Imprime(A, n);
-	quickSort(A, n);
-	Imprime(A, n);
-	Libera(&A);
-		
-	return 0;
+    n = Carrega(&A);
+    quickSort_particao(A, 0, n-1);
+    Imprime(A, n);
+    quickSort(A, n);
+    Imprime(A, n);
+    Libera(&A);
+        
+    return 0;
 }
 

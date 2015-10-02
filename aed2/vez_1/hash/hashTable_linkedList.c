@@ -6,103 +6,103 @@ typedef struct SLista *PLista;
 typedef int TChave;
 
 typedef struct {
-	TChave Chave;
-	/* outros compomentes */
+    TChave Chave;
+    /* outros compomentes */
 } TItem;
 
 typedef int TIndice;
 
 typedef struct {
-	PLista Lista;
-	TIndice m, n;
+    PLista Lista;
+    TIndice m, n;
 } THash;
 
 typedef struct SNo *TCelula;
 
 typedef struct SNo {
-	TItem Item;
-	TCelula Prox;
+    TItem Item;
+    TCelula Prox;
 } TNo;
 
 typedef struct SLista {
-	TCelula Primeiro, Ultimo;
+    TCelula Primeiro, Ultimo;
 } TLista;
 
 void TLista_Inicializa(TLista *L)
 {
-	L->Primeiro = (TCelula) malloc(sizeof(TNo));
-	L->Ultimo = L->Primeiro;
-	L->Primeiro->Prox = NULL;
+    L->Primeiro = (TCelula) malloc(sizeof(TNo));
+    L->Ultimo = L->Primeiro;
+    L->Primeiro->Prox = NULL;
 }
 
 int TLista_EhVazia(TLista *L)
 {
-	return (L->Primeiro == L->Ultimo);
+    return (L->Primeiro == L->Ultimo);
 }
 
 /* Insere um item no final da lista */
 void TLista_Insere(TLista *L, TItem x)
 {
-	L->Ultimo->Prox = (TCelula) malloc(sizeof(TNo));
-	L->Ultimo = L->Ultimo->Prox;
-	L->Ultimo->Item = x;
-	L->Ultimo->Prox = NULL;
+    L->Ultimo->Prox = (TCelula) malloc(sizeof(TNo));
+    L->Ultimo = L->Ultimo->Prox;
+    L->Ultimo->Item = x;
+    L->Ultimo->Prox = NULL;
 }
 
 /* Remove um dado no da lista */
 void TLista_Remove(TLista *L, TCelula No)
 {
-	TCelula aux;
+    TCelula aux;
 
-	aux = No->Prox;
-	No->Prox = aux->Prox;
-	if (No->Prox == NULL)
-		L->Ultimo = No;
-	free(aux);
+    aux = No->Prox;
+    No->Prox = aux->Prox;
+    if (No->Prox == NULL)
+        L->Ultimo = No;
+    free(aux);
 }
 
 /* Imprime os elementos da lista */
 void TLista_Imprime(TLista *L)
 {
-	TCelula No;
+    TCelula No;
 
-	No = L->Primeiro->Prox;
-	while (No != NULL) {
-		printf(" %d", No->Item.Chave);
-		No = No->Prox;
-	}
+    No = L->Primeiro->Prox;
+    while (No != NULL) {
+        printf(" %d", No->Item.Chave);
+        No = No->Prox;
+    }
 }
 
 void TLista_Libera(TLista *L)
 {
-	TCelula No;
+    TCelula No;
 
-	while (L->Primeiro->Prox != NULL) {
-		No = L->Primeiro->Prox;
-		L->Primeiro->Prox = No->Prox;
-		free(No);
-	}
-	free(L->Primeiro);
+    while (L->Primeiro->Prox != NULL) {
+        No = L->Primeiro->Prox;
+        L->Primeiro->Prox = No->Prox;
+        free(No);
+    }
+    free(L->Primeiro);
 }
 
 TIndice h(THash *T, TChave k)
 {
-	return k % T->m;
+    return k % T->m;
 }
 
 THash *Inicializa(int m)
 {
-	TIndice i;
-	THash *T;
+    TIndice i;
+    THash *T;
 
-	T = (THash *) malloc(sizeof(THash));
+    T = (THash *) malloc(sizeof(THash));
 
-	T->n = 0; T->m = m;
-	T->Lista = (PLista) malloc(T->m * sizeof(TLista));
-	for (i = 0; i < T->m; i++)
-		TLista_Inicializa(&T->Lista[i]);
+    T->n = 0; T->m = m;
+    T->Lista = (PLista) malloc(T->m * sizeof(TLista));
+    for (i = 0; i < T->m; i++)
+        TLista_Inicializa(&T->Lista[i]);
 
-	return T;
+    return T;
 }
 
 TCelula Pesquisa(THash *T, TChave x){
@@ -121,7 +121,7 @@ TCelula Pesquisa(THash *T, TChave x){
 }
 
 int Insere(THash *T, TItem x){
-	if(Pesquisa(T, x.Chave) == NULL){
+    if(Pesquisa(T, x.Chave) == NULL){
         TLista_Insere(&(T->Lista[h(T, x.Chave)]), x);
         T->n++;
         return 1;
@@ -143,59 +143,59 @@ int Remove(THash *T, TChave x)
 
 void Carrega(THash *T)
 {
-	int i, n;
-	TItem x;
+    int i, n;
+    TItem x;
 
-	scanf("%d", &n);
-	for (i = 0; i < n ; i++) {
-		scanf("%d", &x.Chave);
-		Insere(T, x);
-	}
+    scanf("%d", &n);
+    for (i = 0; i < n ; i++) {
+        scanf("%d", &x.Chave);
+        Insere(T, x);
+    }
 }
 
 void Libera(THash **T)
 {
-	THash *aux;
-	int i;
+    THash *aux;
+    int i;
 
-	aux = *T;
-	if (aux != NULL) {
-		for (i = 0; i < aux->m; i++) TLista_Libera(&aux->Lista[i]);
-		if (aux->Lista != NULL) free(aux->Lista);
-		free(aux);
-		(*T) = NULL;
-	}
+    aux = *T;
+    if (aux != NULL) {
+        for (i = 0; i < aux->m; i++) TLista_Libera(&aux->Lista[i]);
+        if (aux->Lista != NULL) free(aux->Lista);
+        free(aux);
+        (*T) = NULL;
+    }
 }
 
 void Imprime(THash *T)
 {
-	int i;
-	if (T->m > 0) {
-		for (i = 0; i < T->m; i++) {
-			printf("[%d]", i);
-			TLista_Imprime(&T->Lista[i]);
-			printf("\n");
-		}
-	}
+    int i;
+    if (T->m > 0) {
+        for (i = 0; i < T->m; i++) {
+            printf("[%d]", i);
+            TLista_Imprime(&T->Lista[i]);
+            printf("\n");
+        }
+    }
 }
 
 int main()
 {
-	TIndice m;
-	THash *T;
-	TItem x;
+    TIndice m;
+    THash *T;
+    TItem x;
 
-	scanf("%d", &m);
-	T = Inicializa(m);
-	Carrega(T);
-	scanf("%d", &x.Chave);
-	if (Pesquisa(T, x.Chave) == NULL)
-		Insere(T, x);
-	else
-		Remove(T, x.Chave);
-	Imprime(T);
-	Libera(&T);
+    scanf("%d", &m);
+    T = Inicializa(m);
+    Carrega(T);
+    scanf("%d", &x.Chave);
+    if (Pesquisa(T, x.Chave) == NULL)
+        Insere(T, x);
+    else
+        Remove(T, x.Chave);
+    Imprime(T);
+    Libera(&T);
 
-	return 0;
+    return 0;
 }
 

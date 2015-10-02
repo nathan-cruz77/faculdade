@@ -54,7 +54,7 @@ public class ProdutoEscalar implements Runnable {
         {
             th[i].join();
             //System.out.println("thread " + i + " acabou");
-	}
+    }
 
         long tempoFinal = System.currentTimeMillis() - tempoInicial;
 
