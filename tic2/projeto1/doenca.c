@@ -11,8 +11,8 @@
 #define beta 0.071428571
 #define zeta 0.166666667
 #define alfa 0.1
-#define mu 0.084
-#define sigma 0.0084
+#define mu 0.4
+#define sigma 0.04
 #define omega_1 0.00654
 #define omega_2 0.1
 
@@ -61,14 +61,17 @@ void Doenca(double delta, double gamaT, double psiT, double S, double I){
         //Taxa de variacao da populacao vacinada
         dV = (delta*S + psi - omega_1*V)*t;
 
+        /*
         fprintf(stdout, "%f\t%f\t%f\t%f\t%f\t%.2f\n", dS, dE, dI, dR, dV, t);
         fprintf(stdout, "%lf\t%lf\t%lf\t%lf\t%lf\t%.2lf\n", fabs(dS), fabs(dE), fabs(dI), fabs(dR), fabs(dV), t);
         printf("\n");
+        */
 
         /* Se chegou a um ponto de equilibrio, pare a simulacao */
-        if(fabs(dS) == 0.0 && fabs(dE) == 0.0 && fabs(dI) == 0.0 && fabs(dR) == 0.0 && fabs(dV) == 0.0){
-            t = tmax;
+        if(fabs(dS) <= 0.00001 && fabs(dE) <= 0.00001 && fabs(dI) <= 0.00001
+           && fabs(dR) <= 0.00001 && fabs(dV) <= 0.00001){
             fprintf(stdout, "%lf\t%lf\t%lf\t%lf\t%lf\t%.2lf\n", fabs(dS), fabs(dE), fabs(dI), fabs(dR), fabs(dV), t);
+            t = tmax;
         }
         else{
 
