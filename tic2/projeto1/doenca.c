@@ -3,7 +3,7 @@
 #include <math.h>
 #include <string.h>
 #define N 1
-#define tmax 100.
+#define tmax 1000.
 #define dt 0.01
 
 //Constantes
@@ -11,8 +11,8 @@
 #define beta 0.071428571
 #define zeta 0.166666667
 #define alfa 0.1
-#define mu 0.084
-#define sigma 0.0084
+#define mu 1.309
+#define sigma 0.1309
 #define omega_1 0.00654
 #define omega_2 0.1
 
@@ -43,33 +43,31 @@ void Doenca(double delta, double gamaT, double psiT, double S, double I){
     for(t=dt; t<tmax; t+=dt){
 
         //Verifica o quanto de populacao que ira nascer
-        gama = (omega_1*(S+E+R+V) + omega_2*I)*gamaT;
-        psi = (omega_1*(S+E+R+V) + omega_2*I)*psiT;
+        gama = (omega_1*(S+E+R+V) + omega_1*I)*gamaT;
+        psi = (omega_1*(S+E+R+V) + omega_1*I)*psiT;
 
         //Taxa de variacao da populacao sucetivel
-        dS = (lambda*R + gama - mu*I*S - omega_1*S - delta*S - sigma*E*S)*t;
+        dS = (lambda*R + gama - mu*I*S - omega_1*S - delta*S - sigma*E*S)*dt;
 
         //Taxa de variacao da populacao exposta
-        dE = (mu*I*S + alfa*I + sigma*E*S - omega_1*E - beta*E - zeta*E)*t;
+        dE = (mu*I*S + alfa*I + sigma*E*S - omega_1*E - beta*E - zeta*E)*dt;
 
         //Taxa de variacao da populacao infectada
-        dI = (zeta*E - omega_2*I - alfa*I)*t;
+        dI = (zeta*E - omega_1*I - alfa*I)*dt;
 
         //Taxa variacao da populacao recuperada
-        dR = (beta*E - lambda*R - omega_1*R)*t;
+        dR = (beta*E - lambda*R - omega_1*R)*dt;
 
         //Taxa de variacao da populacao vacinada
-        dV = (delta*S + psi - omega_1*V)*t;
+        dV = (delta*S + psi - omega_1*V)*dt;
 
-        fprintf(stdout, "%f\t%f\t%f\t%f\t%f\t%.2f\n", dS, dE, dI, dR, dV, t);
-        fprintf(stdout, "%lf\t%lf\t%lf\t%lf\t%lf\t%.2lf\n", fabs(dS), fabs(dE), fabs(dI), fabs(dR), fabs(dV), t);
-        printf("\n");
-
-        /* Se chegou a um ponto de equilibrio, pare a simulacao */
-        if(fabs(dS) == 0.0 && fabs(dE) == 0.0 && fabs(dI) == 0.0 && fabs(dR) == 0.0 && fabs(dV) == 0.0){
+        if((fabs(dS) <= 0.00001 && fabs(dE) <= 0.00001) &&
+           (fabs(dI) <= 0.00001 && fabs(dR) <= 0.00001) &&
+            fabs(dV) <= 0.00001){
             t = tmax;
-            fprintf(stdout, "%lf\t%lf\t%lf\t%lf\t%lf\t%.2lf\n", fabs(dS), fabs(dE), fabs(dI), fabs(dR), fabs(dV), t);
         }
+
+        //Somente ira crescentar se algum incremento for diferente de zero
         else{
 
             //Acrescenta a taxa na populacao correspondente
@@ -78,13 +76,6 @@ void Doenca(double delta, double gamaT, double psiT, double S, double I){
             I += dI;
             R += dR;
             V += dV;
-
-            /*printf("S = %f\n",S);
-            printf("E = %f\n",E);
-            printf("I = %f\n",I);
-            printf("R = %f\n",R);
-            printf("V = %f\n",V);
-            printf("S+E+I+R+V = %f\n",S+E+I+R+V);*/
 
             fprintf(arq,"%f\t%f\t%f\t%f\t%f\t%.2f\n", S, E, I, R, V, t);
         }

@@ -2,7 +2,7 @@
 #-*- coding: utf-8 -*-
 
 __author__ = 'Nathan Cruz <nathan.cruz@unifesp.br>'
-__created__ = '29/08/14'
+__created__ = '07/10/15'
 
 import math
 import unittest
@@ -14,36 +14,20 @@ class Ponto(object):
         self.__x = x
         self.__y = y
 
-    # Getters
-    def getX(self):
-        return self.__x
-
-    def getY(self):
-        return self.__y
-
-    # Setters
-    def setX(self, x):
-        self.__x = x
-
-    def setY(self, y):
-        self.__y = y
-
-    # Calcula a distancia
     def distancia(self, pto):
-
+        # Calcula a distancia
         if abs(pto.__x) == float('inf') or abs(pto.__y) == float('inf'):
             raise ValueError('Infinity detected')
         if abs(self.__x) == float('inf') or abs(self.__y) == float('inf'):
             raise ValueError('Infinity detected')
 
-        return (math.sqrt(abs(self.getX() - pto.getX())**2 +
-                         abs(self.getY() - pto.getY())**2))
+        return (math.sqrt(abs(self.__x - pto.__x)**2 +
+                         abs(self.__y - pto.__y)**2))
 
 
 class Triangulo(object):
 
     def __init__(self, p1, p2, p3):
-
         lado1 = round(p1.distancia(p2))
         lado2 = round(p2.distancia(p3))
         lado3 = round(p3.distancia(p1))
@@ -65,18 +49,8 @@ class Triangulo(object):
             self.__lado2 = lado2
             self.__lado3 = lado3
 
-    # Getters
-    def getLado1(self):
-        return self.__lado1
-
-    def getLado2(self):
-        return self.__lado2
-
-    def getLado3(self):
-        return self.__lado3
-
-    # Verifica se eh equilatero
     def __isEquilatero(self):
+        # Verifica se eh equilatero
         l1, l2, l3 = self.__lado1, self.__lado2, self.__lado3
 
         if l1 == l2 == l3:
@@ -84,8 +58,8 @@ class Triangulo(object):
         else:
             return False
 
-    # Verifica se eh isoceles #
     def __isIsoceles(self):
+        # Verifica se eh isoceles
         l1, l2, l3 = self.__lado1, self.__lado2, self.__lado3
 
         if l1 == l2 or l1 == l3 or l2 == l3:
@@ -93,8 +67,8 @@ class Triangulo(object):
         else:
             return False
 
-    # Verifica tipo do triangulo
     def tipo(self):
+        # Verifica tipo do triangulo
         if self.__isEquilatero():
             return 'equilatero'
         if self.__isIsoceles():
