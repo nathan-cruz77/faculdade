@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 
 
 /* Estrutura de dados para representar o enlace */
@@ -45,6 +46,9 @@ typedef const char* string;
 /* Tamanho do pacote a ser definido (em bytes) */
 const double L;
 
+/* Pacotes por segundo */
+const double alfa;
+
 
 /* Tenta abrir o arquivo especificado */
 FILE* my_open(string arq){
@@ -73,6 +77,7 @@ void carrega_entrada(FILE* entrada,
     double distancia;
 
     fscanf(entrada, "%lf", &L);
+	fscanf(entrada, "%lf", &alfa);
 
     fscanf(entrada, "%d", &quantidade_roteadores);
     quantidade_enlaces = quantidade_roteadores + 1;
@@ -124,16 +129,27 @@ double calcula_atraso(Enlace* v_enlace, int N_enlace,
     double atraso_propagacao = 0;
     double atraso_total = 0;
 
-    double quantidade_segmentos = L/1500.;
-    int i;
-    for(i=0; i<N_enlace; i++){
-        atraso_transmissao += quantidade_segmentos * (1500/v_enlace[i].capacidade);
+    int quantidade_segmentos = ceil(L/1500.);
+    int i, j;
+
+	for(i=0; i<N_enlace; i++){
+		atraso_transmissao += quantidade_segmentos *
+			((1500*8)/(v_enlace[i].capacidade*1000000));
+
         atraso_propagacao += quantidade_segmentos *
-            (1500 * v_enlace[i].distancia / v_enlace[i].velocidade_propagacao);
+            ((1500*8) * v_enlace[i].distancia / v_enlace[i].velocidade_propagacao);
+
+		/* Calcula o atraso de fila */
+		for(j=1; j<=quantidade_segmentos; j++){
+			atraso_fila += (j - 1) * ((1500*8)/(v_enlace[i].capacidade*1000000));
+			printf("Atraso_fila = %lf\n", atraso_fila);
+		}
     }
+
     for(i=0; i<N_roteador; i++){
         atraso_processamento += v_roteador[i].tempo_proc;
     }
+
     atraso_total = atraso_transmissao + atraso_processamento +
                    atraso_fila + atraso_propagacao;
     return atraso_total;
@@ -148,13 +164,7 @@ int main(int* len_args, char** args){
     int N_enlace, N_roteador;
     double total;
 
-    /*
-    if(len_args != NULL && *len_args >= 1){
-        entrada = my_open(args[1]);
-    }
-    else{*/
-        entrada = stdin;
-//    }
+    entrada = stdin;
 
     /* Extrai dados da entrada padrao ou do arquivo especificado */
     carrega_entrada(entrada, &v_enlace, &N_enlace, &v_roteador, &N_roteador);
