@@ -42,6 +42,10 @@ typedef struct{
 typedef const char* string;
 
 
+/* Tamanho do pacote a ser definido (em bytes) */
+const double L;
+
+
 /* Tenta abrir o arquivo especificado */
 FILE* my_open(string arq){
 
@@ -57,72 +61,108 @@ FILE* my_open(string arq){
 }
 
 /* Extrai os dados do arquivo de entrada */
-void carrega_entrada(FILE* entrada, Enlace* v_enlace, Roteador* v_roteador){
+void carrega_entrada(FILE* entrada,
+                     Enlace** v_enlace, int* N_enlace,
+                     Roteador** v_roteador, int* N_roteador){
 
-	int quantidade_roteadores, quantidade_enlaces;
-	int tamanho_filas, tempo_processamento;
-	int i;
+    int quantidade_roteadores, quantidade_enlaces;
+    int tamanho_filas;
+    int i;
 
-	double capacidade, velocidade_propagacao;
-	double distancia;
+    double capacidade, velocidade_propagacao, tempo_processamento;
+    double distancia;
 
-	fscanf(entrada, "%d", &quantidade_roteadores);
-	quantidade_enlaces = quantidade_roteadores + 1;
+    fscanf(entrada, "%lf", &L);
 
-	v_roteador = malloc(sizeof(Roteador) * quantidade_roteadores);
-	v_enlace = malloc(sizeof(Enlace) * quantidade_enlaces);
+    fscanf(entrada, "%d", &quantidade_roteadores);
+    quantidade_enlaces = quantidade_roteadores + 1;
+    *N_roteador = quantidade_roteadores;
+    *N_enlace = quantidade_enlaces;
 
-	/* Preenche o vetor de roteadores */
-	for(i=0; i<quantidade_roteadores; i++){
-		fscanf(entrada, "%d", tamanho_filas);
-		fscanf(entrada, "%d", tempo_processamento);
+    (*v_roteador) = malloc(sizeof(Roteador) * quantidade_roteadores);
+    (*v_enlace) = malloc(sizeof(Enlace) * quantidade_enlaces);
 
-		/* Define os valores do roteador "atual" de acordo
-		 * com os parametros lidos */
-		v_roteador[i].max = tamanho_filas;
-		v_roteador[i].tempo_proc = tempo_processamento;
+    /* Preenche o vetor de roteadores */
+    for(i=0; i<quantidade_roteadores; i++){
+        fscanf(entrada, "%d", &tamanho_filas);
+        fscanf(entrada, "%lf", &tempo_processamento);
 
-		/* Ajusta as filas para comecarem vazias */
-		v_roteador[i].ethA_in = 0;
-		v_roteador[i].ethA_out = 0;
-		v_roteador[i].ethB_in = 0;
-		v_roteador[i].ethB_out = 0;
-	}
+        /* Define os valores do roteador "atual" de acordo
+         * com os parametros lidos */
+        (*v_roteador)[i].max = tamanho_filas;
+        (*v_roteador)[i].tempo_proc = tempo_processamento;
 
-	/* Preenche o vetor de enlaces */
-	for(i=0; i<quantidade_enlaces; i++){
-		fscanf(entrada, "%lf", &capacidade);
-		fscanf(entrada, "%lf", &velocidade_propagacao);
-		fscanf(entrada, "%lf", &distancia);
+        /* Ajusta as filas para comecarem vazias */
+        (*v_roteador)[i].ethA_in = 0;
+        (*v_roteador)[i].ethA_out = 0;
+        (*v_roteador)[i].ethB_in = 0;
+        (*v_roteador)[i].ethB_out = 0;
+    }
 
-		/* Define os valores do enlace atual de acordo
-		 * com os parametros lidos */
-		v_enlace[i].capacidade = capacidade;
-		v_enlace[i].velocidade_propagacao = velocidade_propagacao;
-		v_enlace[i].distancia = distancia;
-	}
+    /* Preenche o vetor de enlaces */
+    for(i=0; i<quantidade_enlaces; i++){
+        fscanf(entrada, "%lf", &capacidade);
+        fscanf(entrada, "%lf", &velocidade_propagacao);
+        fscanf(entrada, "%lf", &distancia);
+
+        /* Define os valores do enlace atual de acordo
+         * com os parametros lidos */
+        (*v_enlace)[i].capacidade = capacidade;
+        (*v_enlace)[i].velocidade_propagacao = velocidade_propagacao;
+        (*v_enlace)[i].distancia = distancia;
+    }
+}
+
+
+/* Calcula o atraso total */
+double calcula_atraso(Enlace* v_enlace, int N_enlace,
+                      Roteador* v_roteador, int N_roteador){
+
+    double atraso_transmissao = 0;
+    double atraso_processamento = 0;
+    double atraso_fila = 0;
+    double atraso_propagacao = 0;
+    double atraso_total = 0;
+
+    double quantidade_segmentos = L/1500.;
+    int i;
+    for(i=0; i<N_enlace; i++){
+        atraso_transmissao += quantidade_segmentos * (1500/v_enlace[i].capacidade);
+        atraso_propagacao += quantidade_segmentos *
+            (1500 * v_enlace[i].distancia / v_enlace[i].velocidade_propagacao);
+    }
+    for(i=0; i<N_roteador; i++){
+        atraso_processamento += v_roteador[i].tempo_proc;
+    }
+    atraso_total = atraso_transmissao + atraso_processamento +
+                   atraso_fila + atraso_propagacao;
+    return atraso_total;
 }
 
 
 int main(int* len_args, char** args){
 
-	Enlace* v_enlace = NULL;
-    Roteador* v_roteador = NULL;
-	FILE* entrada;
+    Enlace* v_enlace;
+    Roteador* v_roteador;
+    FILE* entrada;
+    int N_enlace, N_roteador;
+    double total;
 
-	printf("len_args = %d\n", *len_args);
-	if(*len_args >= 1){
-		entrada = my_open(args[1]);
-	}
-	else{
-		entrada = stdin;
-	}
+    /*
+    if(len_args != NULL && *len_args >= 1){
+        entrada = my_open(args[1]);
+    }
+    else{*/
+        entrada = stdin;
+//    }
 
     /* Extrai dados da entrada padrao ou do arquivo especificado */
-    carrega_entrada(entrada, v_enlace, v_roteador);
+    carrega_entrada(entrada, &v_enlace, &N_enlace, &v_roteador, &N_roteador);
 
-	/* Calcula atraso total (fim a fim) */
-	calcula_atraso(v_enlace, N_enlace, v_roteador, N_roteador);
+    /* Calcula atraso total (fim a fim) */
+    total = calcula_atraso(v_enlace, N_enlace, v_roteador, N_roteador);
+
+    printf("Atraso total = %.4lfs\n", total);
 
     return 0;
 }
