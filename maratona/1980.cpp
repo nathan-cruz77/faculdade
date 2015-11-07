@@ -4,7 +4,7 @@
 
 using namespace std;
 
-int fatorial(int i){
+long double fatorial(long double i){
 	if(i <= 1){
 		return 1;
 	}
@@ -12,10 +12,11 @@ int fatorial(int i){
 }
 
 int main(){
-	int i, s;
+	int i;
+    long double s;
 	string a;
-	map<char, int> elemento_ocorrencias;
-	map<char, int>::iterator it;
+	map<char, long double> elemento_ocorrencias;
+	map<char, long double>::iterator it;
 
 	for(cin >> a; a != "0"; cin >> a){
 
@@ -34,7 +35,8 @@ int main(){
 			s *= fatorial(it->second);
 		}
 
-		cout << fatorial(a.size()) / s << endl;
+        cout.precision(0);
+		cout << fixed << fatorial(a.size()) / s << endl;
 
 		elemento_ocorrencias.clear();
 	}
