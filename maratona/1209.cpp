@@ -1,7 +1,6 @@
 #include <iostream>
 #include <map>
 #include <list>
-#include <deque>
 #include <algorithm>
 #include <cstdio>
 
@@ -54,25 +53,21 @@ void remove_no(map<int, list<int> >& grafo,
 void subgrafo_maximal(map<int, list<int> >& grafo, int k){
     map<int, list<int> >::iterator grafo_iterador;
 
-    if(grafo.size() < k+1){
-        grafo.clear();
-        return;
-    }
-
+    /* Itera sobre o grafo ateh encontrar um vertice com grau menor que k
+     * ou atingir o fim */
     for(grafo_iterador = grafo.begin();
         grafo_iterador != grafo.end() && grafo_iterador->second.size() >= k;
         grafo_iterador++);
 
     /* Saiu do laco pq chegou em um elemento com menos conexoes
-    * que o minimo */
+     * que o minimo. Remove o vertice com grau menor que k e verifica o
+     * grafo restante*/
     if(grafo_iterador != grafo.end()){
         remove_no(grafo, grafo_iterador);
         subgrafo_maximal(grafo, k);
     }
 
     /* Saiu do laco pq acabou de processar todo mundo; */
-
-
 }
 
 int main(){
@@ -85,6 +80,7 @@ int main(){
 
     while(cin >> n >> m >> k){
 
+        /* Se o numero de arestas for menor que o grau minimo exigido */
         if(m < k){
             printf("0\n");
             continue;
@@ -101,10 +97,10 @@ int main(){
             grafo[b].push_back(a);
         }
 
-        /* Processa o grafo recursivamente */
+        /* Transforma o grafo no subgrafo desejado */
         subgrafo_maximal(grafo, k);
 
-        /* Imprime os elementos remanescentes */
+        /* Imprime o grafo depois da transformacao */
         for(mapa_iterador = grafo.begin(), j=0;
             mapa_iterador != grafo.end();
             mapa_iterador++, j++){
@@ -117,6 +113,7 @@ int main(){
             }
         }
 
+        /* Se o grafo resultante for vazio */
         if(grafo.size() == 0){
             printf("0\n");
         }
