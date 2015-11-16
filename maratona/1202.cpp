@@ -50,22 +50,19 @@ int main(){
 
     int n, m, k;
     int a, b;
-    int i;
+    int i, j;
 
     vector<int> amigos;
     vector< vector<int> > matriz;
 
     /* Enquanto tiver coisa para ler da entrada padrao */
-    //while(cin >> n >> m >> k){
-
-    cin >> n;
-    k = 2;
+    while(cin >> n >> m >> k){
 
         alguem_foi_impresso = false;
         limpa_vectors(amigos, matriz, n);
 
         /* Le as ligacoes */
-        for(i=0; i<n; i++){
+        for(i=0; i<m; i++){
             cin >> a >> b;
 
             matriz[a - 1][b - 1] = 1;
@@ -83,30 +80,41 @@ int main(){
             cout << i+1 << endl;
         }
         else{
+
+            /* Remove os elementos com mais de 0 e menos de k amigos */
             for(i=0; i<n; i++){
                 if(amigos[i] > 0 && amigos[i] < k){
                     remove_elemento(matriz, amigos, k, i);
                 }
             }
 
+            /* Busca o indice do ultimo elemento que sera impresso */
+            for(i=1, j=0; i<n; i++){
+                if(amigos[i] > 0){
+                    j = i;
+                }
+            }
+
             /* Imprime todos que tem mais de 0 amigos */
-            for(i=1; i<n; i++){
+            for(i=0; i<j; i++){
                 if(amigos[i] > 0){
                     cout << i+1 << " ";
                     alguem_foi_impresso = true;
                 }
             }
 
-            cout << "\b\b\b\b\b";
-            cout.flush();
-            cout << endl;
+			/* Imprime o ultimo elemento, se ele existir */
+			if(amigos[i] > 0){
+	            cout << i+1 << endl;
+				alguem_foi_impresso = true;
+			}
 
         }
 
         if(!alguem_foi_impresso){
             cout << 0 << endl;
         }
-    //}
+    }
 
     return 0;
 }
