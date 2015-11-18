@@ -26,9 +26,8 @@ struct Plano{
 	int a, b, c, d;
 
 
-	bool tem_este_planeta(int x, int y, int z){
-		if((a*x + b*y + c*z) == this->d){
-			//cout << a << "*" << x << " " << b << "*" << y << " " << c << "*" << z << " == " << d;
+	int planeta_maior(int x, int y, int z){
+		if((a*x + b*y + c*z) > this->d){
 			return true;
 		}
 		return false;
@@ -41,52 +40,57 @@ int main(){
 	int x, y, z;
 
 	int i, j;
-	map<int, Plano> regioes;
-	map<int, Plano>::iterator regioes_iterator;
+
+	vector<int> aux;
+	vector<Plano> regioes;
+
+	map<vector<int>, int> repeticoes;
+	map<vector<int>, int>::iterator repeticoes_iterador;
 
 	cin >> m;
 	cin >> n;
 
 	for(i=0; i<m; i++){
 		cin >> a >> b >> c >> d;
-		regioes[i] = Plano(a, b, c, d);
-
-		cout << "Regioes[" << i << "]:" << endl;
-
-		cout << "\ta = " << regioes[i].a << endl;
-		cout << "\tb = " << regioes[i].b << endl;
-		cout << "\tc = " << regioes[i].c << endl;
-		cout << "\td = " << regioes[i].d << endl;
-		cout << "\tquantidade = " << regioes[i].quantidade << endl;
-
-		cout << endl;
+		regioes.push_back(Plano(a, b, c, d));
 	}
 
+	aux.resize(m);
+
 	for(i=0; i<n; i++){
+		fill(aux.begin(), aux.end(), 0);
+
 		cin >> x >> y >> z;
 
-		for(regioes_iterator = regioes.begin();
-			regioes_iterator != regioes.end();
-			regioes_iterator++){
-			cout << "Elemento: " << regioes_iterator->first << endl;
-			if(regioes_iterator->second.tem_este_planeta(x, y, z)){
-				cout << "Registrado: (" << x << ", " << y << ", " << z << ")";
-				cout << " -> regiao " << regioes_iterator->first << endl;
-				regioes_iterator->second.quantidade++;
-				break;
+		for(j=0; j<regioes.size(); j++){
+			if(regioes[j].planeta_maior(x, y, z)){
+				aux[j] = 1;
 			}
+			else{
+				aux[j] = -1;
+			}
+		}
+
+		if(repeticoes.find(aux) != repeticoes.end()){
+			repeticoes[aux] += 1;
+		}
+		else{
+			repeticoes[aux] = 1;
 		}
 	}
 
 	j = 0;
-	for(i=1; i<n; i++){
-		if(regioes[i].quantidade > regioes[j].quantidade){
-			j = i;
+	for(repeticoes_iterador = repeticoes.begin();
+		repeticoes_iterador != repeticoes.end();
+		repeticoes_iterador++){
+
+		if(repeticoes_iterador->second > j){
+			j = repeticoes_iterador->second;
 		}
+
 	}
 
-	cout << regioes.size() << endl;
-	cout << regioes[j].quantidade << endl;
+	cout << j << endl;
 
 	return 0;
 }
