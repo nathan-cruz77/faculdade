@@ -1,12 +1,18 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
+// C stuff
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+
+// Constantes
 #define N 7
-#define tmax 100.
+#define tmax 10000.
 #define dt 0.01
 
-//Constantes
 #define lambda 0.005555556
 #define beta 0.071428571
 #define zeta 0.166666667
@@ -16,7 +22,9 @@
 #define omega_1 0.00654
 #define omega_2 0.0001
 
-typedef struct{
+using namespace std;
+
+struct Continente{
 
     /* Populacoes do continente */
     long double S;
@@ -25,17 +33,25 @@ typedef struct{
     long double R;
     long double V;
 
-    /* Coeficientes migratorios */
-    long double fluxo;
+	/* Peso da forca de infeccao */
+	long double peso;
 
-    /* Coeficientes da forca de infeccao */
-    long double aumenta;
-    long double diminui;
+	/* Construtor */
+	Continente(long double I, long double x, long double y){
 
-} Continente;
+		this->E = 0;
+		this->R = 0;
+		this->V = 0;
 
-Continente cont[N];
-double mat[N][N];
+		this->I = I*(x);
+		this->S = 1 - this->I;
+
+		this->peso = (y);
+	}
+
+};
+
+vector<Continente> cont;
 
 void le_entrada(char** args, double* gamaT, double* delta, double* I){
     *gamaT =  (double) strtod(args[1], (char**) NULL);
@@ -43,11 +59,11 @@ void le_entrada(char** args, double* gamaT, double* delta, double* I){
     *I =  (double) strtod(args[3], (char**) NULL);
 }
 
-void Doenca(double delta, double gamaT, double psiT){
+void Doenca(double delta, double gamaT, double psiT, vector<vector<double> > mat){
     double dS[N], dE[N], dI[N], dR[N], dV[N], gama=0, psi=0;
     double t, soma;
     int j, y;
-    int NP[N];
+    vector<int> NP(N);
 
     //Arquivo para o grafico
     char impr_doenca[] = "doenca.txt";
@@ -60,6 +76,8 @@ void Doenca(double delta, double gamaT, double psiT){
         return ;
     }
 
+	fill(NP.begin(), NP.end(), 1);
+
     for(t=dt; t<tmax; t+=dt){
 
         for(j=0; j<N; j++){
@@ -70,12 +88,12 @@ void Doenca(double delta, double gamaT, double psiT){
                     omega_2*cont[j].I)*psiT;
 
             //Taxa de variacao da populacao sucetivel
-            dS[j] = (lambda*cont[j].R + gama - (mu)*cont[j].I*cont[j].S -
+            dS[j] = (lambda*cont[j].R + gama - (mu * cont[j].peso)*cont[j].I*cont[j].S -
                     omega_1*cont[j].S - delta*cont[j].S -
                     sigma*cont[j].E*cont[j].S)*dt;
 
             //Taxa de variacao da populacao exposta
-            dE[j] = ((mu)*cont[j].I*
+            dE[j] = ((mu * cont[j].peso)*cont[j].I*
                     cont[j].S + alfa*cont[j].I + sigma*cont[j].E*cont[j].S -
                     omega_1*cont[j].E - beta*cont[j].E -
                     zeta*cont[j].E)*dt;
@@ -91,8 +109,8 @@ void Doenca(double delta, double gamaT, double psiT){
 
             /* Atualiza as derivadas com base na matriz de coeficientes */
             for(y=0; y<N; y++){
-                dS[j] -= (mat[j][y] * cont[j].S * cont[y].I) * dt;
-                dE[j] += (mat[j][y] * cont[j].S * cont[y].I) * dt;
+                dS[j] -= (mat[j][y]*10 * cont[j].S * cont[y].I) * dt;
+                dE[j] += (mat[j][y]*10 * cont[j].S * cont[y].I) * dt;
             }
 
             if((fabs(dS[j]) <= 0.00001 && fabs(dE[j]) <= 0.00001) &&
@@ -101,6 +119,8 @@ void Doenca(double delta, double gamaT, double psiT){
                 NP[j] = 0;
             }
         }
+
+        fprintf(arq, "%lf\t", t);
 
         soma = 0;
         for(j=0; j<N; j++){
@@ -113,51 +133,58 @@ void Doenca(double delta, double gamaT, double psiT){
 
             fprintf(arq,"%llf\t", cont[j].I);
             soma += NP[j];
-        }
-        fprintf(arq, "%lf\n", t);
+		}
 
-        if(soma == 0){
+
+        fprintf(arq,"\n");
+
+
+        if(soma == 0 && t >= tmax / 100){
             t = tmax;
         }
     }
 }
 
-void main(int a, char** args){
+int main(int a, char** args){
     double gamaT; //Porcentagem de pessoas que nascem e nao sao vacinadas
     double delta; //Porcentagem de pessoas que sao vacinas adultas
     double psiT;
     double I;
     int i, j;
 
-	/* Inicializa a matriz de coeficientes de turismo */
-	/*
-	for(i=0; i<N; i++){
-		for(j=0; j<N; j++){
-			mat[i][j] = 0;
-		}
-	}
-	*/
+	vector<vector<double> > pesos(N);
 
-	mat = {
-		{0, 0.000367, 0.001088, 0.001168, 0.002275, 0.002522, 0.000537}, // America do norte
-		{0.002236, 0, 0.000300, 0.001174, 0.000838, 0.001597, 0.001291}, // America do Sul
-		{0.002031, 0.000487, 0, 0.000796, 0.000278, 0.001969, 0.000692}, // America Central
-		{0.001472, 0.001291, 0.001916, 0, 0.001353, 0.000386, 0.002559}, // Oceania
-		{0.001929, 0.002435, 0.002161, 0.002569, 0, 0.002628, 0.000800}, // Asia
-		{0.002540, 0.002263, 0.002507, 0.002733, 0.001814, 0, 0.002232}, // Europa
-		{0.001893, 0.000380, 0.000037, 0.002585, 0.001480, 0.001029, 0}  // Africa
+	for(int a=0; a<N; a++){
+		pesos[a].resize(N);
+		fill(pesos[a].begin(), pesos[a].end(), 0);
+	}
+
+	/* Preenche a matriz de coeficientes "migratorios" */
+	//mat = aloca_matriz_quadrada(N);
+	//int mat[N][N]	=  {
+	pesos = {
+	    {0, 0.002236, 0.002031, 0.001472, 0.001929, 0.00254, 0.001893},  // America do Norte
+	    {0.002236, 0, 0.000487, 0.001291, 0.002435, 0.002263, 0.00038},  // America do Sul
+	    {0.002031, 0.000487, 0, 0.001916, 0.002161, 0.002507, 0.000370}, // America Central
+    	{0.001472, 0.001291, 0.001916, 0, 0.002569, 0.002733, 0.002585}, // Oceania
+	    {0.001929, 0.002435, 0.002161, 0.002569, 0, 0.001814, 0.00148},  // Asia
+    	{0.00254, 0.002263, 0.002507, 0.002733, 0.001814, 0, 0.001029},  // Europa
+	    {0.001893, 0.00038, 0.000370, 0.002585, 0.00148, 0.001029, 0}    // Africa
 	};
+
 
     le_entrada(args, &gamaT, &delta, &I);
     psiT = 1 - gamaT;
 
-    for(i=0; i<N; i++){
-        cont[i].E = 0;
-        cont[i].R = 0;
-        cont[i].V = 0;
-        cont[i].I = I;
-        cont[i].S = 1 - I;
-    }
+	cont.push_back(Continente(I, 0.119135957503718410, 0.464881211444537530));
+	cont.push_back(Continente(I, 0.869204852789066600, 0.708006858112096300));
+	cont.push_back(Continente(I, 0.698547644867993900, 0.944783986808354100));
+	cont.push_back(Continente(I, 0.026025065458993413, 0.815046139651305200));
+	cont.push_back(Continente(I, 0.446197980439416300, 0.588356209213869600));
+	cont.push_back(Continente(I, 0.377769568060116100, 0.828901736971465100));
+	cont.push_back(Continente(I, 0.107767521173018800, 0.039485700084777364));
 
-    Doenca(delta,gamaT,psiT);
+    Doenca(delta, gamaT, psiT, pesos);
+
+	return 0;
 }
