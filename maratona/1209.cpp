@@ -5,6 +5,29 @@
 
 using namespace std;
 
+inline void fastRead_int(int &x)
+{
+	register int c = getchar();
+	x = 0;
+	int neg = 0;
+
+	for(; ((c < 48 || c > 57) && c != '-'); c = getchar());
+
+	if(c == '-')
+	{
+		neg = 1;
+		c = getchar();
+	}
+
+	for(; c > 47 && c < 58 ; c = getchar())
+	{
+		x = (x << 1) + (x << 3) + c - 48;
+	}
+
+	if(neg)
+		x = -x;
+}
+
 void limpa_vectors(vector<int>& amigos, vector<vector<int> >& matriz, int n){
 
     /* Realoca o vetor e coloca 0 em tudo */
@@ -63,7 +86,8 @@ int main(){
 
         /* Le as ligacoes */
         for(i=0; i<m; i++){
-            cin >> a >> b;
+            fastRead_int(a);
+			fastRead_int(b);
 
             matriz[a - 1][b - 1] = 1;
             matriz[b - 1][a - 1] = 1;
@@ -74,10 +98,10 @@ int main(){
 
         if(k == 0){
             for(i = 0; i < n-1; i++){
-                cout << i+1 << " ";
+                printf("%d ", i+1);
                 alguem_foi_impresso = true;
             }
-            cout << i+1 << endl;
+            printf("%d\n", i+1);
         }
         else{
 
@@ -98,21 +122,21 @@ int main(){
             /* Imprime todos que tem mais de 0 amigos */
             for(i=0; i<j; i++){
                 if(amigos[i] > 0){
-                    cout << i+1 << " ";
+	                printf("%d ", i+1);
                     alguem_foi_impresso = true;
                 }
             }
 
 			/* Imprime o ultimo elemento, se ele existir */
 			if(amigos[i] > 0){
-	            cout << i+1 << endl;
+	            printf("%d\n", i+1);
 				alguem_foi_impresso = true;
 			}
 
         }
 
         if(!alguem_foi_impresso){
-            cout << 0 << endl;
+            printf("0\n");
         }
     }
 
