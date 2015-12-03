@@ -68,7 +68,7 @@ if __name__ == '__main__':
 
         # Imprime as linhas de plot
         print('plot', end=' ', file=out)
-        
+
         print(max_y, len(CONTINENTES))
         for i, continente in zip(range(2, max_y+1), CONTINENTES):
             if i != max_y:

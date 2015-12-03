@@ -1,3 +1,17 @@
+/*
+ * Sobre as migracoes internacionais:
+ *
+ * 60%: (pais em desenvolvimento) -> (pais em desenvolvimento)
+ *
+ * 37%: (pais em desenvolvimento) ->    (pais desenvolvido)
+ *
+ *  3%:    (pais desenvolvido) 	  -> (pais em desenvolvimento)
+ *
+ *  Devemos levar isto em consideracao. Alem de que a maioria
+ *  esmagadora do fluxo migratorio nao eh internacional, mas
+ *  sim entre regioes do mesmo pais.
+ */
+
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -36,8 +50,8 @@ struct Continente{
     /* Peso da forca de infeccao */
     long double peso;
 
-    /* Construtor */
-    Continente(long double I, long double peso){
+	/* Construtor */
+	Continente(long double I, long double x, long double idh){
 
         this->E = 0;
         this->R = 0;
@@ -46,8 +60,8 @@ struct Continente{
         this->I = I * peso;
         this->S = 1 - this->I;
 
-        this->peso = peso;
-    }
+		this->peso = 1 - idh;
+	}
 
 };
 
@@ -60,15 +74,25 @@ void le_entrada(char** args, double* gamaT, double* delta, double* I){
 }
 
 void Doenca(double delta, double gamaT, double psiT, vector<vector<double> > mat){
-    double dS[N], dE[N], dI[N], dR[N], dV[N], gama=0, psi=0;
+    double gama = 0;
+	double psi = 0;
     double t, soma;
+
     int j, y;
     vector<int> NP(N);
+
+	/* Vetores de variacao */
+	vector<double> dS(N);
+	vector<double> dE(N);
+	vector<double> dI(N);
+	vector<double> dR(N);
+	vector<double> dV(N);
 
     //Arquivo para o grafico
     char impr_doenca[] = "doenca.txt";
     FILE *arq;
-    //Abertura do arquivo
+
+	//Abertura do arquivo
     arq = fopen(impr_doenca, "w");
 
     if(arq == NULL){
@@ -154,10 +178,16 @@ int main(int a, char** args){
 
     vector<vector<double> > pesos(N);
 
-    for(int a=0; a<N; a++){
-        pesos[a].resize(N);
-        fill(pesos[a].begin(), pesos[a].end(), 0);
-    }
+	/* Preenche a matriz de coeficientes "migratorios" */
+	pesos = {
+	    {0, 0.002236, 0.002031, 0.001472, 0.001929, 0.00254, 0.001893},  // America do Norte
+	    {0.002236, 0, 0.000487, 0.001291, 0.002435, 0.002263, 0.00038},  // America do Sul
+	    {0.002031, 0.000487, 0, 0.001916, 0.002161, 0.002507, 0.000370}, // America Central
+    	{0.001472, 0.001291, 0.001916, 0, 0.002569, 0.002733, 0.002585}, // Oceania
+	    {0.001929, 0.002435, 0.002161, 0.002569, 0, 0.001814, 0.00148},  // Asia
+    	{0.00254, 0.002263, 0.002507, 0.002733, 0.001814, 0, 0.001029},  // Europa
+	    {0.001893, 0.00038, 0.000370, 0.002585, 0.00148, 0.001029, 0}    // Africa
+	};
 
     /* Preenche a matriz de coeficientes "migratorios" */
     pesos = {
