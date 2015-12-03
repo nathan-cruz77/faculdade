@@ -61,9 +61,9 @@ if __name__ == '__main__':
         print('plot', end=' ', file=out)
         max_y, indice_x = conta_quantidade_y(inp)
 
-        print(max_y, len(CONTINENTES))
-        for i, continente in zip(range(2, max_y+1), CONTINENTES):
-            if i != max_y:
-                print('    \'{}\' using {}:{} with lines title \'{}\', \\'.format(ARQ_ENTRADA, indice_x, i, continente), file=out)
+        # print(max_y, len(CONTINENTES))
+        for y, continente in zip(range(2, max_y+1), CONTINENTES):
+            if y != max_y:
+                print('    \'{}\' using {}:{} with lines title \'{}\', \\'.format(ARQ_ENTRADA, indice_x, y, continente), file=out)
             else:
-                print('     \'{}\' using {}:{} with lines'.format(ARQ_ENTRADA, indice_x, i, continente), file=out)
+                print('     \'{}\' using {}:{} with lines title \'{}\''.format(ARQ_ENTRADA, indice_x, y, continente), file=out)
