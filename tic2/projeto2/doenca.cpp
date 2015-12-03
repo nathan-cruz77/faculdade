@@ -1,16 +1,16 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <cstdio>
 
 // C stuff
-#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
 
 // Constantes
 #define N 7
-#define tmax 10000.
+#define tmax 1000.
 #define dt 0.01
 
 #define lambda 0.005555556
@@ -20,7 +20,7 @@
 #define mu 1.309
 #define sigma 0.1309
 #define omega_1 0.00654
-#define omega_2 0.0001
+#define omega_2 0.008
 
 using namespace std;
 
@@ -33,21 +33,21 @@ struct Continente{
     long double R;
     long double V;
 
-	/* Peso da forca de infeccao */
-	long double peso;
+    /* Peso da forca de infeccao */
+    long double peso;
 
-	/* Construtor */
-	Continente(long double I, long double x, long double y){
+    /* Construtor */
+    Continente(long double I, long double peso){
 
-		this->E = 0;
-		this->R = 0;
-		this->V = 0;
+        this->E = 0;
+        this->R = 0;
+        this->V = 0;
 
-		this->I = I*(x);
-		this->S = 1 - this->I;
+        this->I = I * peso;
+        this->S = 1 - this->I;
 
-		this->peso = (y);
-	}
+        this->peso = peso;
+    }
 
 };
 
@@ -76,7 +76,7 @@ void Doenca(double delta, double gamaT, double psiT, vector<vector<double> > mat
         return ;
     }
 
-	fill(NP.begin(), NP.end(), 1);
+    fill(NP.begin(), NP.end(), 1);
 
     for(t=dt; t<tmax; t+=dt){
 
@@ -109,8 +109,8 @@ void Doenca(double delta, double gamaT, double psiT, vector<vector<double> > mat
 
             /* Atualiza as derivadas com base na matriz de coeficientes */
             for(y=0; y<N; y++){
-                dS[j] -= (mat[j][y]*10 * cont[j].S * cont[y].I) * dt;
-                dE[j] += (mat[j][y]*10 * cont[j].S * cont[y].I) * dt;
+                dS[j] -= (mat[j][y] * 10 * cont[j].S * cont[y].I) * dt;
+                dE[j] += (mat[j][y] * 10 * cont[j].S * cont[y].I) * dt;
             }
 
             if((fabs(dS[j]) <= 0.00001 && fabs(dE[j]) <= 0.00001) &&
@@ -133,7 +133,7 @@ void Doenca(double delta, double gamaT, double psiT, vector<vector<double> > mat
 
             fprintf(arq,"%llf\t", cont[j].I);
             soma += NP[j];
-		}
+        }
 
 
         fprintf(arq,"\n");
@@ -152,39 +152,49 @@ int main(int a, char** args){
     double I;
     int i, j;
 
-	vector<vector<double> > pesos(N);
+    vector<vector<double> > pesos(N);
 
-	for(int a=0; a<N; a++){
-		pesos[a].resize(N);
-		fill(pesos[a].begin(), pesos[a].end(), 0);
-	}
+    for(int a=0; a<N; a++){
+        pesos[a].resize(N);
+        fill(pesos[a].begin(), pesos[a].end(), 0);
+    }
 
-	/* Preenche a matriz de coeficientes "migratorios" */
-	//mat = aloca_matriz_quadrada(N);
-	//int mat[N][N]	=  {
-	pesos = {
-	    {0, 0.002236, 0.002031, 0.001472, 0.001929, 0.00254, 0.001893},  // America do Norte
-	    {0.002236, 0, 0.000487, 0.001291, 0.002435, 0.002263, 0.00038},  // America do Sul
-	    {0.002031, 0.000487, 0, 0.001916, 0.002161, 0.002507, 0.000370}, // America Central
-    	{0.001472, 0.001291, 0.001916, 0, 0.002569, 0.002733, 0.002585}, // Oceania
-	    {0.001929, 0.002435, 0.002161, 0.002569, 0, 0.001814, 0.00148},  // Asia
-    	{0.00254, 0.002263, 0.002507, 0.002733, 0.001814, 0, 0.001029},  // Europa
-	    {0.001893, 0.00038, 0.000370, 0.002585, 0.00148, 0.001029, 0}    // Africa
-	};
-
+    /* Preenche a matriz de coeficientes "migratorios" */
+    pesos = {
+        {0.000000, 0.002236, 0.002031, 0.001472, 0.001929, 0.002540, 0.001893},  // America do Norte
+        {0.002236, 0.000000, 0.000487, 0.001291, 0.002435, 0.002263, 0.000380},  // America do Sul
+        {0.002031, 0.000487, 0.000000, 0.001916, 0.002161, 0.002507, 0.000370}, // America Central
+        {0.001472, 0.001291, 0.001916, 0.000000, 0.002569, 0.002733, 0.002585}, // Oceania
+        {0.001929, 0.002435, 0.002161, 0.002569, 0.000000, 0.001814, 0.001480},  // Asia
+        {0.002540, 0.002263, 0.002507, 0.002733, 0.001814, 0.000000, 0.001029},  // Europa
+        {0.001893, 0.000380, 0.000370, 0.002585, 0.001480, 0.001029, 0.000000}    // Africa
+    };
 
     le_entrada(args, &gamaT, &delta, &I);
     psiT = 1 - gamaT;
 
-	cont.push_back(Continente(I, 0.119135957503718410, 0.464881211444537530));
-	cont.push_back(Continente(I, 0.869204852789066600, 0.708006858112096300));
-	cont.push_back(Continente(I, 0.698547644867993900, 0.944783986808354100));
-	cont.push_back(Continente(I, 0.026025065458993413, 0.815046139651305200));
-	cont.push_back(Continente(I, 0.446197980439416300, 0.588356209213869600));
-	cont.push_back(Continente(I, 0.377769568060116100, 0.828901736971465100));
-	cont.push_back(Continente(I, 0.107767521173018800, 0.039485700084777364));
+    /* America do norte */
+    cont.push_back(Continente(0, 1 - ((0.902 + 0.914 + 0.756)/3) ));
+
+    /* America do Sul */
+    cont.push_back(Continente(0, 1 - 0.740));
+
+    /* America Central */
+    cont.push_back(Continente(0, 1 - 0.740));
+
+    /* Oceania */
+    cont.push_back(Continente(0, 1 - ((0.933 + 0.684 + 0.910)/3) ));
+
+    /* Asia */
+    cont.push_back(Continente(0, 1 - ((0.738 + 0.703 + 0.588)/3) ));
+
+    /* Europa */
+    cont.push_back(Continente(0, 1 - 0.738));
+
+    /* Africa */
+    cont.push_back(Continente(I, 1 - 0.502 ));
 
     Doenca(delta, gamaT, psiT, pesos);
 
-	return 0;
+    return 0;
 }

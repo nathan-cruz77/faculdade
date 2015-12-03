@@ -45,7 +45,7 @@ if __name__ == '__main__':
     with open(ARQ_SAIDA, 'w') as out, open(ARQ_ENTRADA) as inp:
 
         # Define a dimensao e o formato da imagem de saida
-        print('set terminal jpeg size 800, 600', file=out)
+        print('set terminal jpeg size 1920, 720', file=out)
 
         # Define a saida do programa para um arquivo
         print('set out \'grafico.jpg\'', file=out)
@@ -53,17 +53,25 @@ if __name__ == '__main__':
         # Remove as descricoes das linhas
         # print('set nokey', file=out)
 
+        # Adiciona a grade ao gráfico
+        print('set grid', file=out)
+
         # Define os labels
         print('set xlabel \'{}\''.format(XLABEL), file=out)
         print('set ylabel \'{}\''.format(YLABEL), file=out)
 
-        # Imprime as linhas de plot
-        print('plot', end=' ', file=out)
         max_y, indice_x = conta_quantidade_y(inp)
 
+        # Define estilos para as linhas do gráfico
+        for indice in range(2, max_y+1):
+            print('set style line {} linewidth 2'.format(indice), file=out)
+
+        # Imprime as linhas de plot
+        print('plot', end=' ', file=out)
+        
         print(max_y, len(CONTINENTES))
         for i, continente in zip(range(2, max_y+1), CONTINENTES):
             if i != max_y:
-                print('    \'{}\' using {}:{} with lines title \'{}\', \\'.format(ARQ_ENTRADA, indice_x, i, continente), file=out)
+                print('     \'{}\' using {}:{} with lines ls {} title \'{}\', \\'.format(ARQ_ENTRADA, indice_x, i, i, continente), file=out)
             else:
-                print('     \'{}\' using {}:{} with lines'.format(ARQ_ENTRADA, indice_x, i, continente), file=out)
+                print('     \'{}\' using {}:{} with lines ls {} title \'{}\''.format(ARQ_ENTRADA, indice_x, i, i, continente), file=out)
