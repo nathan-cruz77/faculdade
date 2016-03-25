@@ -272,9 +272,9 @@ string cifra(string texto, string chave){
 
         esq ^= complex_function(k1, dir);
         swap(esq, dir);
-        esq ^= complex_function(k2, second);
+        esq ^= complex_function(k2, dir);
 
-        bitset<8> concatenado(particionado.first.to_string() + particionado.second.to_string());
+        bitset<8> concatenado(esq.to_string() + dir.to_string());
         reverse_initial_permutation(concatenado);
 
         cifrado += (char) concatenado.to_ulong();
