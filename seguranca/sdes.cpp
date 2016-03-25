@@ -1,6 +1,7 @@
 #include <iostream>
 #include <bitset>
 #include <utility>
+#include <vector>
 
 using namespace std;
 
@@ -55,6 +56,7 @@ pair<bitset<5>, bitset<5> > p10(bitset<10> chave_inicial){
 	return make_pair(saida_1, saida_2);
 }
 
+
 bitset<8> p8(bitset<5> entrada_1, bitset<5> entrada_2){
 	bitset<8> saida;
 	size_t n = entrada_1.size();
@@ -75,7 +77,6 @@ bitset<8> p8(bitset<5> entrada_1, bitset<5> entrada_2){
 bitset<8> k1(bitset<10> chave){
 	pair<bitset<5>, bitset<5> > particionada;
 
-
 	particionada = p10(chave);
 
 	left_shift(particionada.first);
@@ -87,7 +88,6 @@ bitset<8> k1(bitset<10> chave){
 
 bitset<8> k2(bitset<10> chave){
 	pair<bitset<5>, bitset<5> > particionada;
-
 
 	particionada = p10(chave);
 
@@ -101,7 +101,7 @@ bitset<8> k2(bitset<10> chave){
 }
 
 
-initial_permutation(bitset<8>& data){
+void initial_permutation(bitset<8>& data){
 	bitset<8> aux = data;
 
 	data[7] = aux[(n - 1) - 1];
@@ -115,7 +115,7 @@ initial_permutation(bitset<8>& data){
 }
 
 
-reverse_initial_permutation(bitset<8>& data){
+void reverse_initial_permutation(bitset<8>& data){
 	bitset<8> aux = data;
 
 	data[7] = aux[(n - 1) - 3];
@@ -129,13 +129,64 @@ reverse_initial_permutation(bitset<8>& data){
 }
 
 
+bitset<8> ep(bitset<4> data){
+	bitset<8> aux;
+
+	aux[7] = data[4 - 3];
+	aux[6] = data[4 - 0];
+	aux[5] = data[4 - 1];
+	aux[4] = data[4 - 2];
+	aux[3] = data[4 - 1];
+	aux[2] = data[4 - 2];
+	aux[1] = data[4 - 3];
+	aux[0] = data[4 - 0];
+
+	return aux;
+}
+
+
+void complex_function(bitset<8> chave1, bitset<8> chave2, bitset<4> texto){
+	bitset<8> permutado;
+
+	permutado = ep(texto);
+
+	for(int i = 0; i < 8; i++){
+		permutado[i] ^= chave1[i];
+	}
+
+
+}
+
+
 string cifra(string texto, string chave){
 	bitset<10> chave_em_bits = bitfy(chave);
+	bitset<8> texto_plano;
 
 	bitset<8> chave1 = k1(chave_em_bits);
 	bitset<8> chave2 = k2(chave_em_bits);
 
+	bitset<4> esq;
+	bitset<4> dir;
 
+	vector<vector<int> >
+
+	for(int i = 0; i < texto.size(); i++){
+		texto_plano = texto[i];
+
+		initial_permutation(texto_plano);
+
+		for(int j = 0; j < 4; j++){
+			dir[4 - j] = texto_plano[7 - j];
+		}
+
+		for(int j = 4; j < 8; j++){
+			esq[4 - j] = texto_plano[7 - j];
+		}
+
+		complex_function(chave1, chave2, esq);
+
+		
+	}
 }
 
 
