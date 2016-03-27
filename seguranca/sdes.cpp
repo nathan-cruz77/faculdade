@@ -2,6 +2,7 @@
 #include <bitset>
 #include <utility>
 #include <vector>
+#include <string>
 
 using namespace std;
 
@@ -271,6 +272,8 @@ bitset<4> complex_function(bitset<8> chave, bitset<4> texto){
 
 
 string cifra(string texto, string chave){
+    //cout << "Cifrando..." << endl << endl;
+
     string cifrado;
 
     bitset<10> chave_em_bits = bitfy(chave);
@@ -297,19 +300,21 @@ string cifra(string texto, string chave){
 
         particionado = particionador(texto_plano);
 
-        //cout << "Esq: " << esq << endl;
-        //cout << "Dir: " << dir << endl;
+        esq = particionado.first;
+        dir = particionado.second;
 
-        particionado.first ^= complex_function(chave1, particionado.second);
-        swap(particionado.first, particionado.second);
-        particionado.first ^= complex_function(chave2, particionado.second);
+        esq ^= complex_function(chave1, dir);
+        swap(esq, dir);
+        esq ^= complex_function(chave2, dir);
 
-        bitset<8> concatenado(particionado.first.to_string() + particionado.second.to_string());
+        bitset<8> concatenado(esq.to_string() + dir.to_string());
         reverse_initial_permutation(concatenado);
 
+        //cout << "cifrado: " << concatenado << " = " << concatenado.to_ulong();
+        //cout << endl;
         cifrado += (char) concatenado.to_ulong();
 
-        //cout << "=============== Fim da Iteracao ============" << endl;
+        //cout << "================= Fim da Iteracao ============" << endl;
     }
 
     return cifrado;
@@ -317,21 +322,23 @@ string cifra(string texto, string chave){
 
 
 string decifra(string texto, string chave){
+    //cout << "Decifrando..." << endl << endl;
     string decifrado;
 
     bitset<10> chave_em_bits = bitfy(chave);
+    //cout << "Chave secreta em uso: " << chave_em_bits << endl;
 
     pair<bitset<4>, bitset<4> > particionado;
 
     bitset<8> chave1 = k1(chave_em_bits);
     bitset<8> chave2 = k2(chave_em_bits);
 
-    //cout << "K1 = " << chave1 << endl;
-    //cout << "K2 = " << chave2 << endl;
+    //cout << "k1: " << chave1 << endl;
+    //cout << "k2: " << chave2 << endl;
 
     bitset<4> esq, dir;
 
-    for(int i = 0; i < texto.size(); i++){
+    for(int i = 0; i < texto.size() - 1; i++){
 
         //cout << "============= Iteracao nova ==============" << endl;
 
@@ -343,19 +350,23 @@ string decifra(string texto, string chave){
 
         particionado = particionador(texto_plano);
 
-        //cout << "Esq: " << esq << endl;
-        //cout << "Dir: " << dir << endl;
+        esq = particionado.first;
+        dir = particionado.second;
 
-        particionado.first ^= complex_function(chave2, particionado.second);
-        swap(particionado.first, particionado.second);
-        particionado.first ^= complex_function(chave1, particionado.second);
+        //cout << "  <" << esq << "> <"<< dir << ">" << endl;
 
-        bitset<8> concatenado(particionado.first.to_string() + particionado.second.to_string());
+        esq ^= complex_function(chave2, dir);
+        swap(esq, dir);
+        esq ^= complex_function(chave1, dir);
+
+        bitset<8> concatenado(esq.to_string() + dir.to_string());
         reverse_initial_permutation(concatenado);
 
+        //cout << "decifrado: " << concatenado << " = " << concatenado.to_ulong();
+        //cout << endl;
         decifrado += (char) concatenado.to_ulong();
 
-        //cout << "=============== Fim da Iteracao ============" << endl;
+        //cout << "================= Fim da Iteracao ============" << endl;
     }
 
     return decifrado;
@@ -375,8 +386,8 @@ int main(int argc, char** argv){
     string chave;
     string texto, opcao(argv[1]);
 
-    cin >> chave;
-    cin >> texto;
+    getline(cin, chave);
+    getline(cin, texto, (char) EOF);
 
     if(opcao == "-c" || opcao == "--crypt")
         cout << cifra(texto, chave) << endl;
