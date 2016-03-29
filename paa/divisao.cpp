@@ -1,28 +1,61 @@
 #include <iostream>
 #include <string>
+#include <sstream>
 #include <vector>
+
+#include <cstdio>
 
 using namespace std;
 
 
+string to_string(unsigned int x){
+	/* Necessario pois o Judge compila com padrao c++98, que nao tem to_string() */
+	ostringstream conversor;
+
+	conversor << x;
+
+	return conversor.str();
+}
+
+
 bool eh_valido(unsigned int x){
-	vector<int> digitos(5);
+	vector<int> digitos(10);
+	bool result = true;
 
-	digitos[0] = x / 10000;
-	digitos[1] = (x / 1000) % 10;
-	digitos[2] = ((x / 100) % 100) % 10;
-	digitos[3] = (((x / 10) % 1000) % 100) % 10;
-	digitos[4] = (((x % 10000) % 1000) % 100) % 10;
+	digitos[x / 10000]++;
+	digitos[(x / 1000) % 10]++;
+	digitos[((x / 100) % 100) % 10]++;
+	digitos[(((x / 10) % 1000) % 100) % 10]++;
+	digitos[(((x % 10000) % 1000) % 100) % 10]++;
 
-	return (digitos[0] != digitos[1] !=
-			digitos[2] != digitos[3] !=
-			digitos[4]);
+	for(int i = 0; i < 10; i++){
+		if(digitos[i] > 1){
+			result = false;
+			i = 10;
+		}
+	}
+
+	return result;
 }
 
 
 bool resultado_valido(unsigned int x, unsigned int y, unsigned int n){
 	vector<int> digitos(10, 0);
-	string numerao(to_string(x) + to_string(y));
+
+	string x_aux;
+	string y_aux;
+
+	if(x < 10000)
+		x_aux = "0" + to_string(x);
+	else
+		x_aux = to_string(x);
+
+	if(y < 10000)
+		y_aux = "0" + to_string(y);
+	else
+		y_aux = to_string(y);
+
+	string numerao(x_aux + y_aux);
 	bool result = true;
 
 	for(int i = 0; i < numerao.size(); i++){
@@ -46,30 +79,24 @@ void gera_numeros(unsigned int n){
 
 	unsigned int numerador = 0;
 	unsigned int denominador = 0;
+	unsigned int primeiro_divisivel = 0;
 
 	bool achou = false;
 
-	for(unsigned int i = 1234; i <= 98765; i++){
+	for(primeiro_divisivel = 1234; (primeiro_divisivel % n) != 0; primeiro_divisivel++);
+
+	for(unsigned int i = primeiro_divisivel; i <= 98765; i += n){
 		if(eh_valido(i))
 			validos.push_back(i);
 	}
 
-	for(unsigned int i  = 0; i < validos.size(); i++){
-		if((validos[i] % n) == 0)
-			numeradores.push_back(validos[i]);
-	}
-
-	for(int i = numeradores.size() - 1; i >= 0; i--){
+	for(int i = 0; i < validos.size(); i++){
 		numerador = validos[i];
+		denominador = numerador / n;
 
-		for(int j = 0; j < validos.size(); j++){
-			//cout << "denominador: " << denominador << " " << "j: " << j << endl;
-			denominador = validos[j];
-
-			if(resultado_valido(numerador, denominador, n)){
-				achou = true;
-				cout << numerador << " " << denominador << endl;
-			}
+		if(eh_valido(denominador) && resultado_valido(numerador, denominador, n)){
+			achou = true;
+			printf("%.5d %.5d\n", numerador, denominador);
 		}
 	}
 
