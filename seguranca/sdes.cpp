@@ -390,7 +390,7 @@ int main(int argc, char** argv){
     getline(cin, texto, (char) EOF);
 
     if(opcao == "-c" || opcao == "--crypt")
-        cout << cifra(texto, chave) << endl;
+        cout << cifra(texto, chave);
     else if(opcao == "-d" || opcao == "--decrypt")
         cout << decifra(texto, chave) << endl;
     else{
