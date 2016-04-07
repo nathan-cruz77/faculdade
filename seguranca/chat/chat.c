@@ -17,7 +17,7 @@
 #include <errno.h>
 
 #define SERVER_PORT 3000
-
+#define KB *1024
 
 ev_io* client_watcher;
 
@@ -104,12 +104,27 @@ int open_server_socket(int port){
 
 void client_callback(EV_P_ ev_io* watcher, int events){
 
+	char* buffer = malloc(sizeof(char) * 64 KB);
+	size_t amount_read = 0;
+	size_t i = 0;
+
 	if(events & EV_READ){
-		printf("Posso ler do cliente\n");
+		amount_read = recv(watcher->fd, buffer, 64 KB, 0);
+
+		printf("\r<<< ");
+		for(i = 0; i < amount_read; i++)
+			printf("%c", buffer[i]);
+		printf("\n>>> ");
 	}
 
 	if(events & EV_WRITE){
-		printf("Posso escrever no cliente\n");
+		memset(buffer, 0, 64 KB);
+		amount_read = read(0, (void*) buffer, 64 KB);
+
+		if(amount_read >= 4){
+			send(watcher->fd, buffer, amount_read, 0);
+			printf("\n>>> ");
+		}
 	}
 
 }
@@ -135,6 +150,9 @@ void accept_conn(EV_P_ ev_io* watcher, int events){
 	ev_io_init(client_watcher, client_callback, client_fd, EV_WRITE | EV_READ);
 	ev_io_start(loop, client_watcher);
 
+	ev_io_stop(EV_A_ watcher);
+	ev_timer_stop(EV_A_ (ev_timer*) watcher->data);
+
 	printf("Connected to %s:%d\n", inet_ntoa(client_addr.sin_addr),
 			ntohs(client_addr.sin_port));
 	fflush(stdout);
@@ -150,6 +168,9 @@ void connect_conn(EV_P_ ev_timer* watcher, int events){
 	connection_data* connection_server = (connection_data*) watcher->data;
 
 	int client_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+	make_non_blocking(client_fd);
+
 	struct sockaddr_in server_addr;
 	int result_connect;
 
@@ -160,8 +181,16 @@ void connect_conn(EV_P_ ev_timer* watcher, int events){
 		printf("Unable to connect to %s:%d\n", connection_server->server_ip, connection_server->server_port);
 	}
 	else{
-		printf("Connected!\n");
+		client_watcher = malloc(sizeof(ev_io));
+
+		printf("Connected as client!\n");
+
 		ev_io_stop(EV_A_ connection_server->this_server);
+		ev_timer_stop(EV_A_ watcher);
+
+		ev_io_init(client_watcher, client_callback, client_fd, EV_WRITE | EV_READ);
+		ev_io_start(loop, client_watcher);
+
 		close(connection_server->this_server->fd);
 	}
 }
@@ -170,6 +199,8 @@ void connect_conn(EV_P_ ev_timer* watcher, int events){
 int main(int argc, char** argv){
 
 	check_input(argc, argv);
+
+	make_non_blocking(0);
 
 	int server_fd;
 
@@ -182,6 +213,8 @@ int main(int argc, char** argv){
 
 	ev_io server_watcher;
 	ev_timer conector_watcher;
+
+	server_watcher.data = (void*) &conector_watcher;
 
 	ev_io_init(&server_watcher, accept_conn, server_fd, EV_READ);
 	ev_io_start(event_loop, &server_watcher);
