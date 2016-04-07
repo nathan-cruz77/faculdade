@@ -20,6 +20,7 @@
 #define KB *1024
 
 ev_io* client_watcher;
+char* buffer;
 
 typedef struct{
 	char* server_ip;
@@ -104,7 +105,6 @@ int open_server_socket(int port){
 
 void client_callback(EV_P_ ev_io* watcher, int events){
 
-	char* buffer = malloc(sizeof(char) * 64 KB);
 	size_t amount_read = 0;
 	size_t i = 0;
 
@@ -119,10 +119,11 @@ void client_callback(EV_P_ ev_io* watcher, int events){
 
 	if(events & EV_WRITE){
 		memset(buffer, 0, 64 KB);
-		amount_read = read(0, (void*) buffer, 64 KB);
+		fgets(buffer, 64 KB, stdin);
 
-		if(amount_read >= 4){
-			send(watcher->fd, buffer, amount_read, 0);
+		amount_read = strlen(buffer);
+		if(amount_read > 0){
+			send(watcher->fd, buffer, amount_read - 1, 0);
 			printf("\n>>> ");
 		}
 	}
@@ -229,7 +230,9 @@ int main(int argc, char** argv){
 	ev_timer_init(&conector_watcher, connect_conn, 0.0, 1.0);
 	ev_timer_start(event_loop, &conector_watcher);
 
+	buffer = malloc(sizeof(char) * 64 KB);
 	ev_run(event_loop, 0);
+	free(buffer);
 
 	return 0;
 
