@@ -6,7 +6,7 @@
 using namespace std;
 
 
-string cifra(string chave, string mensagem){
+string rc4(string chave, string mensagem){
 	vector<int> s(256);
 	int j, aux;
 	int k = 0;
@@ -40,7 +40,7 @@ string cifra(string chave, string mensagem){
 	return mensagem;
 }
 
-
+/*
 int main(){
 	string chave, mensagem, cifrado;
 
@@ -48,10 +48,11 @@ int main(){
 	getline(cin, mensagem, (char) EOF);
 
 
-	cifrado = cifra(chave, mensagem);
+	cifrado = rc4(chave, mensagem);
 	cout << cifrado << endl;
-	mensagem = cifra(chave, cifrado);
+	mensagem = rc4(chave, cifrado);
 	cout << mensagem;
 
 	return 0;
 }
+*/

@@ -1,3 +1,4 @@
+#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -16,11 +17,17 @@
 #include <string.h>
 #include <errno.h>
 
+#include "rc4.h"
+#include "sdes.h"
+
 #define SERVER_PORT 3000
 #define KB *1024
 
+using namespace std;
+
 ev_io* client_watcher;
 char* buffer;
+string key;
 
 typedef struct{
 	char* server_ip;
@@ -38,10 +45,11 @@ void make_non_blocking(int fd){
 
 void check_input(int size, char** args){
 
-	if(size != 3){
-		printf("[usage]: %s <ip> <port>\n\n", args[0]);
+	if(size != 4){
+		printf("[usage]: %s <ip> <port> <key>\n\n", args[0]);
 		printf("IP:\tIp of secure-chat server\n");
 		printf("PORT:\tPort where the server will listen for connections\n");
+		printf("Key:\tKey used for encription\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -111,9 +119,12 @@ void client_callback(EV_P_ ev_io* watcher, int events){
 	if(events & EV_READ){
 		amount_read = recv(watcher->fd, buffer, 64 KB, 0);
 
+		string aux(buffer);
+		aux = rc4(key, aux);
+
 		printf("\r<<< ");
 		for(i = 0; i < amount_read; i++)
-			printf("%c", buffer[i]);
+			printf("%c", aux[i]);
 		printf("\n>>> ");
 	}
 
@@ -121,7 +132,15 @@ void client_callback(EV_P_ ev_io* watcher, int events){
 		memset(buffer, 0, 64 KB);
 		fgets(buffer, 64 KB, stdin);
 
-		amount_read = strlen(buffer);
+		string aux(buffer);
+		aux = rc4(key, aux);
+
+		amount_read = aux.size();
+
+		for(i = 0; i < aux.size(); i++){
+			buffer[i] = aux[i];
+		}
+
 		if(amount_read > 0){
 			send(watcher->fd, buffer, amount_read - 1, 0);
 			printf("\n>>> ");
@@ -138,10 +157,10 @@ void accept_conn(EV_P_ ev_io* watcher, int events){
 
 	int server_fd = watcher->fd;
 
-	client_watcher = malloc(sizeof(ev_io));
+	client_watcher = (ev_io*) malloc(sizeof(ev_io));
 
 	struct sockaddr_in client_addr;
-	int SOCK_LEN = sizeof(struct sockaddr_in);
+	unsigned int SOCK_LEN = sizeof(struct sockaddr_in);
 
 	int client_fd = accept(server_fd, (struct sockaddr*) &client_addr,
 						   &SOCK_LEN);
@@ -182,7 +201,7 @@ void connect_conn(EV_P_ ev_timer* watcher, int events){
 		printf("Unable to connect to %s:%d\n", connection_server->server_ip, connection_server->server_port);
 	}
 	else{
-		client_watcher = malloc(sizeof(ev_io));
+		client_watcher = (ev_io*) malloc(sizeof(ev_io));
 
 		printf("Connected as client!\n");
 
@@ -207,6 +226,7 @@ int main(int argc, char** argv){
 
 	char* other_server_ip = argv[1];
 	int other_server_port = atoi(argv[2]);
+	key = argv[3];
 
 	server_fd = open_server_socket(SERVER_PORT);
 
@@ -230,8 +250,10 @@ int main(int argc, char** argv){
 	ev_timer_init(&conector_watcher, connect_conn, 0.0, 1.0);
 	ev_timer_start(event_loop, &conector_watcher);
 
-	buffer = malloc(sizeof(char) * 64 KB);
+	buffer = (char*) malloc(sizeof(char) * 64 KB);
+
 	ev_run(event_loop, 0);
+
 	free(buffer);
 
 	return 0;
