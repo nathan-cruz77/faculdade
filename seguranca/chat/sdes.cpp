@@ -11,17 +11,18 @@ bitset<10> bitfy(string chave){
     bitset<10> chave_em_bits;
     int n = chave_em_bits.size();
 
-    if(chave.size() != chave_em_bits.size()){
-        cout << "AVISO: A chave deve ter 10 bits" << endl;
+    if(chave.size() != 10){
+        cerr << "Erro, tamanho da chave incompativel" << endl;
+        cerr << "Recebido: " << chave << " de tamanho " << chave.size() << endl;
+    }
 
-        if(chave.size() > chave_em_bits.size()){
-            cout << "AVISO: Concatenando a chave." << endl;
-        }
-        else{
-            cout << "AVISO: Completando a chave com 0s." << endl;
-            for(int i = 0; i < chave_em_bits.size() - chave.size(); i++){
-                chave = "0" + chave;
-            }
+    if(chave.size() > chave_em_bits.size()){
+        cout << "AVISO: Truncando a chave." << endl;
+    }
+    if(chave.size() < chave_em_bits.size()){
+        cout << "AVISO: Completando a chave com 0s." << endl;
+        for(int i = 0; i < chave_em_bits.size() - chave.size(); i++){
+            chave = "0" + chave;
         }
     }
 

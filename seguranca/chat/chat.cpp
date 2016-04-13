@@ -28,268 +28,313 @@ ev_io* client_watcher;
 
 char* buffer_send;
 char* buffer_recv;
+
 string key;
+bool use_rc4;
+int close_me;
 
 typedef struct{
 
-	char* server_ip;
-	int server_port;
-	int client_fd;
+    char* server_ip;
+    int server_port;
+    int client_fd;
 
 } connection_data;
 
 
+void fecha_server(int sig){
+
+    close(close_me);
+    cout << "\rReceived SIGINT. Exiting.\n" << endl;
+    exit(EXIT_SUCCESS);
+
+}
+
+
 void make_non_blocking(int fd){
 
-	fcntl(fd, F_SETFL, O_NONBLOCK);
+    fcntl(fd, F_SETFL, O_NONBLOCK);
 
 }
 
 
 bool check_input(int size, char** args){
 
-	bool server_mode;
+    bool server_mode;
 
-	if(size != 4 && size != 2){
-		printf("[usage]: %s <ip> <port> <key>\t// Client mode\n", args[0]);
-		printf("         OR\n");
-		printf("         %s <key>\t\t\t// Server mode\n\n", args[0]);
-		printf("IP:\tIp of secure-chat server\n");
-		printf("PORT:\tPort of secure-chat server\n");
-		printf("Key:\tKey used for encription\n");
+    if(size != 5 && size != 3){
+        printf("[usage]: %s <ip> <port> <key> <encryption>\t// Client mode\n", args[0]);
+        printf("         OR\n");
+        printf("         %s <key> <encryption>\t\t\t// Server mode\n\n", args[0]);
+        printf("IP:\tIp of secure-chat server\n");
+        printf("PORT:\tPort of secure-chat server\n");
+        printf("Key:\tKey used for encription\n");
+        printf("Encryption:\tEncryption algorithm to use, may be \"--rc4\" or \"--sdes\"\n");
 
-		exit(EXIT_FAILURE);
-	}
+        exit(EXIT_FAILURE);
+    }
 
-	if(size == 4){
-		printf("Initializing client mode.\n");
-		server_mode = false;
-	}
+    if(size == 5){
+        printf("Initializing client mode.\n");
+        server_mode = false;
 
-	if(size == 2){
-		printf("Initializing server mode\n");
-		server_mode = true;
-	}
+        if(args[4] == "--rc4")
+            use_rc4 = true;
+        else
+            use_rc4 = false;
+    }
 
-	return server_mode;
+    if(size == 3){
+        printf("Initializing server mode\n");
+        server_mode = true;
+
+        if(args[2] == "--rc4")
+            use_rc4 = true;
+        else
+            use_rc4 = false;
+    }
+
+    return server_mode;
 
 }
 
 
 void client_set_addr(struct sockaddr_in* addr, char* ip, int port){
 
-	addr->sin_family = AF_INET;
-	addr->sin_port = htons(port);
-	addr->sin_addr.s_addr = inet_addr(ip);
+    addr->sin_family = AF_INET;
+    addr->sin_port = htons(port);
+    addr->sin_addr.s_addr = inet_addr(ip);
 
 }
 
 
 void server_set_addr(struct sockaddr_in* addr, int port){
 
-	addr->sin_family = AF_INET;
-	addr->sin_port = htons(port);
-	addr->sin_addr.s_addr = INADDR_ANY;
+    addr->sin_family = AF_INET;
+    addr->sin_port = htons(port);
+    addr->sin_addr.s_addr = INADDR_ANY;
 
 }
 
 
 int open_socket(char* ip, int port){
 
-	int socket_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	struct sockaddr_in other_addr;
+    int socket_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    struct sockaddr_in other_addr;
 
-	client_set_addr(&other_addr, ip, port);
-	connect(socket_fd, (struct sockaddr *) &other_addr, sizeof(struct sockaddr_in));
+    client_set_addr(&other_addr, ip, port);
+    connect(socket_fd, (struct sockaddr *) &other_addr, sizeof(struct sockaddr_in));
 
-	make_non_blocking(socket_fd);
+    make_non_blocking(socket_fd);
 
-	return socket_fd;
+    return socket_fd;
 
 }
 
 
 int open_server_socket(int port){
 
-	int server_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	int SOCK_LEN = sizeof(struct sockaddr_in);
+    int server_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    int SOCK_LEN = sizeof(struct sockaddr_in);
 
-	struct sockaddr_in server_addr;
-	server_set_addr(&server_addr, port);
+    struct sockaddr_in server_addr;
+    server_set_addr(&server_addr, port);
 
-	bind(server_fd, (struct sockaddr*) &server_addr, SOCK_LEN);
+    if(bind(server_fd, (struct sockaddr*) &server_addr, SOCK_LEN) < 0){
+        cout << "Unable to bind" << endl;
+        exit(EXIT_FAILURE);
+    }
 
-	make_non_blocking(server_fd);
+    make_non_blocking(server_fd);
 
-	listen(server_fd, 1);
+    listen(server_fd, 1);
 
-	printf("Waiting connections on: port 3000\n");
-	fflush(stdout);
+    printf("Waiting connections on: port 3000\n");
+    fflush(stdout);
 
-	return server_fd;
+    close_me = server_fd;
+
+    return server_fd;
 
 }
 
 
 void client_callback(EV_P_ ev_io* watcher, int events){
 
-	size_t amount_read = 0;
-	size_t i = 0;
+    size_t amount_read = 0;
+    size_t i = 0;
 
-	if(events & EV_READ){
-		memset(buffer_recv, 0, 64 KB);
+    if(events & EV_READ){
+        memset(buffer_recv, 0, 64 KB);
 
-		amount_read = recv(watcher->fd, buffer_recv, 64 KB, 0);
+        amount_read = recv(watcher->fd, buffer_recv, 64 KB, 0);
 
-		if(amount_read <= 0)
-			return;
+        if(amount_read <= 0)
+            return;
 
-		printf("\r<<< ");
-		/* for(i = 0; i < amount_read; i++)
-			printf("%c", buffer_recv[i]);*/
-		cout << rc4(key, string(buffer_recv)).c_str();
-		printf("\n>>> ");
-	}
+        printf("\r<<< ");
+        if(use_rc4)
+            cout << rc4(key, string(buffer_recv)).c_str();
+        else
+            cout << decifra(string(buffer_recv), key).c_str();
+        printf("\n\n>>> ");
+    }
 
-	if(events & EV_WRITE){
-		memset(buffer_send, 0, 64 KB);
-		fgets(buffer_send, 64 KB, stdin);
+    if(events & EV_WRITE){
+        memset(buffer_send, 0, 64 KB);
+        fgets(buffer_send, 64 KB, stdin);
 
-		string aux(buffer_send);
-		aux = rc4(key, aux);
+        string aux(buffer_send);
+        if(use_rc4)
+            aux = rc4(key, aux);
+        else
+            aux = cifra(aux, key);
 
-		amount_read = strlen(buffer_send);
+        amount_read = strlen(buffer_send);
 
-		for(i = 0; i < amount_read; i++){
-			buffer_send[i] = aux.c_str()[i];
-		}
+        for(i = 0; i < amount_read; i++){
+            buffer_send[i] = aux.c_str()[i];
+        }
 
-		if(amount_read > 0){
-			send(watcher->fd, buffer_send, amount_read, 0);
-			printf("\n>>> ");
-		}
-	}
+        if(amount_read > 0){
+            send(watcher->fd, buffer_send, amount_read, 0);
+            printf("\n>>> ");
+        }
+    }
 
 }
 
 
 void accept_conn(EV_P_ ev_io* watcher, int events){
 
-	int server_fd = watcher->fd;
+    int server_fd = watcher->fd;
 
-	client_watcher = (ev_io*) malloc(sizeof(ev_io));
+    client_watcher = (ev_io*) malloc(sizeof(ev_io));
 
-	struct sockaddr_in client_addr;
-	unsigned int SOCK_LEN = sizeof(struct sockaddr_in);
+    struct sockaddr_in client_addr;
+    unsigned int SOCK_LEN = sizeof(struct sockaddr_in);
 
-	int client_fd = accept(server_fd, (struct sockaddr*) &client_addr,
-						   &SOCK_LEN);
+    int client_fd = accept(server_fd, (struct sockaddr*) &client_addr,
+                           &SOCK_LEN);
 
-	make_non_blocking(client_fd);
+    make_non_blocking(client_fd);
 
-	ev_io_init(client_watcher, client_callback, client_fd, EV_WRITE | EV_READ);
-	ev_io_start(loop, client_watcher);
+    ev_io_init(client_watcher, client_callback, client_fd, EV_WRITE | EV_READ);
+    ev_io_start(loop, client_watcher);
 
-	ev_io_stop(EV_A_ watcher);
+    ev_io_stop(EV_A_ watcher);
 
-	printf("Connected to %s:%d\n>>> ", inet_ntoa(client_addr.sin_addr),
-			ntohs(client_addr.sin_port));
-	fflush(stdout);
+    printf("Connected to %s:%d\n>>> ", inet_ntoa(client_addr.sin_addr),
+            ntohs(client_addr.sin_port));
+    fflush(stdout);
 
 }
 
 
 void connect_conn(EV_P_ ev_timer* watcher, int events){
 
-	printf("\nTrying to connect to remote server\n");
-	fflush(stdout);
+    printf("\nTrying to connect to remote server\n");
+    fflush(stdout);
 
-	connection_data* connection_server = (connection_data*) watcher->data;
+    connection_data* connection_server = (connection_data*) watcher->data;
 
-	if(connection_server->client_fd == -1){
+    if(connection_server->client_fd <= 0){
 
-		connection_server->client_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+        connection_server->client_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
-		make_non_blocking(connection_server->client_fd);
-	}
+        make_non_blocking(connection_server->client_fd);
 
-	struct sockaddr_in server_addr;
-	int result_connect;
+    }
 
-	client_set_addr(&server_addr, connection_server->server_ip, connection_server->server_port);
-	result_connect = connect(connection_server->client_fd, (struct sockaddr*) &server_addr, sizeof(struct sockaddr_in));
+    struct sockaddr_in server_addr;
+    int result_connect;
+
+    client_set_addr(&server_addr, connection_server->server_ip, connection_server->server_port);
+    result_connect = connect(connection_server->client_fd, (struct sockaddr*) &server_addr, sizeof(struct sockaddr_in));
 
 
-	if(result_connect < 0){
+    if(result_connect < 0){
 
-		printf("Unable to connect to %s:%d\n", connection_server->server_ip, connection_server->server_port);
+        printf("Unable to connect to %s:%d\n", connection_server->server_ip, connection_server->server_port);
 
-	}
-	else{
+    }
+    else{
 
-		client_watcher = (ev_io*) malloc(sizeof(ev_io));
+        client_watcher = (ev_io*) malloc(sizeof(ev_io));
 
-		printf("Connection stablished!\n");
+        printf("Connection stablished!\n>>> ");
 
-		/* Stop timed connection */
-		ev_timer_stop(EV_A_ watcher);
+        /* Stop timed connection */
+        ev_timer_stop(EV_A_ watcher);
 
-		/* Create and start event watcher for connected socket */
-		ev_io_init(client_watcher, client_callback, connection_server->client_fd, EV_WRITE | EV_READ);
-		ev_io_start(loop, client_watcher);
+        /* Create and start event watcher for connected socket */
+        ev_io_init(client_watcher, client_callback, connection_server->client_fd, EV_WRITE | EV_READ);
+        ev_io_start(loop, client_watcher);
 
-	}
+    }
 }
 
 
 int main(int argc, char** argv){
 
-	bool server_mode = check_input(argc, argv);
+    bool server_mode = check_input(argc, argv);
 
-	make_non_blocking(0);
+    make_non_blocking(0);
 
-	struct ev_loop* event_loop = EV_DEFAULT;
+    struct ev_loop* event_loop = EV_DEFAULT;
+    struct sigaction fecha_bonitinho;
 
-	if(server_mode){
+    fecha_bonitinho.sa_handler = &fecha_server;
+    sigaction(SIGINT, &fecha_bonitinho, NULL);
 
-		key = argv[1];
+    int server_fd;
+    int client_fd;
 
-		int server_fd = open_server_socket(SERVER_PORT);
+    if(server_mode){
 
-		ev_io server_watcher;
-		ev_io_init(&server_watcher, accept_conn, server_fd, EV_READ);
-		ev_io_start(event_loop, &server_watcher);
+        key = string(argv[1]);
+        cout << "Tamanho da chave: " << key.size() << endl;
+        cout << "Chave: " << key << endl;
 
-	}
+        server_fd = open_server_socket(SERVER_PORT);
 
-	else{
+        ev_io server_watcher;
+        ev_io_init(&server_watcher, accept_conn, server_fd, EV_READ);
+        ev_io_start(event_loop, &server_watcher);
 
-		char* other_server_ip = argv[1];
-		int other_server_port = atoi(argv[2]);
-		key = argv[3];
+    }
 
-		ev_timer conector_watcher;
+    else{
 
-		connection_data connection;
-		connection.server_ip = other_server_ip;
-		connection.server_port = other_server_port;
-		connection.client_fd = -1;
+        char* other_server_ip = argv[1];
+        int other_server_port = atoi(argv[2]);
+        key = argv[3];
 
-		conector_watcher.data = (void*) &connection;
+        ev_timer conector_watcher;
 
-		ev_timer_init(&conector_watcher, connect_conn, 0.0, 1.0);
-		ev_timer_start(event_loop, &conector_watcher);
+        connection_data connection;
+        connection.server_ip = other_server_ip;
+        connection.server_port = other_server_port;
+        connection.client_fd = -1;
 
-	}
+        conector_watcher.data = (void*) &connection;
 
-	buffer_send = (char*) malloc(sizeof(char) * 64 KB);
-	buffer_recv = (char*) malloc(sizeof(char) * 64 KB);
+        ev_timer_init(&conector_watcher, connect_conn, 0.0, 1.0);
+        ev_timer_start(event_loop, &conector_watcher);
 
-	ev_run(event_loop, 0);
+    }
 
-	free(buffer_send);
-	free(buffer_recv);
+    buffer_send = (char*) malloc(sizeof(char) * 64 KB);
+    buffer_recv = (char*) malloc(sizeof(char) * 64 KB);
 
-	return 0;
+    ev_run(event_loop, 0);
+
+    free(buffer_send);
+    free(buffer_recv);
+
+    close(server_fd);
+    close(client_fd);
+
+    return 0;
 
 }
