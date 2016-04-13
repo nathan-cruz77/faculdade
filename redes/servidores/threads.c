@@ -14,158 +14,158 @@
 
 
 typedef struct{
-	int cliente;
-	size_t bytes_sent;
-	char* arq_name;
-	struct sockaddr_in cliente_socket;
+    int cliente;
+    size_t bytes_sent;
+    char* arq_name;
+    struct sockaddr_in cliente_socket;
 } params;
 
 
 void set_addr(struct sockaddr_in *addr, int porta){
 
-	addr->sin_family = AF_INET;
-	addr->sin_port = htons(porta);
-	addr->sin_addr.s_addr = INADDR_ANY;
+    addr->sin_family = AF_INET;
+    addr->sin_port = htons(porta);
+    addr->sin_addr.s_addr = INADDR_ANY;
 
 }
 
 
 void notifica_conn(struct sockaddr_in* cliente, bool abertura){
 
-	if(abertura){
-		fprintf(stderr, "Estabelecida conexao com %s:%d\n",
-			inet_ntoa(cliente->sin_addr), ntohs(cliente->sin_port));
-		return;
-	}
+    if(abertura){
+        fprintf(stderr, "Estabelecida conexao com %s:%d\n",
+            inet_ntoa(cliente->sin_addr), ntohs(cliente->sin_port));
+        return;
+    }
 
-	fprintf(stderr, "Terminada conexao com %s:%d\n",
-			inet_ntoa(cliente->sin_addr), ntohs(cliente->sin_port));
+    fprintf(stderr, "Terminada conexao com %s:%d\n",
+            inet_ntoa(cliente->sin_addr), ntohs(cliente->sin_port));
 
 }
 
 
 size_t find_file_size(FILE* arq){
 
-	size_t tamanho = 0;
+    size_t tamanho = 0;
 
-	fseek(arq, 0, SEEK_END);
-	tamanho = ftell(arq);
-	rewind(arq);
+    fseek(arq, 0, SEEK_END);
+    tamanho = ftell(arq);
+    rewind(arq);
 
-	return tamanho;
+    return tamanho;
 
 }
 
 
 void send_huge_file(int cliente, size_t* bytes_sent, char* arq_name){
 
-	FILE* arq = fopen(arq_name, "rb");
-	size_t file_size = 0;
-	ssize_t aux = 0;
-	char send_buff[64 KB];
-	char* send_buff_aux;
-	*bytes_sent = 0;
+    FILE* arq = fopen(arq_name, "rb");
+    size_t file_size = 0;
+    ssize_t aux = 0;
+    char send_buff[64 KB];
+    char* send_buff_aux;
+    *bytes_sent = 0;
 
-	if(arq == NULL){
-		fprintf(stderr, "Erro ao abrir o arquivo %s\n", arq_name);
-		exit(EXIT_FAILURE);
-	}
+    if(arq == NULL){
+        fprintf(stderr, "Erro ao abrir o arquivo %s\n", arq_name);
+        exit(EXIT_FAILURE);
+    }
 
-	file_size = find_file_size(arq);
+    file_size = find_file_size(arq);
 
-	while(fread(send_buff, sizeof(char), 64 KB, arq) == 64 KB){
-		aux = send(cliente, send_buff, 64 KB, 0);
+    while(fread(send_buff, sizeof(char), 64 KB, arq) == 64 KB){
+        aux = send(cliente, send_buff, 64 KB, 0);
 
-		if(aux > 0){
-			*bytes_sent += aux;
-		}
-	}
+        if(aux > 0){
+            *bytes_sent += aux;
+        }
+    }
 
-	/* Send the chunk that could not be sent in a 64KB chunk */
-	if(file_size % (64 KB) != 0){
-		send_buff_aux = malloc(sizeof(char) * file_size % (64 KB));
+    /* Send the chunk that could not be sent in a 64KB chunk */
+    if(file_size % (64 KB) != 0){
+        send_buff_aux = malloc(sizeof(char) * file_size % (64 KB));
 
-		fread(send_buff_aux, sizeof(char), file_size % (64 KB), arq);
-		aux = send(cliente, send_buff_aux, file_size % (64 KB), 0);
+        fread(send_buff_aux, sizeof(char), file_size % (64 KB), arq);
+        aux = send(cliente, send_buff_aux, file_size % (64 KB), 0);
 
-		if(aux > 0){
-			*bytes_sent += aux;
-		}
+        if(aux > 0){
+            *bytes_sent += aux;
+        }
 
-		free(send_buff_aux);
-	}
+        free(send_buff_aux);
+    }
 
-	fclose(arq);
+    fclose(arq);
 
 }
 
 
 void* atende_cliente(void* args){
-	params* argumentos = (params*) args;
+    params* argumentos = (params*) args;
 
-	int cliente = argumentos->cliente;
-	size_t bytes_enviados = argumentos->bytes_sent;
-	char* arq_name = argumentos->arq_name;
-	struct sockaddr_in cliente_socket = argumentos->cliente_socket;
+    int cliente = argumentos->cliente;
+    size_t bytes_enviados = argumentos->bytes_sent;
+    char* arq_name = argumentos->arq_name;
+    struct sockaddr_in cliente_socket = argumentos->cliente_socket;
 
-	struct timeval tempo_ini;
-	struct timeval tempo_fim;
-	unsigned long int tempo_total = 0;
+    struct timeval tempo_ini;
+    struct timeval tempo_fim;
+    unsigned long int tempo_total = 0;
 
-	notifica_conn(&cliente_socket, true);
+    notifica_conn(&cliente_socket, true);
 
-	gettimeofday(&tempo_ini, NULL);
-	send_huge_file(cliente, &bytes_enviados, arq_name);
-	gettimeofday(&tempo_fim, NULL);
+    gettimeofday(&tempo_ini, NULL);
+    send_huge_file(cliente, &bytes_enviados, arq_name);
+    gettimeofday(&tempo_fim, NULL);
 
-	tempo_total = tempo_fim.tv_sec - tempo_ini.tv_sec;
-	fprintf(stderr, "Vazao: %.3lfKB/s\n",
-		(bytes_enviados/1024.0)/(float)tempo_total);
+    tempo_total = tempo_fim.tv_sec - tempo_ini.tv_sec;
+    fprintf(stderr, "Vazao: %.3lfKB/s\n",
+        (bytes_enviados/1024.0)/(float)tempo_total);
 
-	close(cliente);
-	notifica_conn(&cliente_socket, false);
+    close(cliente);
+    notifica_conn(&cliente_socket, false);
 
 }
 
 
 int main(int argc, char** argv){
 
-	if(argc != 3){
-		printf("[uso]: %s <porta> <arquivo>\n", argv[0]);
-		exit(EXIT_FAILURE);
-	}
+    if(argc != 3){
+        printf("[uso]: %s <porta> <arquivo>\n", argv[0]);
+        exit(EXIT_FAILURE);
+    }
 
-	int servidor_socket, cliente_socket;
-	struct sockaddr_in servidor, cliente;
-	int SOCK_LEN = sizeof(struct sockaddr_in);
-	params* parametros;
+    int servidor_socket, cliente_socket;
+    struct sockaddr_in servidor, cliente;
+    int SOCK_LEN = sizeof(struct sockaddr_in);
+    params* parametros;
 
-	size_t bytes_enviados = 0;
-	unsigned long int tempo_total = 0;
+    size_t bytes_enviados = 0;
+    unsigned long int tempo_total = 0;
 
-	size_t tamanho_arquivo = 0;
+    size_t tamanho_arquivo = 0;
 
-	servidor_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	set_addr(&servidor, atoi(argv[1]));
+    servidor_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    set_addr(&servidor, atoi(argv[1]));
 
-	bind(servidor_socket, (struct sockaddr*) &servidor,
-		 sizeof(struct sockaddr_in));
+    bind(servidor_socket, (struct sockaddr*) &servidor,
+         sizeof(struct sockaddr_in));
 
-	listen(servidor_socket, 1024);
-	printf("Esperando conexoes: localhost:%s\n", argv[1]);
+    listen(servidor_socket, 1024);
+    printf("Esperando conexoes: localhost:%s\n", argv[1]);
 
-	while(true){
-		pthread_t t;
-		parametros = malloc(sizeof(params));
+    while(true){
+        pthread_t t;
+        parametros = malloc(sizeof(params));
 
-		parametros->cliente = accept(servidor_socket,
-				(struct sockaddr*) &(parametros->cliente_socket),
-				(socklen_t*) &SOCK_LEN);
-		parametros->arq_name = argv[2];
+        parametros->cliente = accept(servidor_socket,
+                (struct sockaddr*) &(parametros->cliente_socket),
+                (socklen_t*) &SOCK_LEN);
+        parametros->arq_name = argv[2];
 
-		pthread_create(&t, NULL, atende_cliente, (void*) parametros);
-	}
+        pthread_create(&t, NULL, atende_cliente, (void*) parametros);
+    }
 
-	close(servidor_socket);
+    close(servidor_socket);
 
 }

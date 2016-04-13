@@ -74,9 +74,9 @@ void le_entrada(char** args, Enlace** v_enlace, int* N_enlace,
     double capacidade, velocidade_propagacao, tempo_processamento;
     double distancia;
 
-	L =  (double) strtod(args[cont], (char**) NULL);
+    L =  (double) strtod(args[cont], (char**) NULL);
     cont++;
-	alfa =  (double) strtod(args[cont], (char**) NULL);
+    alfa =  (double) strtod(args[cont], (char**) NULL);
     cont++;
 
     quantidade_roteadores = atoi(args[cont]);
@@ -137,7 +137,7 @@ void carrega_entrada(FILE* entrada,
     double distancia;
 
     fscanf(entrada, "%lf", &L);
-	fscanf(entrada, "%lf", &alfa);
+    fscanf(entrada, "%lf", &alfa);
 
     fscanf(entrada, "%d", &quantidade_roteadores);
     quantidade_enlaces = quantidade_roteadores + 1;
@@ -192,17 +192,17 @@ double calcula_atraso(Enlace* v_enlace, int N_enlace,
     int quantidade_segmentos = ceil(L/1500.);
     int i, j;
 
-	for(i=0; i<N_enlace; i++){
-		atraso_transmissao += quantidade_segmentos *
-			((1500*8)/(v_enlace[i].capacidade*1000000));
+    for(i=0; i<N_enlace; i++){
+        atraso_transmissao += quantidade_segmentos *
+            ((1500*8)/(v_enlace[i].capacidade*1000000));
 
         atraso_propagacao += quantidade_segmentos *
             ((1500*8) * v_enlace[i].distancia / v_enlace[i].velocidade_propagacao);
 
-		/* Calcula o atraso de fila */
-		for(j=1; j<=quantidade_segmentos; j++){
-			atraso_fila += (j - 1) * ((1500*8*alfa)/(v_enlace[i].capacidade*1000000));
-		}
+        /* Calcula o atraso de fila */
+        for(j=1; j<=quantidade_segmentos; j++){
+            atraso_fila += (j - 1) * ((1500*8*alfa)/(v_enlace[i].capacidade*1000000));
+        }
     }
 
     for(i=0; i<N_roteador; i++){
