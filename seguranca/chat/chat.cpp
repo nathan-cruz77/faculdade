@@ -1,5 +1,4 @@
 #include <iostream>
-#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
@@ -29,7 +28,6 @@ ev_io* client_watcher;
 
 char* buffer_send;
 char* buffer_recv;
-
 string key;
 
 typedef struct{
@@ -140,36 +138,31 @@ void client_callback(EV_P_ ev_io* watcher, int events){
 
 	if(events & EV_READ){
 		memset(buffer_recv, 0, 64 KB);
-		fgets(buffer_send, 64 KB, stdin);
 
 		amount_read = recv(watcher->fd, buffer_recv, 64 KB, 0);
-
-		/*string aux(buffer_recv);
-		aux = rc4(key, aux);*/
 
 		if(amount_read <= 0)
 			return;
 
 		printf("\r<<< ");
-		for(i = 0; i < amount_read; i++)
-			printf("%c", buffer_recv[i]);
-		printf("\n>>> %s", buffer_send);
+		/* for(i = 0; i < amount_read; i++)
+			printf("%c", buffer_recv[i]);*/
+		cout << rc4(key, string(buffer_recv)).c_str();
+		printf("\n>>> ");
 	}
 
 	if(events & EV_WRITE){
 		memset(buffer_send, 0, 64 KB);
 		fgets(buffer_send, 64 KB, stdin);
 
-		/*string aux(buffer);
-		aux = rc4(key, aux);*/
+		string aux(buffer_send);
+		aux = rc4(key, aux);
 
 		amount_read = strlen(buffer_send);
 
-		/*
 		for(i = 0; i < amount_read; i++){
-			buffer[i] = aux[i];
+			buffer_send[i] = aux.c_str()[i];
 		}
-		*/
 
 		if(amount_read > 0){
 			send(watcher->fd, buffer_send, amount_read, 0);
@@ -199,7 +192,7 @@ void accept_conn(EV_P_ ev_io* watcher, int events){
 
 	ev_io_stop(EV_A_ watcher);
 
-	printf("Connected to %s:%d\n", inet_ntoa(client_addr.sin_addr),
+	printf("Connected to %s:%d\n>>> ", inet_ntoa(client_addr.sin_addr),
 			ntohs(client_addr.sin_port));
 	fflush(stdout);
 

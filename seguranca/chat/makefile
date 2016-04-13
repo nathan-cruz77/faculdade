@@ -1,7 +1,7 @@
 all: chat
 
 
-chat: clean sdes.o rc4.o
+chat: sdes.o rc4.o
 	g++ chat.cpp -o chat -I. sdes.o rc4.o -lev -std=c++11
 
 
