@@ -1,54 +1,96 @@
 #include <iostream>
-#include <map>
+#include <vector>
 #include <algorithm>
 
 using namespace std;
 
+
+int busca(vector<int>& A, int x) {
+    int i;
+
+    for(i = 0; i < A.size(); i++){
+        if(A[i] == x)
+            return i;
+    }
+
+    return -1;
+}
+
+
+vector<int> acha_campeoes(vector<int>& pontos){
+    int maior = 0;
+    vector<int> champs;
+
+    maior = *max_element(pontos.begin(), pontos.end());
+
+    for(int i = 0; i < pontos.size(); i++){
+        if(pontos[i] == maior)
+            champs.push_back(i+1);
+    }
+
+    return champs;
+}
+
+
 int main(){
-	int g, p;
-	int i, j;
+    int g;
+    int p;
+    int s;
+    int k;
+    int pontuacao;
 
-	map<int, int> resultados_velhos;
-	map<int, int> resultados_novos;
+    vector<vector<int> > resultados;
+    vector<int> pontos;
+    vector<int> campeoes;
 
-	map<int, int> velho;
-	map<int, int> novo;
+    for(cin >> g >> p; g != 0 && p != 0; cin >> g >> p){
 
-	velho[1] = 10;
-	velho[2] = 8;
-	velho[3] = 6;
-	velho[4] = 5;
-	velho[5] = 4;
-	velho[6] = 3;
-	velho[7] = 2;
-	velho[8] = 1;
+        resultados.clear();
+        pontos.clear();
 
-	novo[1] = 25;
-	novo[2] = 18;
-	novo[3] = 15;
-	novo[4] = 12;
-	novo[5] = 10;
-	novo[6] = 8;
-	novo[7] = 6;
-	novo[8] = 4;
-	novo[9] = 2;
-	novo[10] = 1;
+        pontos.resize(p);
+        fill(pontos.begin(), pontos.end(), 0);
 
-	while(cin >> g >> p){
+        for(int i = 0; i < p; i++){
+            resultados.push_back(vector<int>(p, 0));
+        }
 
-		resultados_novos.clear();
-		resultados_velhos.clear();
+        for(int i = 0; i < g; i++){
 
-		resultados_novos.resize(p);
-		resultados_velhos.resize(p);
+            /* Save results */
+            for(int j = 0; j < p; j++){
+                cin >> resultados[i][j];
+            }
 
-		fill(resultados_velhos.begin(), resultados_velhos.end(), 0);
-		fill(resultados_novos.begin(), resultados_novos.end(), 0);
+        }
 
-		for(i=0; i<g; i++){
-			
-		}
-	}
+        cin >> s;
 
-	return 0;
+        for(int i = 0; i < s; i++){
+            cin >> k;
+
+            for(int j = 0; j < k; j++){
+                cin >> pontuacao;
+
+                for(int a = 0; a < resultados.size(); a++){
+                    pontos[busca(resultados[a], j)] += pontuacao;
+                }
+            }
+
+            campeoes = acha_campeoes(pontos);
+
+            for(int j = 0; j < campeoes.size() - 1; j++){
+                cout << campeoes[j] << " ";
+            }
+
+            cout << campeoes[campeoes.size() - 1] << endl;
+
+            campeoes.clear();
+            fill(pontos.begin(), pontos.end(), 0);
+
+        }
+
+    }
+
+    return 0;
 }
