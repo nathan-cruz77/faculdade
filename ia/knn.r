@@ -27,9 +27,7 @@ knn = function(k, x_treino, y_treino, x_teste){
     return(resposta)
 }
 
-
 # Dados de treino
-
 linhas_treino = 1000
 colunas_treino = 10
 
@@ -37,9 +35,7 @@ x_treino = matrix(runif(linhas_treino * colunas_treino, -100, 100),
                   ncol = colunas_treino)
 y_treino = apply(x_treino, 1, resposta)
 
-
 # Dados de teste
-
 linhas_teste = 10000
 colunas_teste = 10
 
@@ -47,9 +43,7 @@ x_teste = matrix(runif(linhas_teste * colunas_teste, -50, 50),
                  ncol = colunas_teste)
 y_teste = apply(x_teste, 1, resposta)
 
-
 # Teste
-
 dados = rbind()
 
 for(k in 1:100){
@@ -66,4 +60,3 @@ for(k in 1:100){
 # dados
 index = which.min(dados[,2])
 dados[index,]
-
