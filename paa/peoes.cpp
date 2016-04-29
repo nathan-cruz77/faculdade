@@ -10,30 +10,28 @@
 using namespace std;
 
 
-#define INF INT_MAX
+#define INF UINT_MAX
 
 
 struct Peao{
 
-    int linha;
-    int coluna;
+    unsigned int linha;
+    unsigned int coluna;
     bool esta_vivo;
 
-    Peao(pair<int, int> coordenadas){
+    Peao(pair<unsigned int, unsigned int> coordenadas){
         this->linha = coordenadas.first;
         this->coluna = coordenadas.second;
 
         this->esta_vivo = true;
-
-        //cout << "linha: " << this->linha << " coluna: " << this->coluna << endl;
     }
 
 };
 
 
-int coordenadas_para_posicao(int linha, int coluna){
+unsigned int coordenadas_para_posicao(unsigned int linha, unsigned int coluna){
 
-    int posicao = 0;
+    unsigned int posicao = 0;
 
     coluna += 1;
     posicao = (linha * 8) + coluna;
@@ -43,10 +41,10 @@ int coordenadas_para_posicao(int linha, int coluna){
 }
 
 
-pair<int, int> posicao_para_coordenadas(int posicao){
+pair<unsigned int, unsigned int> posicao_para_coordenadas(unsigned int posicao){
 
-    int linha;
-    int coluna;
+    unsigned int linha;
+    unsigned int coluna;
 
     if(posicao % 8 == 0){
 
@@ -66,7 +64,7 @@ pair<int, int> posicao_para_coordenadas(int posicao){
 
 bool eh_solucao(vector<Peao>& peoes){
 
-    for(int i = 0; i < peoes.size(); i++){
+    for(unsigned int i = 0; i < peoes.size(); i++){
         if(peoes[i].esta_vivo)
             return false;
     }
@@ -78,7 +76,7 @@ bool eh_solucao(vector<Peao>& peoes){
 
 bool eh_falha(vector<Peao>& peoes){
 
-    for(int i = 0; i < peoes.size(); i++){
+    for(unsigned int i = 0; i < peoes.size(); i++){
         if(peoes[i].linha >= 9)
             return true;
     }
@@ -88,16 +86,16 @@ bool eh_falha(vector<Peao>& peoes){
 }
 
 
-bool movimento_eh_valido(int linha, int coluna){
+bool movimento_eh_valido(unsigned int linha, unsigned int coluna){
 
     return (linha < 10 && linha >= 0) && (coluna < 8 && coluna >= 0);
 
 }
 
 
-vector<pair<int, int> > movimentos_possiveis(int linha_cavalo, int coluna_cavalo){
+vector<pair<unsigned int, unsigned int> > movimentos_possiveis(unsigned int linha_cavalo, unsigned int coluna_cavalo){
 
-    vector<pair<int, int> > movimentos;
+    vector<pair<unsigned int, unsigned int> > movimentos;
 
     /* Para cima */
     if(movimento_eh_valido(linha_cavalo + 2, coluna_cavalo + 1))
@@ -132,17 +130,19 @@ vector<pair<int, int> > movimentos_possiveis(int linha_cavalo, int coluna_cavalo
 }
 
 
-vector<Peao> fazer_movimento(pair<int, int> destino, vector<Peao> peoes){
+vector<Peao> fazer_movimento(pair<unsigned int, unsigned int> destino, vector<Peao> peoes){
 
-    /* Mata peoes na posicao destino do cavalo */
-    for(int i = 0; i < peoes.size(); i++){
-        if(destino.first == peoes[i].linha && destino.second == peoes[i].coluna){
+    /* Mata peoes vivos na posicao destino do cavalo */
+    for(unsigned int i = 0; i < peoes.size(); i++){
+        if(destino.first == peoes[i].linha &&
+           destino.second == peoes[i].coluna &&
+           peoes[i].esta_vivo){
             peoes[i].esta_vivo = false;
         }
     }
 
     /* Movimenta os peoes vivos */
-    for(int i = 0; i < peoes.size(); i++){
+    for(unsigned int i = 0; i < peoes.size(); i++){
         if(peoes[i].esta_vivo){
             peoes[i].linha++;
 
@@ -158,9 +158,9 @@ vector<Peao> fazer_movimento(pair<int, int> destino, vector<Peao> peoes){
 }
 
 
-int back_track(vector<Peao> peoes, pair<int, int> cavalo, int& movimentos_feitos, int& melhor_solucao){
+unsigned int back_track(vector<Peao> peoes, pair<unsigned int, unsigned int> cavalo, unsigned int movimentos_feitos, unsigned int& melhor_solucao){
 
-    int movs = 0;
+    vector<unsigned int>::iterator menor_subsolucao;
 
     if(eh_solucao(peoes)){
         if(movimentos_feitos < melhor_solucao)
@@ -172,54 +172,55 @@ int back_track(vector<Peao> peoes, pair<int, int> cavalo, int& movimentos_feitos
         return INF;
     }
 
-    movimentos_feitos++;
-
     if(movimentos_feitos >= melhor_solucao){
         return INF;
     }
 
-    vector<pair<int, int> > movimentos = movimentos_possiveis(cavalo.first, cavalo.second);
+    vector<pair<unsigned int, unsigned int> > movimentos = movimentos_possiveis(cavalo.first, cavalo.second);
     vector<Peao> temporario;
-    vector<int> solucoes;
+    vector<unsigned int> solucoes;
 
-    for(int i = 0; i < movimentos.size(); i++){
+    for(unsigned int i = 0; i < movimentos.size(); i++){
         temporario = fazer_movimento(movimentos[i], peoes);
-        solucoes.push_back(back_track(temporario, movimentos[i], movimentos_feitos, melhor_solucao));
+        solucoes.push_back(back_track(temporario, movimentos[i], movimentos_feitos + 1, melhor_solucao));
     }
 
-    movs = movimentos_feitos + *min_element(solucoes.begin(), solucoes.end());
-    movimentos_feitos--;
+    menor_subsolucao = min_element(solucoes.begin(), solucoes.end());
 
-    return movs;
+    /* Estado atual não é solução e não existe subestado a ser visitado */
+    if(menor_subsolucao == solucoes.end()){
+        return INF;
+    }
+
+    return min(movimentos_feitos + *menor_subsolucao, melhor_solucao);
 
 }
 
 
 int main(){
 
-    int quantidade_peoes = 0;
-    int pos = 0;
+    unsigned int quantidade_peoes = 0;
+    unsigned int pos = 0;
 
-    pair<int, int> cavalo;
+    pair<unsigned int, unsigned int> cavalo;
 
-    int movimentos = 0;
-    int melhor_solucao = INF;
-    int melhor;
+    unsigned int movimentos = 0;
+    unsigned int melhor_solucao = INF;
+    unsigned int melhor = INF;
 
     vector<Peao> peoes;
 
     cin >> quantidade_peoes;
-    for(int i = 0; i < quantidade_peoes; i++){
+    for(unsigned int i = 0; i < quantidade_peoes; i++){
         cin >> pos;
         peoes.push_back(Peao(posicao_para_coordenadas(pos)));
     }
 
     cin >> pos;
     cavalo = posicao_para_coordenadas(pos);
-    //cout << "Iniciando backtracking..." << endl;
-    melhor = back_track(peoes, cavalo, movimentos, melhor_solucao);
+    melhor = back_track(peoes, cavalo, 0, melhor_solucao);
 
-    //cout << INF << endl;
+    melhor = max(melhor, melhor_solucao);
 
     if(melhor < INF){
         cout << melhor << endl;
