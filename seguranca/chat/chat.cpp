@@ -18,6 +18,7 @@
 
 #include "rc4.h"
 #include "sdes.h"
+#include "rsa.h"
 
 #define SERVER_PORT 3000
 #define KB *1024
@@ -62,37 +63,38 @@ bool check_input(int size, char** args){
 
     bool server_mode;
 
-    if(size != 5 && size != 3){
-        printf("[usage]: %s <ip> <port> <key> <encryption>\t// Client mode\n", args[0]);
+    if(size != 4 && size != 2){
+        printf("[usage]: %s <ip> <port> <encryption>\t// Client mode\n", args[0]);
         printf("         OR\n");
-        printf("         %s <key> <encryption>\t\t\t// Server mode\n\n", args[0]);
+        printf("         %s <encryption>\t\t// Server mode\n\n", args[0]);
         printf("IP:\tIp of secure-chat server\n");
         printf("PORT:\tPort of secure-chat server\n");
-        printf("Key:\tKey used for encription\n");
         printf("Encryption:\tEncryption algorithm to use, may be \"--rc4\" or \"--sdes\"\n");
 
         exit(EXIT_FAILURE);
     }
 
-    if(size == 5){
+    if(size == 4){
         printf("Initializing client mode.\n");
         server_mode = false;
 
-        if(args[4] == "--rc4")
+        if(args[3] == "--rc4")
             use_rc4 = true;
         else
             use_rc4 = false;
     }
 
-    if(size == 3){
+    if(size == 2){
         printf("Initializing server mode\n");
         server_mode = true;
 
-        if(args[2] == "--rc4")
+        if(args[1] == "--rc4")
             use_rc4 = true;
         else
             use_rc4 = false;
     }
+
+    cout << "Use RC4: " << use_rc4 << endl;
 
     return server_mode;
 
@@ -217,6 +219,8 @@ void accept_conn(EV_P_ ev_io* watcher, int events){
     int client_fd = accept(server_fd, (struct sockaddr*) &client_addr,
                            &SOCK_LEN);
 
+    key = server_exchange_key(client_fd);
+
     make_non_blocking(client_fd);
 
     ev_io_init(client_watcher, client_callback, client_fd, EV_WRITE | EV_READ);
@@ -242,8 +246,6 @@ void connect_conn(EV_P_ ev_timer* watcher, int events){
 
         connection_server->client_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
-        make_non_blocking(connection_server->client_fd);
-
     }
 
     struct sockaddr_in server_addr;
@@ -261,6 +263,9 @@ void connect_conn(EV_P_ ev_timer* watcher, int events){
     else{
 
         client_watcher = (ev_io*) malloc(sizeof(ev_io));
+
+        key = client_exchange_key(connection_server->client_fd);
+        make_non_blocking(connection_server->client_fd);
 
         printf("Connection stablished!\n>>> ");
 
@@ -292,10 +297,6 @@ int main(int argc, char** argv){
 
     if(server_mode){
 
-        key = string(argv[1]);
-        cout << "Tamanho da chave: " << key.size() << endl;
-        cout << "Chave: " << key << endl;
-
         server_fd = open_server_socket(SERVER_PORT);
 
         ev_io server_watcher;
@@ -308,7 +309,6 @@ int main(int argc, char** argv){
 
         char* other_server_ip = argv[1];
         int other_server_port = atoi(argv[2]);
-        key = argv[3];
 
         ev_timer conector_watcher;
 
