@@ -1,6 +1,6 @@
 #include <iostream>
-#include <stdlib.h>
-#include <stdbool.h>
+#include <vector>
+#include <cstdlib>
 
 #include <ev.h>
 
@@ -32,7 +32,7 @@ char* buffer_recv;
 
 string key;
 bool use_rc4;
-int close_me;
+vector<int> close_me;
 
 typedef struct{
 
@@ -45,8 +45,12 @@ typedef struct{
 
 void fecha_server(int sig){
 
-    close(close_me);
-    cout << "\rReceived SIGINT. Exiting.\n" << endl;
+    /* Fecha todas as conexoes */
+    for(int i = 0; i < close_me.size(); i++){
+        close(close_me[i]);
+    }
+
+    cout << "\rReceived SIGINT. Exiting." << endl;
     exit(EXIT_SUCCESS);
 
 }
@@ -63,38 +67,46 @@ bool check_input(int size, char** args){
 
     bool server_mode;
 
-    if(size != 4 && size != 2){
+    if(size != 3 && size != 1){
         printf("[usage]: %s <ip> <port> <encryption>\t// Client mode\n", args[0]);
         printf("         OR\n");
         printf("         %s <encryption>\t\t// Server mode\n\n", args[0]);
         printf("IP:\tIp of secure-chat server\n");
         printf("PORT:\tPort of secure-chat server\n");
-        printf("Encryption:\tEncryption algorithm to use, may be \"--rc4\" or \"--sdes\"\n");
+
+        // Only rc4 encryption is supported
+        //printf("Encryption:\tEncryption algorithm to use, may be \"--rc4\" or \"--sdes\"\n");
 
         exit(EXIT_FAILURE);
     }
 
-    if(size == 4){
+    if(size == 3){
         printf("Initializing client mode.\n");
         server_mode = false;
 
+        /*
         if(args[3] == "--rc4")
             use_rc4 = true;
         else
             use_rc4 = false;
+        */
+
     }
 
-    if(size == 2){
+    if(size == 1){
         printf("Initializing server mode\n");
         server_mode = true;
 
+        /*
         if(args[1] == "--rc4")
             use_rc4 = true;
         else
             use_rc4 = false;
+        */
+
     }
 
-    cout << "Use RC4: " << use_rc4 << endl;
+    use_rc4 = true;
 
     return server_mode;
 
@@ -129,6 +141,8 @@ int open_socket(char* ip, int port){
 
     make_non_blocking(socket_fd);
 
+    close_me.push_back(socket_fd);
+
     return socket_fd;
 
 }
@@ -154,7 +168,7 @@ int open_server_socket(int port){
     printf("Waiting connections on: port 3000\n");
     fflush(stdout);
 
-    close_me = server_fd;
+    close_me.push_back(server_fd);
 
     return server_fd;
 
@@ -223,6 +237,8 @@ void accept_conn(EV_P_ ev_io* watcher, int events){
 
     make_non_blocking(client_fd);
 
+    close_me.push_back(client_fd);
+
     ev_io_init(client_watcher, client_callback, client_fd, EV_WRITE | EV_READ);
     ev_io_start(loop, client_watcher);
 
@@ -245,6 +261,7 @@ void connect_conn(EV_P_ ev_timer* watcher, int events){
     if(connection_server->client_fd <= 0){
 
         connection_server->client_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+        close_me.push_back(connection_server->client_fd);
 
     }
 
