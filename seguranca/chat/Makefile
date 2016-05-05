@@ -1,23 +1,30 @@
-all: chat
+INCLUDE = -I./include
+LIB = -L./lib
+OPTIONS = -std=c++11
+
+SRC = src
+BUILD = build
 
 
-chat: chat.cpp sdes.o rc4.o rsa.o
-	g++ chat.cpp -o chat -I. sdes.o rc4.o rsa.o -lev -std=c++11
+all: $(BUILD)/chat
 
 
-sdes.o: sdes.cpp
-	g++ sdes.cpp -c -o sdes.o -std=c++11
+$(BUILD)/chat: $(SRC)/chat.cpp $(BUILD)/sdes.o $(BUILD)/rc4.o $(BUILD)/rsa.o
+	export LD_LIBRARY_PATH=$(PWD)/lib
+	g++ $(INCLUDE) -lev $(OPTIONS) -o $@ $^
 
 
-rc4.o: rc4.cpp
-	g++ rc4.cpp -c -o rc4.o -std=c++11
+$(BUILD)/sdes.o: $(SRC)/sdes.cpp
+	g++ $(OPTIONS) -c -o $@ $^
 
 
-rsa.o: rsa.cpp
-	g++ rsa.cpp -c -o rsa.o -std=c++11
+$(BUILD)/rc4.o: $(SRC)/rc4.cpp
+	g++ $(OPTIONS) -c -o $@ $^
+
+
+$(BUILD)/rsa.o: $(SRC)/rsa.cpp
+	g++ $(OPTIONS) -c -o $@ $^
+
 
 clean:
-	rm rc4.o
-	rm sdes.o
-	rm rsa.o
-	rm chat
+	rm -f $(BUILD)/*
