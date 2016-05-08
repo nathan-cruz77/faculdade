@@ -1,5 +1,9 @@
+# You may try setting the environment variable to alter the lib search path
+# Something like:
+# export LD_LIBRARY_PATH=$(PWD)/lib
+
 INCLUDE = -I./include
-LIB = -Wl,-rpath,$(PWD)/lib
+LIB = -Wl,-rpath,$(PWD)/lib -lev -fopenmp
 LIB_PATH = $(PWD)/lib
 OPTIONS = -std=c++11
 
@@ -10,8 +14,7 @@ BUILD = build
 all: $(BUILD)/chat
 
 
-$(BUILD)/chat: $(SRC)/chat.cpp $(BUILD)/sdes.o $(BUILD)/rc4.o $(BUILD)/rsa.o $(LIB_PATH)/libev.so.4
-	# export LD_LIBRARY_PATH=$(PWD)/lib
+$(BUILD)/chat: $(SRC)/chat.cpp $(BUILD)/sdes.o $(BUILD)/rc4.o $(BUILD)/rsa.o
 	g++ $(INCLUDE) $(LIB) $(OPTIONS) -o $@ $^
 
 
