@@ -18,7 +18,7 @@
 
 #include "rc4.h"
 #include "sdes.h"
-#include "rsa.h"
+#include "dh.h"
 
 #define SERVER_PORT 3000
 #define KB *1024

@@ -3,8 +3,7 @@
 # export LD_LIBRARY_PATH=$(PWD)/lib
 
 INCLUDE = -I./include
-LIB = -Wl,-rpath,$(PWD)/lib -lev -fopenmp
-LIB_PATH = $(PWD)/lib
+LIB = -Wl,-rpath,./lib -lev
 OPTIONS = -std=c++11
 
 SRC = src
@@ -14,7 +13,7 @@ BUILD = build
 all: $(BUILD)/chat
 
 
-$(BUILD)/chat: $(SRC)/chat.cpp $(BUILD)/sdes.o $(BUILD)/rc4.o $(BUILD)/rsa.o
+$(BUILD)/chat: $(SRC)/chat.cpp $(BUILD)/sdes.o $(BUILD)/rc4.o $(BUILD)/dh.o
 	g++ $(INCLUDE) $(LIB) $(OPTIONS) -o $@ $^
 
 
@@ -26,7 +25,7 @@ $(BUILD)/rc4.o: $(SRC)/rc4.cpp
 	g++ $(OPTIONS) -c -o $@ $^
 
 
-$(BUILD)/rsa.o: $(SRC)/rsa.cpp
+$(BUILD)/dh.o: $(SRC)/dh.cpp
 	g++ $(OPTIONS) -c -o $@ $^
 
 
