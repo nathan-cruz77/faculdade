@@ -3,14 +3,14 @@
 # export LD_LIBRARY_PATH=$(PWD)/lib
 
 INCLUDE = -I./include
-LIB = -Wl,-rpath,./lib -lev
+LIB = -Wl,-rpath,./lib -L./lib -lev
 OPTIONS = -std=c++11
 
 SRC = src
-BUILD = build
+BUILD = bin
 
 
-all: $(BUILD)/chat
+all: clean $(BUILD)/chat
 
 
 $(BUILD)/chat: $(SRC)/chat.cpp $(BUILD)/sdes.o $(BUILD)/rc4.o $(BUILD)/dh.o
