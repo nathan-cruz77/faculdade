@@ -19,7 +19,7 @@ int main(){
 
     int total = 0;
     for(int salvo = -1, corrente = 0; corrente != n - 1; corrente++){
-        if(salvo > 0){
+        if(salvo >= 0){
             if(dists[corrente] - dists[salvo] > 200){
                 salvo = corrente - 1;
                 total += 1;
