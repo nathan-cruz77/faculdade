@@ -1,18 +1,17 @@
 import random
+import sys
 from pprint import pprint
 from collections import Counter
 from math import log2
 
-import numpy as np
-
 from util import load_data_id3
 from util import most_common
 from util import is_continuous
-from util import custom_range
 from util import nearest
 
 
-TEST_SIZE = 1000
+# TEST_SIZE = 1000
+# PRECISION = 5
 
 
 def entropy(data):
@@ -56,7 +55,7 @@ def id3(data):
 
     if is_continuous(data[0][separator]):
         for x in data:
-            x[separator] = round(x[separator], 1)
+            x[separator] = round(x[separator], PRECISION)
 
     for v in set(x[separator] for x in data):
         aux = [x for x in data.copy() if separator in x and x[separator] == v]
@@ -74,15 +73,21 @@ def predict(element, tree):
 
     if is_continuous(element[tree.attr]):
         return predict(element, tree.sons[nearest(element[tree.attr],
-                                                  list(tree.sons.keys()))])
+                                                  list(tree.sons.keys()),
+                                                  precision=PRECISION)])
 
     return predict(element, tree.sons[element[tree.attr]])
 
 
 if __name__ == '__main__':
+
+    PRECISION = int(sys.argv[1])
+
     data = load_data_id3('data.json')
+    TEST_SIZE = len(data) // 10
     random.shuffle(data)
 
+    total = len(data)
     test_data, trainning_data = data[:TEST_SIZE], data[TEST_SIZE + 1:]
 
     pah_gox_data = [x for x in trainning_data if x['eletrodo'] == 'PAH_GOX']
@@ -94,6 +99,8 @@ if __name__ == '__main__':
     }
 
     hit_glicose, hit_triglicerideo = 0, 0
+    miss_glicose, miss_triglicerideo = 0, 0
+
     total_glicose = len([l for l in test_data if l['analito'] == 'glicose'])
     total_triglicerideo = len([l for l in test_data if l['analito'] == 'triglicerideo'])
 
@@ -105,14 +112,37 @@ if __name__ == '__main__':
                 hit_glicose += 1
             else:
                 hit_triglicerideo += 1
-
-    # print('Total (g): {}/{} hit'.format(hit_glicose, total_glicose))
-    # print('Total (t): {}/{} hit'.format(hit_triglicerideo, total_triglicerideo))
-    # print('Total: {}/{} hit'.format(hit_triglicerideo + hit_glicose,
-    #                                 total_triglicerideo + total_triglicerideo))
+        else:
+            if pred == 'glicose':
+                miss_triglicerideo += 1
+            else:
+                miss_glicose += 1
 
     accuracy_glicose = (hit_glicose / total_glicose) * 0.5
     accuracy_triglicerideo = (hit_triglicerideo / total_triglicerideo) * 0.5
     accuracy = accuracy_triglicerideo + accuracy_glicose
     
-    print('Acurácia: {:.3f}%'.format(accuracy * 100))
+    print('Acurácia ponderada = {:.3f}'.format(accuracy))
+    print('Precisão total = {:.3f}'.format((hit_glicose + hit_triglicerideo) / total))
+    print()
+
+    print('Cobertura(g) = {:.3f}'.format((hit_glicose + miss_triglicerideo) / total))
+    print('Cobertura(t) = {:.3f}'.format((hit_triglicerideo + miss_glicose) / total))
+    print()
+
+    # Blablabla que o professor pediu...
+    print('Sensitividade(g) = {:.3f}'.format(hit_glicose / total_glicose))
+    print('Sensitividade(t) = {:.3f}'.format(hit_triglicerideo / total_triglicerideo))
+    print()
+
+    print('Suporte(g) = {:.3f}'.format(hit_glicose / total))
+    print('Suporte(t) = {:.3f}'.format(hit_triglicerideo / total))
+    print()
+
+    print('Confiabilidade(g) = {:.3f}'.format(hit_glicose / (hit_glicose + miss_triglicerideo)))
+    print('Confiabilidade(t) = {:.3f}'.format(hit_triglicerideo / (hit_triglicerideo + miss_glicose)))
+    print()
+
+    print('Especificidade(g) = {:.3f}'.format(miss_glicose / total_glicose))
+    print('Especificidade(t) = {:.3f}'.format(miss_triglicerideo / total_triglicerideo))
+    print()
