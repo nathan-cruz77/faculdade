@@ -1,5 +1,6 @@
 import json
 import random
+import math
 from collections import Counter
 
 def nearest(a, lst, precision=5):
@@ -51,7 +52,7 @@ def most_common(lista):
     return Counter(lista).most_common(1)[0][0]
 
 
-def normalize(data):
+def normalizer(data):
     frequencies = [i['frequency'] for i in data]
     impedance_real = [i['impedance_real'] for i in data]
     impedance_imag = [i['impedance_imaginary'] for i in data]
@@ -71,11 +72,22 @@ def normalize(data):
         data_element['impedance_imaginary'] /= (maior_imped_imag - menor_imped_imag)
 
 
+def log_normalizer(data):
+    frequencies = [i['frequency'] for i in data]
+    impedance_real = [i['impedance_real'] for i in data]
+    impedance_imag = [i['impedance_imaginary'] for i in data]
+
+    for data_element in data:
+        data_element['frequency'] = math.log(abs(data_element['frequency']))
+        data_element['impedance_real'] = math.log(abs(data_element['impedance_real']))
+        data_element['impedance_imaginary'] = math.log(abs(data_element['impedance_imaginary']))
+
+
 def load(data_file):
     with open(data_file) as data_f:
         data_set = json.load(data_f)
 
-    normalize(data_set)
+    log_normalizer(data_set)
     return data_set
 
 

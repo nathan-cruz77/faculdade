@@ -121,28 +121,5 @@ if __name__ == '__main__':
     accuracy_glicose = (hit_glicose / total_glicose) * 0.5
     accuracy_triglicerideo = (hit_triglicerideo / total_triglicerideo) * 0.5
     accuracy = accuracy_triglicerideo + accuracy_glicose
-    
-    print('Acurácia ponderada = {:.3f}'.format(accuracy))
-    print('Precisão total = {:.3f}'.format((hit_glicose + hit_triglicerideo) / total))
-    print()
 
-    print('Cobertura(g) = {:.3f}'.format((hit_glicose + miss_triglicerideo) / total))
-    print('Cobertura(t) = {:.3f}'.format((hit_triglicerideo + miss_glicose) / total))
-    print()
-
-    # Blablabla que o professor pediu...
-    print('Sensitividade(g) = {:.3f}'.format(hit_glicose / total_glicose))
-    print('Sensitividade(t) = {:.3f}'.format(hit_triglicerideo / total_triglicerideo))
-    print()
-
-    print('Suporte(g) = {:.3f}'.format(hit_glicose / total))
-    print('Suporte(t) = {:.3f}'.format(hit_triglicerideo / total))
-    print()
-
-    print('Confiabilidade(g) = {:.3f}'.format(hit_glicose / (hit_glicose + miss_triglicerideo)))
-    print('Confiabilidade(t) = {:.3f}'.format(hit_triglicerideo / (hit_triglicerideo + miss_glicose)))
-    print()
-
-    print('Especificidade(g) = {:.3f}'.format(miss_glicose / total_glicose))
-    print('Especificidade(t) = {:.3f}'.format(miss_triglicerideo / total_triglicerideo))
-    print()
+    print('{} {:.3f}'.format(PRECISION, accuracy * 100))
