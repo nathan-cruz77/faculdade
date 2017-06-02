@@ -1,12 +1,12 @@
 To build, run and clean do:
-  ```shell
-  make
-  ```
+```shell
+make
+```
 
 Build with:
-  ```shell
-  make build
-  ```
+```shell
+make build
+```
 
 Run with:
 ```shell
