@@ -3,8 +3,8 @@ import random
 import math
 from collections import Counter
 
-def nearest(a, lst, precision=5):
-    distances = [round(abs(x - a), precision) for x in lst]
+def nearest(a, lst, ndigits=5):
+    distances = [round(abs(x - a), ndigits) for x in lst]
 
     if min(distances) == 0:
         return lst[distances.index(0)]
@@ -18,21 +18,21 @@ def nearest(a, lst, precision=5):
 
 def precision(number):
     try:
-        precision = len(str(number).split('.')[1])
+        ndigits = len(str(number).split('.')[1])
     except IndexError:
-        precision = 1
+        ndigits = 1
 
-    return precision
+    return ndigits
 
 
 def custom_range(start, stop=None, step=1):
-    precision = precision(step)
+    ndigits = precision(step)
 
     if stop is None:
         stop, start = start, 0
 
     while(start < stop):
-        yield round(start, precision)
+        yield round(start, ndigits)
         start += step
 
 
