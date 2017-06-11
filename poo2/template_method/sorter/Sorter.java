@@ -7,7 +7,7 @@ public class Sorter implements Comparator<String> {
 
         if(char_1 > char_2) return 1;
         if(char_1 == char_2) return 0;
-        else return -1;
+        return -1;
     }
 
     private char lastChar(String s){
