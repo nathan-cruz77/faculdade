@@ -1,0 +1,8 @@
+new 1 Mariane
+new 2 Nathan
+new 3 Alexandre
+delete 2
+get 3
+all
+new 4 Carol
+all
